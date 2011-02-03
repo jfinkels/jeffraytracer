@@ -54,11 +54,22 @@ public abstract class Line {
   }
 
   /**
+   * Returns true if and only if this line is horizontal in terms of its y
+   * component (that is, the y components of its two defining points are equal).
+   * 
+   * @return True if and only if this line is horizontal in terms of its y
+   *         component.
+   */
+  public boolean isHorizontal() {
+    return this.v1.y == this.v2.y;
+  }
+
+  /**
    * Determines whether this line is parallel to the specified other line.
    * 
-   * This method is symmetric, so if {@code v1} and {@code v2} are two {@code
-   * Line} objects, then {@code v1.parallelTo(v2)} if and only if {@code
-   * v2.parallelTo(v1)}.
+   * This method is symmetric, so if {@code v1} and {@code v2} are two
+   * {@code Line} objects, then {@code v1.parallelTo(v2)} if and only if
+   * {@code v2.parallelTo(v1)}.
    * 
    * Algorithm: since two vectors are parallel if they have the same direction,
    * all we need to check is whether this vector is a dilation of the other

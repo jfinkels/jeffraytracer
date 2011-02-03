@@ -25,6 +25,22 @@ public class RayTest {
   }
 
   /**
+   * Test method for {@link edu.bu.cs.cs680.Ray#pointIsBehind(Vector2D)}.
+   */
+  @Test
+  public void testPointIsBehind() {
+    final Ray ray = new Ray(new Vector2D(0, 0), new Vector2D(1, 1));
+    Vector2D point = new Vector2D(2, 2);
+    assertFalse(ray.pointIsBehind(point));
+    point = new Vector2D(1, 1);
+    assertFalse(ray.pointIsBehind(point));
+    point = new Vector2D(0, 0);
+    assertFalse(ray.pointIsBehind(point));
+    point = new Vector2D(-1, -1);
+    assertTrue(ray.pointIsBehind(point));
+  }
+
+  /**
    * Test method for
    * {@link edu.bu.cs.cs680.Ray#intersects(edu.bu.cs.cs680.LineSegment)}.
    */

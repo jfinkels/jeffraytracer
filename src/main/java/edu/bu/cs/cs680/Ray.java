@@ -61,9 +61,8 @@ public class Ray extends Line {
     final Vector2D intersection = w.sumWith(u.scaledBy(intersectionTime))
         .sumWith(this.first());
 
-    // if the edge is behind this ray, then reject it
-    if (this.first().distanceTo(intersection) < this.second().distanceTo(
-        intersection)) {
+    // if the intersection point is behind this ray, then reject it
+    if (this.pointIsBehind(intersection)) {
       return false;
     }
 
@@ -71,5 +70,35 @@ public class Ray extends Line {
     // and 1
     return (INTERSECTION_TOLERANCE < intersectionTime)
         && (intersectionTime <= 1);
+  }
+
+  /**
+   * Returns true if and only if the specified point is behind this ray.
+   * 
+   * Pre-condition: the specified point is on the infinite line on which this
+   * ray lies.
+   * 
+   * Algorithm: given a point, we check if either the change in x or the change
+   * in y from the start of the ray to that point is the same as or different
+   * from the change in x or the change in y between the two points which define
+   * this ray.
+   * 
+   * @param point
+   *          The point on the line on which this ray lies to test for
+   *          opposite-ness.
+   * @return True if and only if the point is behind this ray.
+   */
+  protected boolean pointIsBehind(final Vector2D point) {
+    float thisDeltaX = this.second().x - this.first().x;
+    float thisDeltaY = this.second().y - this.first().y;
+    float otherDeltaX = point.x - this.first().x;
+    float otherDeltay = point.y - this.first().y;
+
+    // if the sign of the change in either x or y is different between this
+    // vector and the vector from the first endpoint of this vector to the
+    // specified point, then the specified point is in the opposite direction
+    return (Math.signum(thisDeltaX) == -Math.signum(otherDeltaX) || Math
+        .signum(thisDeltaY) == -Math.signum(otherDeltay));
+
   }
 }

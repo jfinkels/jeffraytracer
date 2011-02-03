@@ -3,6 +3,7 @@
  */
 package edu.bu.cs.cs680;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -23,6 +24,16 @@ public class LineSegmentTest {
   @Test
   public void testLineSegment() {
     new LineSegment(new Vector2D(0, 0), new Vector2D(0, 1));
+  }
+
+  /**
+   * Test method for {@link edu.bu.cs.cs680.LineSegment#length()}.
+   */
+  @Test
+  public void testLength() {
+    final LineSegment line = new LineSegment(new Vector2D(-1, 1), new Vector2D(
+        2, 5));
+    assertEquals(5.0, line.length(), 0.0);
   }
 
   /**

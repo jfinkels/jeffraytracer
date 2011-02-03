@@ -50,6 +50,10 @@ public class LineTest {
     line2 = new LineSegment(new Vector2D(0.0, 0.0), new Vector2D(0.0, 1.0));
     assertFalse(line1.parallelTo(line2));
     assertFalse(line2.parallelTo(line1));
+    
+    final Line line3 = new LineSegment(new Vector2D(0, 1), new Vector2D(0, 0));
+    assertTrue(line2.parallelTo(line3));
+    assertTrue(line3.parallelTo(line2));
   }
 
   /**

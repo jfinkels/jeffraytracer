@@ -1,18 +1,28 @@
-// ****************************************************************************
-// Polygon class.
-// ****************************************************************************
-// Comments :
-// Subroutines to manage and draw polygons
-//
-// History :
-// 9 Jan 2008 Created by Tai-Peng Tian (tiantp@gmail.com) based on code by
-// Stan Sclaroff (from CS480 '06 poly.c)
+/**
+ * Polygon.java - a polygon class which provides additional drawing functions
+ * 
+ * Jeffrey Finkelstein
+ * 
+ * BU CS 680 programming assignment 1
+ * 
+ * 7 February 2010
+ * 
+ * This class is adapted from the skeleton Polygon class provided in the
+ * assignment. The most important methods are the concavePoly() method, which
+ * returns true if and only if this polygon is concave, the insidePoly() method,
+ * which returns true if and only if the specified point is inside this polygon,
+ * and the planarSweep() method, which returns a set of convex polygons which
+ * form a partition of this polygon.
+ */
 package edu.bu.cs.cs680;
 
 import java.util.AbstractQueue;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.Set;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
@@ -220,7 +230,7 @@ public class Polygon {
    * 
    * @return A list of convex polygons which partition the current polygon.
    */
-  public List<Polygon> planarSweep() {
+  public Set<Polygon> planarSweep() {
     // get all the edges, then remove all horizontal ones
     final List<LineSegment> edges = this.edges();
     removeHorizontalEdgesFrom(edges);
@@ -229,26 +239,44 @@ public class Polygon {
     // endpoint y value
     // Note: Java doesn't provide a constructor which allows specifying just a
     // comparator. 11 is the default initial capacity for the queue.
-    final AbstractQueue<LineSegment> queue = new PriorityQueue<LineSegment>(
-        11, EdgeComparator.INSTANCE);
+    final AbstractQueue<LineSegment> queue = new PriorityQueue<LineSegment>(11,
+        EdgeComparator.INSTANCE);
     queue.addAll(edges);
 
-    final List<Polygon> result = new ArrayList<Polygon>();
+    final Set<Polygon> result = new HashSet<Polygon>();
     return result;
   }
 
-  // TODO test this method
-  private static void removeHorizontalEdgesFrom(final List<LineSegment> edges) {
-    // create a horizontal line segment
-    final Line horizontal = new LineSegment(new Vector2D(0.0, 0.0),
-        new Vector2D(1.0, 0.0));
-
-    for (int i = 0; i < edges.size(); i++) {
-      if (edges.get(i).parallelTo(horizontal)) {
+  /**
+   * Removes all horizontal line segments from the specified list of line
+   * segments.
+   * 
+   * @param edges
+   *          The list from which to remove horizontal line segments.
+   */
+  protected static void removeHorizontalEdgesFrom(final List<LineSegment> edges) {
+    for (int i = edges.size() - 1; i >= 0; i--) {
+      if (edges.get(i).isHorizontal()) {
         edges.remove(i);
-        i -= 1;
       }
     }
+  }
+
+  
+  // TODO test for this method
+  protected static boolean isUpwardV(final Vector2D vertex,
+      final Collection<LineSegment> edges) {
+    int numUpwardEdges = 0;
+    for (final LineSegment edge : edges) {
+      final Vector2D oppositeEndpoint = edge.otherEndpoint(vertex);
+      if (oppositeEndpoint != null) {
+        if (oppositeEndpoint.y > vertex.y) {
+          numUpwardEdges += 1;
+        }
+      }
+    }
+    
+    return numUpwardEdges == 2;
   }
 
   /**
@@ -277,8 +305,7 @@ public class Polygon {
     final Vector2D click = new Vector2D(x, y);
     double bestDistance = click.distanceTo(this.vertices.get(0));
     Vector2D winner = this.vertices.get(0);
-    for (final Vector2D vertex : this.vertices
-        .subList(1, this.vertices.size())) {
+    for (final Vector2D vertex : this.vertices.subList(1, this.vertices.size())) {
       final double currentDistance = click.distanceTo(vertex);
       if (currentDistance < bestDistance) {
         winner = vertex;

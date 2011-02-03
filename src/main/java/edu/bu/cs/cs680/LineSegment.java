@@ -46,8 +46,54 @@ public class LineSegment extends Line {
     return false;
   }
 
-  // TODO test this method
-  private double length() {
+  /**
+   * Returns true if and only if the specified point has the same x and y
+   * components as one of the endpoints of this line segment.
+   * 
+   * @param point
+   *          The point to test for whether it is an endpoint of this line
+   *          segment.
+   * @return {@code true} if and only if specified point has the same x and y
+   *         components as one of the endpoints of this line segment.
+   */
+  // TODO test for this method
+  // public boolean hasEndpointAt(final Vector2D point) {
+  // return this.first().equalTo(point) || this.second().equalTo(point);
+  // }
+
+  /**
+   * Returns the endpoint of this line segment which is the one opposite the
+   * specified endpoint, or {@code null} if the specified endpoint is not
+   * actually an endpoint of this line segment.
+   * 
+   * @param endpoint
+   *          The endpoint opposite this endpoint will be returned.
+   * @return The endpoint of this line segment which is the one opposite the
+   *         specified endpoint, or {@code null} if the specified endpoint is
+   *         not actually an endpoint of this line segment.
+   */
+  // TODO test for this method
+  public Vector2D otherEndpoint(final Vector2D endpoint) {
+    if (this.first().equalTo(endpoint)) {
+      return this.second();
+    }
+
+    if (this.second().equalTo(endpoint)) {
+      return this.first();
+    }
+
+    return null;
+  }
+
+  /**
+   * Gets the length of this line segment.
+   * 
+   * Algorithm: compute the norm of the vector from the first point to the
+   * second point.
+   * 
+   * @return The length of this line segment.
+   */
+  protected double length() {
     return this.toVector().norm();
   }
 }

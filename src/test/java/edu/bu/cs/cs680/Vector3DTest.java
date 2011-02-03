@@ -99,8 +99,7 @@ public class Vector3DTest {
   }
 
   /**
-   * Test method for
-   * {@link edu.bu.cs.cs680.Vector3D#scaledBy(edu.bu.cs.cs680.Vector3D)}.
+   * Test method for {@link edu.bu.cs.cs680.Vector3D#scaledBy(double)}.
    */
   @Test
   public void testScaledBy() {

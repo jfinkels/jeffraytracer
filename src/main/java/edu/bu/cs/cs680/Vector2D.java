@@ -48,6 +48,23 @@ public class Vector2D extends Vector3D {
   }
 
   /**
+   * Returns true if and only if the specified other vector is non-null and has
+   * the same x and y values as this vector.
+   * 
+   * Note: this is intentionally different from the
+   * {@link Object#equals(Object)} method so that we do not have to override the
+   * {@link Object#hashCode()} method, and therefore we can have multiple
+   * Vector2D objects in a single HashSet, for example.
+   * 
+   * @return {@code true} if and only if the specified other vector is not null
+   *         and has the same x and y component values.
+   */
+  // TODO test for this method
+  public boolean equalTo(final Vector2D that) {
+    return that != null && this.x == that.x && this.y == that.y;
+  }
+
+  /**
    * Moves this vertex to the specified new location.
    * 
    * @param newX
@@ -69,7 +86,6 @@ public class Vector2D extends Vector3D {
    * @return A new vector which is the result of scaling this vector by the
    *         specified scalar.
    */
-  // TODO test this method
   @Override
   public Vector2D scaledBy(final float scale) {
     return new Vector2D(scale * this.x, scale * this.y);
@@ -84,7 +100,6 @@ public class Vector2D extends Vector3D {
    * @return A new vector which is the component-wise sum of this vector and the
    *         specified other vector.
    */
-  // TODO test this method
   public Vector2D sumWith(final Vector2D that) {
     return new Vector2D(this.x + that.x, this.y + that.y);
   }

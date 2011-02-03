@@ -10,6 +10,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -85,6 +89,37 @@ public class PolygonTest {
   }
 
   /**
+   * Test method for
+   * {@link edu.bu.cs.cs680.Polygon#removeHorizontalEdgesFrom(java.util.List)}.
+   */
+  @Test
+  public void testRemoveHorizontalEdges() {
+    final LineSegment nonHorizontal1 = new LineSegment(new Vector2D(0, 0),
+        new Vector2D(1, 1));
+    final LineSegment nonHorizontal2 = new LineSegment(new Vector2D(0, 1),
+        new Vector2D(1, 0));
+    final LineSegment horizontal1 = new LineSegment(new Vector2D(0, 1),
+        new Vector2D(1, 1));
+    final LineSegment horizontal2 = new LineSegment(new Vector2D(1, 0),
+        new Vector2D(0, 0));
+
+    final List<LineSegment> edges = new ArrayList<LineSegment>();
+    
+    edges.addAll(Arrays.asList(nonHorizontal1, nonHorizontal2, horizontal1,
+        horizontal2));
+    System.out.println(edges);
+
+    Polygon.removeHorizontalEdgesFrom(edges);
+    
+    System.out.println(edges);
+    
+    assertTrue(edges.contains(nonHorizontal1));
+    assertTrue(edges.contains(nonHorizontal2));
+    assertFalse(edges.contains(horizontal1));
+    assertFalse(edges.contains(horizontal2));
+  }
+
+  /**
    * Test method for {@link edu.bu.cs.cs680.Polygon#planarSweep()}.
    */
   @Test
@@ -93,7 +128,7 @@ public class PolygonTest {
         .toArray());
     assertArrayEquals(new Polygon[] { this.triangle }, this.triangle
         .planarSweep().toArray());
-    
+
     assertEquals(3, this.concavePolygon.planarSweep().size());
     for (final Polygon subdivision : this.concavePolygon.planarSweep()) {
       assertFalse(subdivision.concavePoly());
@@ -162,7 +197,7 @@ public class PolygonTest {
    */
   @Test
   public void testSelectVert() {
-    // nothing to test    
+    // nothing to test
   }
 
   /**

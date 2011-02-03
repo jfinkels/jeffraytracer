@@ -60,6 +60,31 @@ public class Vector2DTest {
     assertEquals(1.0, vector.x, 0.0);
     assertEquals(2.0, vector.y, 0.0);
   }
+  
+  /**
+   * Test method for
+   * {@link edu.bu.cs.cs680.Vector2D#scaledBy(float)}.
+   */
+  @Test
+  public void testScaledBy() {
+    final Vector2D v1 = new Vector2D(1.0, -2.0);
+    final float scale = 10;
+    assertEquals(scale, v1.scaledBy(scale).x, 0.0);
+    assertEquals(-2.0 * scale, v1.scaledBy(scale).y, 0.0);
+  }
+  
+  /**
+   * Test method for {@link edu.bu.cs.cs680.Vector2D#sumWith(Vector2D)}.
+   */
+  @Test
+  public void testSumWith() {
+    final Vector2D vector1 = new Vector2D(1.0, 2.0);
+    final Vector2D vector2 = new Vector2D(3.0, 4.0);
+    final Vector2D sum = vector1.sumWith(vector2);
+    
+    assertEquals(4.0, sum.x, 0.0);
+    assertEquals(6.0, sum.y, 0.0);
+  }
 
   /**
    * Test method for {@link edu.bu.cs.cs680.Vector2D#toString()}.

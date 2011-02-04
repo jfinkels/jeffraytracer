@@ -25,13 +25,18 @@ public class LineSegment extends Line {
    * If one of the endpoints has the specified y value, then this method returns
    * that endpoint.
    * 
+   * Algorithm: use the parametric form of the line segment to solve a system of
+   * linear equations which shows where the point of intersection is.
+   * 
+   * Pre-condition: this line segment is not horizontal. Otherwise a divide by
+   * zero error will occur.
+   * 
    * @param yvalue
    *          The y value at which to intersect this line segment with a
    *          horizontal.
    * @return The point at which this line segment intersects the horizontal at
    *         the specified y value.
    */
-  // TODO test for this method
   public Vector2D intersectionWithHorizontalAt(final float yvalue) {
     if (this.first().y == yvalue) {
       return this.first();
@@ -39,8 +44,10 @@ public class LineSegment extends Line {
     if (this.second().y == yvalue) {
       return this.second();
     }
-    final float t = (yvalue - this.first().y) / this.second().y;
-    final float xvalue = this.first().x + this.second().x * (t);
+    final float t = (yvalue - this.first().y)
+        / (this.second().y - this.first().y);
+    final float xvalue = this.first().x + t
+        * (this.second().x - this.first().x);
     return new Vector2D(xvalue, yvalue);
   }
 
@@ -50,39 +57,8 @@ public class LineSegment extends Line {
    * 
    * @return The endpoint with the least y component.
    */
-  // TODO test for this method
   public Vector2D lowerEndpoint() {
     if (this.first().y < this.second().y) {
-      return this.first();
-    } else {
-      return this.second();
-    }
-  }
-
-  /**
-   * Returns the endpoint with the least x component, or if the x components are
-   * equal, the second endpoint.
-   * 
-   * @return The endpoint with the least x component.
-   */
-  // TODO test for this method
-  public Vector2D leftmostEndpoint() {
-    if (this.first().x < this.second().x) {
-      return this.first();
-    } else {
-      return this.second();
-    }
-  }
-
-  /**
-   * Returns the endpoint with the greatest x component, or if the x components
-   * are equal, the second endpoint.
-   * 
-   * @return The endpoint with the greatest x component.
-   */
-  // TODO test for this method
-  public Vector2D rightmostEndpoint() {
-    if (this.first().x > this.second().x) {
       return this.first();
     } else {
       return this.second();
@@ -95,7 +71,6 @@ public class LineSegment extends Line {
    * 
    * @return The endpoint with the greatest y component.
    */
-  // TODO test for this method
   public Vector2D upperEndpoint() {
     if (this.first().y > this.second().y) {
       return this.first();
@@ -133,21 +108,6 @@ public class LineSegment extends Line {
   }
 
   /**
-   * Returns true if and only if the specified point has the same x and y
-   * components as one of the endpoints of this line segment.
-   * 
-   * @param point
-   *          The point to test for whether it is an endpoint of this line
-   *          segment.
-   * @return {@code true} if and only if specified point has the same x and y
-   *         components as one of the endpoints of this line segment.
-   */
-  // TODO test for this method
-  // public boolean hasEndpointAt(final Vector2D point) {
-  // return this.first().equalTo(point) || this.second().equalTo(point);
-  // }
-
-  /**
    * Returns the endpoint of this line segment which is the one opposite the
    * specified endpoint, or {@code null} if the specified endpoint is not
    * actually an endpoint of this line segment.
@@ -158,7 +118,6 @@ public class LineSegment extends Line {
    *         specified endpoint, or {@code null} if the specified endpoint is
    *         not actually an endpoint of this line segment.
    */
-  // TODO test for this method
   public Vector2D otherEndpoint(final Vector2D endpoint) {
     if (this.first().equalTo(endpoint)) {
       return this.second();

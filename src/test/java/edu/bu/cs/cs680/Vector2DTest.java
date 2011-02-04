@@ -54,6 +54,23 @@ public class Vector2DTest {
    * Test method for {@link edu.bu.cs.cs680.Vector2D#moveTo(float, float)}.
    */
   @Test
+  public void testEqualTo() {
+    final Vector2D vector1 = new Vector2D(0, 1);
+    final Vector2D vector2 = new Vector2D(0, 2);
+    
+    assertFalse(vector1.equalTo(null));
+    assertFalse(vector2.equalTo(null));
+    
+    assertTrue(vector1.equalTo(vector1));
+    assertTrue(vector2.equalTo(vector2));
+    assertFalse(vector1.equalTo(vector2));
+    assertFalse(vector2.equalTo(vector1));
+  }
+  
+  /**
+   * Test method for {@link edu.bu.cs.cs680.Vector2D#moveTo(float, float)}.
+   */
+  @Test
   public void testMoveTo() {
     final Vector2D vector = new Vector2D(0.0, 0.0);
     vector.moveTo(1.0f, 2.0f);

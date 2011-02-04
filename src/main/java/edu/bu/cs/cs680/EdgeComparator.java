@@ -30,7 +30,6 @@ public class EdgeComparator implements Comparator<LineSegment> {
    * 
    * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
    */
-  // TODO test for this method
   @Override
   public int compare(final LineSegment edge1, final LineSegment edge2) {
 

@@ -13,8 +13,9 @@ import org.junit.runners.Suite.SuiteClasses;
  * @author Jeffrey Finkelstein <jeffreyf>
  */
 @RunWith(Suite.class)
-@SuiteClasses({ LineSegmentTest.class, LineTest.class, PolygonTest.class,
-    RayTest.class, Vector2DTest.class, Vector3DTest.class })
+@SuiteClasses({ EdgeComparatorTest.class, LineSegmentTest.class,
+    LineTest.class, PolygonTest.class, RayTest.class, SortedListTest.class,
+    Vector2DTest.class, Vector3DTest.class })
 public class AllTest {
   // intentionally unimplemented
 }

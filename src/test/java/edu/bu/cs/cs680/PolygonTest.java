@@ -26,6 +26,8 @@ public class PolygonTest {
 
   /** A concave polygon. */
   private Polygon concavePolygon = null;
+  /** A convex polygon. */
+  private Polygon convexPolygon = null;
   /** An empty polygon to use for testing. */
   private Polygon polygon = null;
   /** A square. */
@@ -42,23 +44,31 @@ public class PolygonTest {
     // create a triangle
     this.triangle = new Polygon();
     this.triangle.addVert(0, 0);
-    this.triangle.addVert(3, 0);
     this.triangle.addVert(0, 3);
+    this.triangle.addVert(3, 0);
 
     // create a square
     this.square = new Polygon();
     this.square.addVert(0, 0);
-    this.square.addVert(2, 0);
-    this.square.addVert(2, 2);
     this.square.addVert(0, 2);
+    this.square.addVert(2, 2);
+    this.square.addVert(2, 0);
 
     // create a concave polygon
     this.concavePolygon = new Polygon();
-    this.concavePolygon.addVert(0, 0);
-    this.concavePolygon.addVert(1, 1);
-    this.concavePolygon.addVert(2, 0);
-    this.concavePolygon.addVert(4, 4);
     this.concavePolygon.addVert(0, 4);
+    this.concavePolygon.addVert(4, 4);
+    this.concavePolygon.addVert(2, 0);
+    this.concavePolygon.addVert(1, 1);
+    this.concavePolygon.addVert(0, 0);
+
+    // create a convex polygon
+    this.convexPolygon = new Polygon();
+    this.convexPolygon.addVert(67, 67);
+    this.convexPolygon.addVert(250, 50);
+    this.convexPolygon.addVert(250, 200);
+    this.convexPolygon.addVert(152, 254);
+    this.convexPolygon.addVert(50, 200);
   }
 
   /**
@@ -75,10 +85,11 @@ public class PolygonTest {
   @Test
   public void testConcavePoly() {
     assertFalse(this.polygon.concavePoly());
-    //assertFalse(this.triangle.concavePoly());
-    //assertFalse(this.square.concavePoly());
-    //assertTrue(this.concavePolygon.concavePoly());
-
+    assertFalse(this.triangle.concavePoly());
+    assertFalse(this.square.concavePoly());
+    assertTrue(this.concavePolygon.concavePoly());
+    assertFalse(this.convexPolygon.concavePoly());
+    
     // real test case
     final TestPolygons testCases = new TestPolygons();
     assertFalse(testCases.get(0).concavePoly());
@@ -115,8 +126,7 @@ public class PolygonTest {
     assertEquals(0, polygon.edges().get(3).second().y, 0);
 
     bottomLeft = new Vector2D(1, 0);
-    polygon = Polygon
-        .createPolygon(bottomLeft, bottomRight, topRight, topLeft);
+    polygon = Polygon.createPolygon(bottomLeft, bottomRight, topRight, topLeft);
 
     assertEquals(3, polygon.edges().size());
     assertEquals(1, polygon.edges().get(0).first().x, 0);
@@ -157,10 +167,10 @@ public class PolygonTest {
     final List<LineSegment> edges = this.triangle.edges();
     assertEquals(0, edges.get(0).first().x, 0);
     assertEquals(0, edges.get(0).first().y, 0);
-    assertEquals(3, edges.get(1).first().x, 0);
-    assertEquals(0, edges.get(1).first().y, 0);
-    assertEquals(0, edges.get(2).first().x, 0);
-    assertEquals(3, edges.get(2).first().y, 0);
+    assertEquals(0, edges.get(1).first().x, 0);
+    assertEquals(3, edges.get(1).first().y, 0);
+    assertEquals(3, edges.get(2).first().x, 0);
+    assertEquals(0, edges.get(2).first().y, 0);
 
     assertTrue(edges.get(0).second().equalTo(edges.get(1).first()));
     assertTrue(edges.get(1).second().equalTo(edges.get(2).first()));

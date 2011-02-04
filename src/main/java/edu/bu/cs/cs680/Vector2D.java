@@ -59,7 +59,6 @@ public class Vector2D extends Vector3D {
    * @return {@code true} if and only if the specified other vector is not null
    *         and has the same x and y component values.
    */
-  // TODO test for this method
   public boolean equalTo(final Vector2D that) {
     return that != null && this.x == that.x && this.y == that.y;
   }

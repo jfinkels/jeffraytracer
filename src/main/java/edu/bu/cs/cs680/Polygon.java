@@ -138,45 +138,6 @@ public class Polygon {
   }
 
   /**
-   * Returns a rectangle which contains this polygon.
-   * 
-   * @return A rectangle which contains this polygon.
-   */
-  // TODO test for this method
-  // private Polygon boundingBox() {
-  // float minX = Float.MAX_VALUE;
-  // float minY = Float.MAX_VALUE;
-  // float maxX = 0;
-  // float maxY = 0;
-  //
-  // for (final Vector2D vertex : this.vertices) {
-  // if (vertex.x < minX) {
-  // minX = vertex.x;
-  // }
-  //
-  // if (vertex.x > maxX) {
-  // maxX = vertex.x;
-  // }
-  //
-  // if (vertex.y < minY) {
-  // minY = vertex.y;
-  // }
-  //
-  // if (vertex.y > maxY) {
-  // maxY = vertex.y;
-  // }
-  // }
-  //
-  // final Polygon result = new Polygon();
-  // result.addVert((int) minX, (int) minY);
-  // result.addVert((int) maxX, (int) minY);
-  // result.addVert((int) maxX, (int) maxY);
-  // result.addVert((int) minX, (int) maxY);
-  //
-  // return result;
-  // }
-
-  /**
    * Removes all horizontal line segments from the specified list of line
    * segments.
    * 
@@ -212,23 +173,30 @@ public class Polygon {
   /**
    * Returns true if and only if this polygon is concave.
    * 
-   * Algorithm: iterate over each pair of adjacent edges in counter clockwise
-   * order. If the sign of the z component of the cross product of any pair is
-   * negative, then this polygon is concave. Otherwise this polygon is convex.
+   * Returns false if this polygon has fewer than three vertices.
    * 
-   * Precondition: this polygon has at least three vertices and the vertices of
-   * this polygon are stored in counter-clockwise order.
+   * Algorithm: iterate over each pair of adjacent edges. If the sign of the z
+   * component of the cross product of any pair is different from that of the
+   * adjacent pair, then this polygon is concave. Otherwise this polygon is
+   * convex.
    * 
    * @return Whether this polygon is concave.
    */
   public boolean concavePoly() {
+    // if this polygon does not have three vertices, just return false
+    if (this.vertices.size() < 3) {
+      return false;
+    }
+    // determine whether we will be looking for all positive or all negative
+    // cross product z values
+    final int signToMatch = (int) Math.signum(this.edges().get(0).toVector()
+        .crossProduct(this.edges().get(1).toVector()).z);
     int numEdges = this.edges().size();
-    for (int i = 0; i < numEdges; ++i) {
-      final Line edge1 = this.edges().get(i);
-      final Line edge2 = this.edges().get((i + 1) % numEdges);
-      // TODO should this be > or < ? opengl has origin at top left? this doesnt
-      // work
-      if (edge1.toVector().crossProduct(edge2.toVector()).z > 0) {
+    // start at 1 because we already checked the first pair above
+    for (int i = 1; i < numEdges; ++i) {
+      final Vector2D vector1 = this.edges().get(i).toVector();
+      final Vector2D vector2 = this.edges().get((i + 1) % numEdges).toVector();
+      if ((int) Math.signum(vector1.crossProduct(vector2).z) != signToMatch) {
         return true;
       }
     }
@@ -289,7 +257,6 @@ public class Polygon {
    * @return A List of LineSegment objects representing the edges of this
    *         polygon.
    */
-  // TODO test this method
   protected List<LineSegment> edges() {
     final List<LineSegment> result = new ArrayList<LineSegment>();
     final int numVertices = this.vertices.size();
@@ -375,7 +342,8 @@ public class Polygon {
     // remainingEdges queue to the active edges queue
     final SortedList<LineSegment> activeEdges = new SortedList<LineSegment>(
         EdgeComparator.INSTANCE);
-    while (remainingEdges.peek().lowerEndpoint().y == bottomVertex.y) {
+    while (!remainingEdges.isEmpty()
+        && (remainingEdges.peek().lowerEndpoint().y == bottomVertex.y)) {
       activeEdges.add(remainingEdges.remove());
     }
 
@@ -474,8 +442,7 @@ public class Polygon {
     final Vector2D click = new Vector2D(x, y);
     double bestDistance = click.distanceTo(this.vertices.get(0));
     Vector2D winner = this.vertices.get(0);
-    for (final Vector2D vertex : this.vertices
-        .subList(1, this.vertices.size())) {
+    for (final Vector2D vertex : this.vertices.subList(1, this.vertices.size())) {
       final double currentDistance = click.distanceTo(vertex);
       if (currentDistance < bestDistance) {
         winner = vertex;

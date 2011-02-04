@@ -27,23 +27,114 @@ import java.util.Set;
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 
+/**
+ * A polygon with additional drawing methods.
+ * 
+ * @author Jeffrey Finkelstein <jeffreyf>
+ */
 public class Polygon {
 
-  /** The currently selected vertex. */
-  private Vector2D selected_vert = null;
-  /** The list of all vertices in counter-clockwise order. */
-  private final ArrayList<Vector2D> vertices = new ArrayList<Vector2D>();
+  /**
+   * Helper method which creates a new Polygon object from the specified four
+   * vertices.
+   * 
+   * If the bottom two vertices are the same, only one is added. If the top two
+   * vertices are the same, only one is added.
+   * 
+   * Pre-condition: either the bottom two vertices are not equal or the top two
+   * vertices are not equal (or both). Otherwise the created polygon is just a
+   * line segment.
+   * 
+   * @param bottomLeft
+   *          The bottom left vertex of the polygon. May be the same as the
+   *          bottom right vertex.
+   * @param bottomRight
+   *          The bottom right vertex of the polygon. May be the same as the
+   *          bottom left vertex.
+   * @param topRight
+   *          The top right vertex of the polygon. May be the same as the top
+   *          left vertex.
+   * @param topLeft
+   *          The top left vertex of the polygon. May be the same as the top
+   *          right vertex.
+   * @return The polygon created from the specified vertices; a quadrilateral if
+   *         all four vertices are different, or a triangle if either the bottom
+   *         two or the top two vertices are the same.
+   */
+  protected static Polygon createPolygon(final Vector2D bottomLeft,
+      final Vector2D bottomRight, final Vector2D topRight,
+      final Vector2D topLeft) {
+    final Polygon polygon = new Polygon();
+
+    polygon.vertices.add(bottomLeft);
+    if (!bottomLeft.equalTo(bottomRight)) {
+      polygon.vertices.add(bottomRight);
+    }
+
+    polygon.vertices.add(topRight);
+    if (!topRight.equalTo(topLeft)) {
+      polygon.vertices.add(topLeft);
+    }
+
+    return polygon;
+  }
 
   /**
-   * Adds a vertex to this polygon at the specified point.
+   * Returns true if and only if the specified vertex is the top endpoint of
+   * both of the two edges to which it is incident, with edges drawn from the
+   * specified collection of line segments.
    * 
-   * @param x
-   *          The x component of the point to add.
-   * @param y
-   *          The y component of the point to add.
+   * @param vertex
+   *          The endpoint to test.
+   * @param edges
+   *          The collection of edges for which the specified vertex may be an
+   *          endpoint.
+   * @return {@code true} if and only if the specified vertex is the top
+   *         endpoint of both of the two edges to which it is incident, with
+   *         edges drawn from the specified collection of line segments.
    */
-  public void addVert(int x, int y) {
-    this.vertices.add(new Vector2D(x, y));
+  protected static boolean isDownwardV(final Vector2D vertex,
+      final Collection<LineSegment> edges) {
+    int numDownwardEdges = 0;
+    for (final LineSegment edge : edges) {
+      final Vector2D oppositeEndpoint = edge.otherEndpoint(vertex);
+      if (oppositeEndpoint != null) {
+        if (oppositeEndpoint.y < vertex.y) {
+          numDownwardEdges += 1;
+        }
+      }
+    }
+
+    return numDownwardEdges == 2;
+  }
+
+  /**
+   * Returns true if and only if the specified vertex is the bottom endpoint of
+   * both of the two edges to which it is incident, with edges drawn from the
+   * specified collection of line segments.
+   * 
+   * @param vertex
+   *          The endpoint to test.
+   * @param edges
+   *          The collection of edges for which the specified vertex may be an
+   *          endpoint.
+   * @return {@code true} if and only if the specified vertex is the bottom
+   *         endpoint of both of the two edges to which it is incident, with
+   *         edges drawn from the specified collection of line segments.
+   */
+  protected static boolean isUpwardV(final Vector2D vertex,
+      final Collection<LineSegment> edges) {
+    int numUpwardEdges = 0;
+    for (final LineSegment edge : edges) {
+      final Vector2D oppositeEndpoint = edge.otherEndpoint(vertex);
+      if (oppositeEndpoint != null) {
+        if (oppositeEndpoint.y > vertex.y) {
+          numUpwardEdges += 1;
+        }
+      }
+    }
+
+    return numUpwardEdges == 2;
   }
 
   /**
@@ -86,6 +177,39 @@ public class Polygon {
   // }
 
   /**
+   * Removes all horizontal line segments from the specified list of line
+   * segments.
+   * 
+   * @param edges
+   *          The list from which to remove horizontal line segments.
+   */
+  protected static void removeHorizontalEdgesFrom(final List<LineSegment> edges) {
+    for (int i = edges.size() - 1; i >= 0; i--) {
+      if (edges.get(i).isHorizontal()) {
+        edges.remove(i);
+      }
+    }
+  }
+
+  /** The currently selected vertex. */
+  private Vector2D selected_vert = null;
+
+  /** The list of all vertices in counter-clockwise order. */
+  private final ArrayList<Vector2D> vertices = new ArrayList<Vector2D>();
+
+  /**
+   * Adds a vertex to this polygon at the specified point.
+   * 
+   * @param x
+   *          The x component of the point to add.
+   * @param y
+   *          The y component of the point to add.
+   */
+  public void addVert(final int x, final int y) {
+    this.vertices.add(new Vector2D(x, y));
+  }
+
+  /**
    * Returns true if and only if this polygon is concave.
    * 
    * Algorithm: iterate over each pair of adjacent edges in counter clockwise
@@ -102,7 +226,9 @@ public class Polygon {
     for (int i = 0; i < numEdges; ++i) {
       final Line edge1 = this.edges().get(i);
       final Line edge2 = this.edges().get((i + 1) % numEdges);
-      if (edge1.toVector().crossProduct(edge2.toVector()).z < 0) {
+      // TODO should this be > or < ? opengl has origin at top left? this doesnt
+      // work
+      if (edge1.toVector().crossProduct(edge2.toVector()).z > 0) {
         return true;
       }
     }
@@ -123,9 +249,9 @@ public class Polygon {
     drawConvexPoly(drawable);
 
     /* your code for subdividing/drawing a concave polygon here */
-    for (final Polygon polygon : this.planarSweep()) {
-      polygon.drawConvexPoly(drawable);
-    }
+    // for (final Polygon polygon : this.planarSweep()) {
+    // polygon.drawConvexPoly(drawable);
+    // }
   }
 
   // Generate necessary OpenGL commands to draw a convex polygon
@@ -163,7 +289,8 @@ public class Polygon {
    * @return A List of LineSegment objects representing the edges of this
    *         polygon.
    */
-  private List<LineSegment> edges() {
+  // TODO test this method
+  protected List<LineSegment> edges() {
     final List<LineSegment> result = new ArrayList<LineSegment>();
     final int numVertices = this.vertices.size();
     for (int i = 0; i < numVertices; ++i) {
@@ -198,7 +325,6 @@ public class Polygon {
     int counter = 0;
     for (final LineSegment edge : this.edges()) {
       if (edge.contains(initialPoint)) {
-        System.out.println("point " + initialPoint + " is on edge " + edge);
         return true;
       }
       if (ray.intersects(edge)) {
@@ -230,53 +356,96 @@ public class Polygon {
    * 
    * @return A list of convex polygons which partition the current polygon.
    */
+  // TODO test for this method
   public Set<Polygon> planarSweep() {
-    // get all the edges, then remove all horizontal ones
-    final List<LineSegment> edges = this.edges();
-    removeHorizontalEdgesFrom(edges);
+    // order line segments from bottom to top, then left to right, excluding
+    // horizontal line segments
+    final AbstractQueue<LineSegment> remainingEdges = new PriorityQueue<LineSegment>(
+        11, EdgeComparator.INSTANCE);
+    for (final LineSegment edge : this.edges()) {
+      if (!edge.isHorizontal()) {
+        remainingEdges.add(edge);
+      }
+    }
 
-    // place the remaining edges in a priority queue based on vertically lowest
-    // endpoint y value
-    // Note: Java doesn't provide a constructor which allows specifying just a
-    // comparator. 11 is the default initial capacity for the queue.
-    final AbstractQueue<LineSegment> queue = new PriorityQueue<LineSegment>(11,
+    // get the bottom-left-most vertex
+    final Vector2D bottomVertex = remainingEdges.peek().lowerEndpoint();
+
+    // move edges which start at the y value of the current vertex from the
+    // remainingEdges queue to the active edges queue
+    final SortedList<LineSegment> activeEdges = new SortedList<LineSegment>(
         EdgeComparator.INSTANCE);
-    queue.addAll(edges);
+    while (remainingEdges.peek().lowerEndpoint().y == bottomVertex.y) {
+      activeEdges.add(remainingEdges.remove());
+    }
+
+    // add all the lower endpoints of the active edges to the list of bottom
+    // intersections. Note: if there are two edges which come to a vertex in a
+    // "V" shape, the lower endpoint there will be added twice, but this is
+    // expected behavior
+    final List<Vector2D> topIntersections = new ArrayList<Vector2D>();
+    final List<Vector2D> bottomIntersections = new ArrayList<Vector2D>();
+    for (final LineSegment edge : activeEdges) {
+      bottomIntersections.add(edge.lowerEndpoint());
+    }
 
     final Set<Polygon> result = new HashSet<Polygon>();
-    return result;
-  }
+    while (!remainingEdges.isEmpty()) {
+      // get the next lowest vertex from the remaining queue
+      final Vector2D upperVertex = remainingEdges.peek().lowerEndpoint();
 
-  /**
-   * Removes all horizontal line segments from the specified list of line
-   * segments.
-   * 
-   * @param edges
-   *          The list from which to remove horizontal line segments.
-   */
-  protected static void removeHorizontalEdgesFrom(final List<LineSegment> edges) {
-    for (int i = edges.size() - 1; i >= 0; i--) {
-      if (edges.get(i).isHorizontal()) {
-        edges.remove(i);
+      // get the intersection with each active edge with the horizontal at the
+      // current y value. Note: here also, the same vertex may be added to the
+      // list twice if it is incident to two active edges which meet in an
+      // upside down "V" shape. Again this is expected behavior
+      for (final LineSegment edge : activeEdges) {
+        topIntersections.add(edge.intersectionWithHorizontalAt(upperVertex.y));
       }
-    }
-  }
 
-  
-  // TODO test for this method
-  protected static boolean isUpwardV(final Vector2D vertex,
-      final Collection<LineSegment> edges) {
-    int numUpwardEdges = 0;
-    for (final LineSegment edge : edges) {
-      final Vector2D oppositeEndpoint = edge.otherEndpoint(vertex);
-      if (oppositeEndpoint != null) {
-        if (oppositeEndpoint.y > vertex.y) {
-          numUpwardEdges += 1;
+      // create a new polygon from two top intersections and two bottom
+      // intersections
+      assert bottomIntersections.size() == topIntersections.size() : "Must have the same number of intersections on top and bottom.";
+      assert topIntersections.size() % 2 == 0 : "Must have an even number of intersections on top.";
+      assert bottomIntersections.size() % 2 == 0 : "Must have an even number of intersections on bottom.";
+      for (int i = 0; i < topIntersections.size(); i += 2) {
+        final Vector2D bottomLeft = bottomIntersections.get(i);
+        final Vector2D bottomRight = bottomIntersections.get(i + 1);
+        final Vector2D topLeft = topIntersections.get(i);
+        final Vector2D topRight = topIntersections.get(i + 1);
+
+        // create the polygon, accounting for the possibility that either the
+        // top two or the bottom two are the same point, and add it to the set
+        // which we will output
+        result.add(createPolygon(bottomLeft, bottomRight, topRight, topLeft));
+      }
+
+      // clear the bottom intersections, because we no longer need them after
+      // creating the polygon
+      bottomIntersections.clear();
+
+      // move all top intersection points to the bottom list, unless they are
+      // the top of two active edges (like an upside down "V" shape)
+      for (final Vector2D point : topIntersections) {
+        if (!isDownwardV(point, activeEdges)) {
+          bottomIntersections.add(point);
         }
       }
+      topIntersections.clear();
+
+      // deactivate edges which end at the same upperVertex.y
+      for (int i = activeEdges.size() - 1; i >= 0; --i) {
+        if (activeEdges.get(i).upperEndpoint().y == upperVertex.y) {
+          activeEdges.remove(i);
+        }
+      }
+
+      // activate edges which start at the same y value as this vertex
+      while (remainingEdges.peek().lowerEndpoint().y == upperVertex.y) {
+        activeEdges.add(remainingEdges.remove());
+      }
     }
-    
-    return numUpwardEdges == 2;
+
+    return result;
   }
 
   /**
@@ -305,7 +474,8 @@ public class Polygon {
     final Vector2D click = new Vector2D(x, y);
     double bestDistance = click.distanceTo(this.vertices.get(0));
     Vector2D winner = this.vertices.get(0);
-    for (final Vector2D vertex : this.vertices.subList(1, this.vertices.size())) {
+    for (final Vector2D vertex : this.vertices
+        .subList(1, this.vertices.size())) {
       final double currentDistance = click.distanceTo(vertex);
       if (currentDistance < bestDistance) {
         winner = vertex;

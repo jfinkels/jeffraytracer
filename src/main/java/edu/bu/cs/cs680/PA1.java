@@ -234,6 +234,7 @@ public class PA1 extends JFrame
 
         case 'P' :
         case 'p' : poly.print();
+          System.out.println("concave: " + poly.concavePoly());
                    break;
 
         default :

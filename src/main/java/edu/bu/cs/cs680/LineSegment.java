@@ -19,6 +19,92 @@ public class LineSegment extends Line {
   }
 
   /**
+   * Returns the point at which this line segment intersects the horizontal at
+   * the specified y value.
+   * 
+   * If one of the endpoints has the specified y value, then this method returns
+   * that endpoint.
+   * 
+   * @param yvalue
+   *          The y value at which to intersect this line segment with a
+   *          horizontal.
+   * @return The point at which this line segment intersects the horizontal at
+   *         the specified y value.
+   */
+  // TODO test for this method
+  public Vector2D intersectionWithHorizontalAt(final float yvalue) {
+    if (this.first().y == yvalue) {
+      return this.first();
+    }
+    if (this.second().y == yvalue) {
+      return this.second();
+    }
+    final float t = (yvalue - this.first().y) / this.second().y;
+    final float xvalue = this.first().x + this.second().x * (t);
+    return new Vector2D(xvalue, yvalue);
+  }
+
+  /**
+   * Returns the endpoint with the least y component, or if the y components are
+   * equal, the second endpoint.
+   * 
+   * @return The endpoint with the least y component.
+   */
+  // TODO test for this method
+  public Vector2D lowerEndpoint() {
+    if (this.first().y < this.second().y) {
+      return this.first();
+    } else {
+      return this.second();
+    }
+  }
+
+  /**
+   * Returns the endpoint with the least x component, or if the x components are
+   * equal, the second endpoint.
+   * 
+   * @return The endpoint with the least x component.
+   */
+  // TODO test for this method
+  public Vector2D leftmostEndpoint() {
+    if (this.first().x < this.second().x) {
+      return this.first();
+    } else {
+      return this.second();
+    }
+  }
+
+  /**
+   * Returns the endpoint with the greatest x component, or if the x components
+   * are equal, the second endpoint.
+   * 
+   * @return The endpoint with the greatest x component.
+   */
+  // TODO test for this method
+  public Vector2D rightmostEndpoint() {
+    if (this.first().x > this.second().x) {
+      return this.first();
+    } else {
+      return this.second();
+    }
+  }
+
+  /**
+   * Returns the endpoint with the greatest y component, or if the y components
+   * are equal, the second endpoint.
+   * 
+   * @return The endpoint with the greatest y component.
+   */
+  // TODO test for this method
+  public Vector2D upperEndpoint() {
+    if (this.first().y > this.second().y) {
+      return this.first();
+    } else {
+      return this.second();
+    }
+  }
+
+  /**
    * Returns true if and only if the specified point is on this line segment.
    * 
    * Algorithm: computes the distance from this vector to the specified point

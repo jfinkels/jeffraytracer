@@ -214,12 +214,12 @@ public class Polygon {
   public void drawConcavePoly(GLAutoDrawable drawable) {
     /* this is only here until you write your concave handler */
     /* comment it out once you do! */
-    drawConvexPoly(drawable);
+    // drawConvexPoly(drawable);
 
     /* your code for subdividing/drawing a concave polygon here */
-    // for (final Polygon polygon : this.planarSweep()) {
-    // polygon.drawConvexPoly(drawable);
-    // }
+    for (final Polygon polygon : this.planarSweep()) {
+      polygon.drawConvexPoly(drawable);
+    }
   }
 
   // Generate necessary OpenGL commands to draw a convex polygon
@@ -283,13 +283,13 @@ public class Polygon {
    * @return Whether the specified point is inside this polygon.
    */
   public boolean insidePoly(int x, int y) {
-    // choose a random second point around the initial point
+    final Vector2D initialPoint = new Vector2D(x, y);
+    int counter = 0;
     final double randomX = x + (Math.random() * 2 - 1);
     final double randomY = y + (Math.random() * 2 - 1);
     final Vector2D passesThrough = new Vector2D(randomX, randomY);
-    final Vector2D initialPoint = new Vector2D(x, y);
     final Ray ray = new Ray(initialPoint, passesThrough);
-    int counter = 0;
+    counter = 0;
     for (final LineSegment edge : this.edges()) {
       if (edge.contains(initialPoint)) {
         return true;
@@ -334,9 +334,11 @@ public class Polygon {
         remainingEdges.add(edge);
       }
     }
+    System.out.println("initial remaining edges: " + remainingEdges);
 
     // get the bottom-left-most vertex
     final Vector2D bottomVertex = remainingEdges.peek().lowerEndpoint();
+    System.out.println("bottom vertex: " + bottomVertex);
 
     // move edges which start at the y value of the current vertex from the
     // remainingEdges queue to the active edges queue
@@ -346,21 +348,27 @@ public class Polygon {
         && (remainingEdges.peek().lowerEndpoint().y == bottomVertex.y)) {
       activeEdges.add(remainingEdges.remove());
     }
+    System.out.println("active edges: " + activeEdges);
 
     // add all the lower endpoints of the active edges to the list of bottom
     // intersections. Note: if there are two edges which come to a vertex in a
     // "V" shape, the lower endpoint there will be added twice, but this is
     // expected behavior
-    final List<Vector2D> topIntersections = new ArrayList<Vector2D>();
-    final List<Vector2D> bottomIntersections = new ArrayList<Vector2D>();
+    final List<Vector2D> topIntersections = new SortedList<Vector2D>(
+        LeftToRightComparator.INSTANCE);
+    final List<Vector2D> bottomIntersections = new SortedList<Vector2D>(
+        LeftToRightComparator.INSTANCE);
     for (final LineSegment edge : activeEdges) {
       bottomIntersections.add(edge.lowerEndpoint());
     }
+    System.out.println("bottom intersections: " + bottomIntersections);
 
+    // TODO this doesn't work; need to have a queue of vertices, not edges
     final Set<Polygon> result = new HashSet<Polygon>();
     while (!remainingEdges.isEmpty()) {
       // get the next lowest vertex from the remaining queue
       final Vector2D upperVertex = remainingEdges.peek().lowerEndpoint();
+      System.out.println("upper vertex: " + upperVertex);
 
       // get the intersection with each active edge with the horizontal at the
       // current y value. Note: here also, the same vertex may be added to the
@@ -369,13 +377,15 @@ public class Polygon {
       for (final LineSegment edge : activeEdges) {
         topIntersections.add(edge.intersectionWithHorizontalAt(upperVertex.y));
       }
+      System.out.println("  top intersections: " + topIntersections);
+      System.out.println("  bottom intersections: " + bottomIntersections);
 
       // create a new polygon from two top intersections and two bottom
       // intersections
       assert bottomIntersections.size() == topIntersections.size() : "Must have the same number of intersections on top and bottom.";
       assert topIntersections.size() % 2 == 0 : "Must have an even number of intersections on top.";
       assert bottomIntersections.size() % 2 == 0 : "Must have an even number of intersections on bottom.";
-      for (int i = 0; i < topIntersections.size(); i += 2) {
+      for (int i = 0; i < topIntersections.size() - 1; i += 2) {
         final Vector2D bottomLeft = bottomIntersections.get(i);
         final Vector2D bottomRight = bottomIntersections.get(i + 1);
         final Vector2D topLeft = topIntersections.get(i);
@@ -408,12 +418,99 @@ public class Polygon {
       }
 
       // activate edges which start at the same y value as this vertex
-      while (remainingEdges.peek().lowerEndpoint().y == upperVertex.y) {
+      while (!remainingEdges.isEmpty()
+          && (remainingEdges.peek().lowerEndpoint().y == upperVertex.y)) {
         activeEdges.add(remainingEdges.remove());
       }
+
+      // add to bottom intersections the bottom vertex of an upward v
+      for (final LineSegment edge : activeEdges) {
+        if (isUpwardV(edge.lowerEndpoint(), activeEdges)) {
+          bottomIntersections.add(edge.lowerEndpoint());
+        }
+      }
+
+      System.out.println("  active edges: " + activeEdges);
+    }
+
+    // add the remaining top intersections
+    for (final LineSegment edge : activeEdges) {
+      topIntersections.add(edge.upperEndpoint());
+    }
+
+    System.out.println("final active edges: " + activeEdges);
+    System.out.println("final bottom intersections: " + bottomIntersections);
+    System.out.println("final top intersections: " + topIntersections);
+
+    // create a new polygon from the remaining top and bottom intersections
+    assert bottomIntersections.size() == topIntersections.size() : "Must have the same number of intersections on top and bottom.";
+    assert topIntersections.size() % 2 == 0 : "Must have an even number of intersections on top.";
+    assert bottomIntersections.size() % 2 == 0 : "Must have an even number of intersections on bottom.";
+    for (int i = 0; i < topIntersections.size() - 1; i += 2) {
+      final Vector2D bottomLeft = bottomIntersections.get(i);
+      final Vector2D bottomRight = bottomIntersections.get(i + 1);
+      final Vector2D topLeft = topIntersections.get(i);
+      final Vector2D topRight = topIntersections.get(i + 1);
+
+      // create the polygon
+      result.add(createPolygon(bottomLeft, bottomRight, topRight, topLeft));
     }
 
     return result;
+  }
+
+  /**
+   * Returns true if and only if the specified lists of vertices are the same
+   * vertices, either in the same order or in reverse order.
+   * 
+   * @param vertices1
+   *          A list of vertices.
+   * @param vertices2
+   *          Another list of vertices.
+   * @return {@code true} if and only if the specified lists of vertices are the
+   *         same vertices, either in the same order or in reverse order.
+   */
+  private static boolean equalVertices(final List<Vector2D> vertices1,
+      final List<Vector2D> vertices2) {
+    // if they are not the same size, return false immediately
+    if (vertices1.size() != vertices2.size()) {
+      return false;
+    }
+
+    // first check if they are in the same order
+    boolean sameOrder = true;
+    for (int i = 0; i < vertices1.size(); ++i) {
+      if (!vertices1.get(i).equalTo(vertices2.get(i))) {
+        sameOrder = false;
+      }
+    }
+    if (sameOrder) {
+      return true;
+    }
+
+    // then check if they are in reverse order
+    for (int i = 0; i < vertices1.size(); ++i) {
+      if (!vertices1.get(i).equalTo(vertices2.get(vertices2.size() - i))) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /**
+   * Returns true if and only if this polygon has the same sequence of vertices
+   * as the specified other polygon, or if this polygon has the reverse sequence
+   * of vertices as the specified other polygon.
+   * 
+   * @param that
+   *          The polygon to test for equality.
+   * @return {@code true} if and only if this polygon has the same sequence of
+   *         vertices as the specified other polygon, or if this polygon has the
+   *         reverse sequence of vertices as the specified other polygon.
+   */
+  public boolean equalTo(final Polygon that) {
+    return equalVertices(this.vertices, that.vertices);
   }
 
   /**

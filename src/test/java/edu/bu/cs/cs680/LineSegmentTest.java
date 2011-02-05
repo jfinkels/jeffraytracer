@@ -18,23 +18,20 @@ import org.junit.Test;
 public class LineSegmentTest {
 
   /**
-   * Test method for
-   * {@link edu.bu.cs.cs680.LineSegment#LineSegment(edu.bu.cs.cs680.Vector2D, edu.bu.cs.cs680.Vector2D)}
-   * .
+   * Test method for {@link edu.bu.cs.cs680.LineSegment#contains(Vector2D)}.
    */
   @Test
-  public void testLineSegment() {
-    new LineSegment(new Vector2D(0, 0), new Vector2D(0, 1));
-  }
+  public void testContains() {
+    final LineSegment edge = new LineSegment(new Vector2D(0, 0), new Vector2D(
+        1, 1));
+    for (double x = 0; x < 1; x += 0.1) {
+      assertTrue(edge.contains(new Vector2D(x, x)));
+    }
+    assertFalse(edge.contains(new Vector2D(1.0, 0.0)));
+    assertFalse(edge.contains(new Vector2D(0.0, 1.0)));
+    assertFalse(edge.contains(new Vector2D(2.0, 2.0)));
+    assertFalse(edge.contains(new Vector2D(-1.0, -1.0)));
 
-  /**
-   * Test method for {@link edu.bu.cs.cs680.LineSegment#length()}.
-   */
-  @Test
-  public void testLength() {
-    final LineSegment line = new LineSegment(new Vector2D(-1, 1), new Vector2D(
-        2, 5));
-    assertEquals(5.0, line.length(), 0.0);
   }
 
   /**
@@ -61,29 +58,23 @@ public class LineSegmentTest {
   }
 
   /**
-   * Test method for {@link edu.bu.cs.cs680.LineSegment#otherEndpoint(Vector2D)}
+   * Test method for {@link edu.bu.cs.cs680.LineSegment#length()}.
+   */
+  @Test
+  public void testLength() {
+    final LineSegment line = new LineSegment(new Vector2D(-1, 1),
+        new Vector2D(2, 5));
+    assertEquals(5.0, line.length(), 0.0);
+  }
+
+  /**
+   * Test method for
+   * {@link edu.bu.cs.cs680.LineSegment#LineSegment(edu.bu.cs.cs680.Vector2D, edu.bu.cs.cs680.Vector2D)}
    * .
    */
   @Test
-  public void testOtherEndpoint() {
-    LineSegment line = new LineSegment(new Vector2D(0, 0), new Vector2D(2, 2));
-    assertEquals(2, line.otherEndpoint(new Vector2D(0, 0)).x, 0);
-    assertEquals(2, line.otherEndpoint(new Vector2D(0, 0)).y, 0);
-
-    line = new LineSegment(new Vector2D(1, 0), new Vector2D(2, 2));
-    assertEquals(1, line.otherEndpoint(new Vector2D(2, 2)).x, 0);
-    assertEquals(0, line.otherEndpoint(new Vector2D(2, 2)).y, 0);
-
-    line = new LineSegment(new Vector2D(0, 0), new Vector2D(-1, 2));
-    assertEquals(0, line.otherEndpoint(new Vector2D(-1, 2)).x, 0);
-    assertEquals(0, line.otherEndpoint(new Vector2D(-1, 2)).y, 0);
-
-    line = new LineSegment(new Vector2D(0, 0), new Vector2D(0, 1));
-    assertEquals(0, line.otherEndpoint(new Vector2D(0, 1)).x, 0);
-    assertEquals(0, line.otherEndpoint(new Vector2D(0, 1)).y, 0);
-    
-    assertNull(line.otherEndpoint(new Vector2D(123, 456)));
-    assertNull(line.otherEndpoint(new Vector2D(-123, -456)));
+  public void testLineSegment() {
+    new LineSegment(new Vector2D(0, 0), new Vector2D(0, 1));
   }
 
   /**
@@ -105,6 +96,32 @@ public class LineSegmentTest {
   }
 
   /**
+   * Test method for {@link edu.bu.cs.cs680.LineSegment#otherEndpoint(Vector2D)}
+   * .
+   */
+  @Test
+  public void testOtherEndpoint() {
+    LineSegment line = new LineSegment(new Vector2D(0, 0), new Vector2D(2, 2));
+    assertEquals(2, line.otherEndpoint(new Vector2D(0, 0)).x, 0);
+    assertEquals(2, line.otherEndpoint(new Vector2D(0, 0)).y, 0);
+
+    line = new LineSegment(new Vector2D(1, 0), new Vector2D(2, 2));
+    assertEquals(1, line.otherEndpoint(new Vector2D(2, 2)).x, 0);
+    assertEquals(0, line.otherEndpoint(new Vector2D(2, 2)).y, 0);
+
+    line = new LineSegment(new Vector2D(0, 0), new Vector2D(-1, 2));
+    assertEquals(0, line.otherEndpoint(new Vector2D(-1, 2)).x, 0);
+    assertEquals(0, line.otherEndpoint(new Vector2D(-1, 2)).y, 0);
+
+    line = new LineSegment(new Vector2D(0, 0), new Vector2D(0, 1));
+    assertEquals(0, line.otherEndpoint(new Vector2D(0, 1)).x, 0);
+    assertEquals(0, line.otherEndpoint(new Vector2D(0, 1)).y, 0);
+
+    assertNull(line.otherEndpoint(new Vector2D(123, 456)));
+    assertNull(line.otherEndpoint(new Vector2D(-123, -456)));
+  }
+
+  /**
    * Test method for {@link edu.bu.cs.cs680.LineSegment#upperEndpoint()}.
    */
   @Test
@@ -120,22 +137,5 @@ public class LineSegmentTest {
 
     line = new LineSegment(new Vector2D(0, 0), new Vector2D(0, -1));
     assertTrue(line.upperEndpoint().equalTo(new Vector2D(0, 0)));
-  }
-
-  /**
-   * Test method for {@link edu.bu.cs.cs680.LineSegment#contains(Vector2D)}.
-   */
-  @Test
-  public void testContains() {
-    final LineSegment edge = new LineSegment(new Vector2D(0, 0), new Vector2D(
-        1, 1));
-    for (double x = 0; x < 1; x += 0.1) {
-      assertTrue(edge.contains(new Vector2D(x, x)));
-    }
-    assertFalse(edge.contains(new Vector2D(1.0, 0.0)));
-    assertFalse(edge.contains(new Vector2D(0.0, 1.0)));
-    assertFalse(edge.contains(new Vector2D(2.0, 2.0)));
-    assertFalse(edge.contains(new Vector2D(-1.0, -1.0)));
-
   }
 }

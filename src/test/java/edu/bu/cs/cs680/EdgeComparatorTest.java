@@ -1,9 +1,9 @@
 /**
- * EdgeComparator.java
+ * EdgeComparatorTest.java
  */
 package edu.bu.cs.cs680;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 

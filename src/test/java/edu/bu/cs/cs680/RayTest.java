@@ -1,5 +1,5 @@
 /**
- * 
+ * RayTest.java
  */
 package edu.bu.cs.cs680;
 
@@ -9,36 +9,11 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
- * @author Jeffrey Finkelstein
+ * Test class for the Ray class.
  * 
+ * @author Jeffrey Finkelstein <jeffreyf>
  */
 public class RayTest {
-
-  /**
-   * Test method for
-   * {@link edu.bu.cs.cs680.Ray#Ray(edu.bu.cs.cs680.Vector2D, edu.bu.cs.cs680.Vector2D)}
-   * .
-   */
-  @Test
-  public void testRay() {
-    new Ray(new Vector2D(0, 0), new Vector2D(0, 1));
-  }
-
-  /**
-   * Test method for {@link edu.bu.cs.cs680.Ray#pointIsBehind(Vector2D)}.
-   */
-  @Test
-  public void testPointIsBehind() {
-    final Ray ray = new Ray(new Vector2D(0, 0), new Vector2D(1, 1));
-    Vector2D point = new Vector2D(2, 2);
-    assertFalse(ray.pointIsBehind(point));
-    point = new Vector2D(1, 1);
-    assertFalse(ray.pointIsBehind(point));
-    point = new Vector2D(0, 0);
-    assertFalse(ray.pointIsBehind(point));
-    point = new Vector2D(-1, -1);
-    assertTrue(ray.pointIsBehind(point));
-  }
 
   /**
    * Test method for
@@ -73,6 +48,32 @@ public class RayTest {
     assertTrue(ray.intersects(edge));
     edge = new LineSegment(new Vector2D(0.0, 2.0), new Vector2D(0.0, 0.0));
     assertTrue(ray.intersects(edge));
+  }
+
+  /**
+   * Test method for {@link edu.bu.cs.cs680.Ray#pointIsBehind(Vector2D)}.
+   */
+  @Test
+  public void testPointIsBehind() {
+    final Ray ray = new Ray(new Vector2D(0, 0), new Vector2D(1, 1));
+    Vector2D point = new Vector2D(2, 2);
+    assertFalse(ray.pointIsBehind(point));
+    point = new Vector2D(1, 1);
+    assertFalse(ray.pointIsBehind(point));
+    point = new Vector2D(0, 0);
+    assertFalse(ray.pointIsBehind(point));
+    point = new Vector2D(-1, -1);
+    assertTrue(ray.pointIsBehind(point));
+  }
+
+  /**
+   * Test method for
+   * {@link edu.bu.cs.cs680.Ray#Ray(edu.bu.cs.cs680.Vector2D, edu.bu.cs.cs680.Vector2D)}
+   * .
+   */
+  @Test
+  public void testRay() {
+    new Ray(new Vector2D(0, 0), new Vector2D(0, 1));
   }
 
 }

@@ -12,6 +12,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -23,14 +24,26 @@ import org.junit.Test;
  */
 public class PolygonTest {
 
+  private static boolean contains(final Polygon polygon, final Set<Polygon> set) {
+    for (final Polygon p : set) {
+      if (polygon.equalOrOppositeTo(p)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   /** A concave polygon. */
   private Polygon concavePolygon = null;
   /** A convex polygon. */
   private Polygon convexPolygon = null;
+  /** An H-shaped polygon. */
+  private Polygon H = null;
   /** An empty polygon to use for testing. */
   private Polygon polygon = null;
   /** A square. */
   private Polygon square = null;
+
   /** A triangle. */
   private Polygon triangle = null;
 
@@ -57,7 +70,7 @@ public class PolygonTest {
     this.concavePolygon = new Polygon();
     this.concavePolygon.addVert(0, 0);
     this.concavePolygon.addVert(0, 4);
-    this.concavePolygon.addVert(4, 4);
+    this.concavePolygon.addVert(2, 4);
     this.concavePolygon.addVert(2, 0);
     this.concavePolygon.addVert(1, 1);
 
@@ -68,6 +81,21 @@ public class PolygonTest {
     this.convexPolygon.addVert(250, 200);
     this.convexPolygon.addVert(152, 254);
     this.convexPolygon.addVert(50, 200);
+
+    // create an H-shaped polygon
+    this.H = new Polygon();
+    this.H.addVert(0, 0);
+    this.H.addVert(2, 0);
+    this.H.addVert(2, 2);
+    this.H.addVert(4, 2);
+    this.H.addVert(4, 0);
+    this.H.addVert(6, 0);
+    this.H.addVert(6, 6);
+    this.H.addVert(4, 6);
+    this.H.addVert(4, 4);
+    this.H.addVert(2, 4);
+    this.H.addVert(2, 6);
+    this.H.addVert(0, 6);
   }
 
   /**
@@ -125,7 +153,8 @@ public class PolygonTest {
     assertEquals(0, polygon.edges().get(3).second().y, 0);
 
     bottomLeft = new Vector2D(1, 0);
-    polygon = Polygon.createPolygon(bottomLeft, bottomRight, topRight, topLeft);
+    polygon = Polygon
+        .createPolygon(bottomLeft, bottomRight, topRight, topLeft);
 
     assertEquals(3, polygon.edges().size());
     assertEquals(1, polygon.edges().get(0).first().x, 0);
@@ -166,10 +195,10 @@ public class PolygonTest {
     final List<LineSegment> edges = this.triangle.edges();
     assertEquals(0, edges.get(0).first().x, 0);
     assertEquals(0, edges.get(0).first().y, 0);
-    assertEquals(0, edges.get(1).first().x, 0);
-    assertEquals(3, edges.get(1).first().y, 0);
-    assertEquals(3, edges.get(2).first().x, 0);
-    assertEquals(0, edges.get(2).first().y, 0);
+    assertEquals(3, edges.get(1).first().x, 0);
+    assertEquals(0, edges.get(1).first().y, 0);
+    assertEquals(0, edges.get(2).first().x, 0);
+    assertEquals(3, edges.get(2).first().y, 0);
 
     assertTrue(edges.get(0).second().equalTo(edges.get(1).first()));
     assertTrue(edges.get(1).second().equalTo(edges.get(2).first()));
@@ -239,23 +268,85 @@ public class PolygonTest {
    */
   @Test
   public void testPlanarSweep() {
-    //assertEquals(1, this.square.planarSweep().size());
-    //assertTrue(this.square.planarSweep().iterator().next().equalTo(this.square));
+    Set<Polygon> result = null;
+    result = this.square.planarSweep();
+    assertEquals(1, result.size());
+    assertTrue(result.iterator().next().equalOrOppositeTo(this.square));
 
-    //assertEquals(1, this.triangle.planarSweep().size());
-    //assertTrue(this.triangle.planarSweep().iterator().next()
-    //    .equalTo(this.triangle));
+    result = this.triangle.planarSweep();
+    assertEquals(1, result.size());
+    assertTrue(result.iterator().next().equalOrOppositeTo(this.triangle));
 
-    System.out.println("testing provided test case 2");
+    Polygon p1 = new Polygon();
+    p1.addVert(0, 0);
+    p1.addVert(1, 1);
+    p1.addVert(0, 1);
+    Polygon p2 = new Polygon();
+    p2.addVert(2, 0);
+    p2.addVert(2, 1);
+    p2.addVert(1, 1);
+    Polygon p3 = new Polygon();
+    p3.addVert(0, 1);
+    p3.addVert(2, 1);
+    p3.addVert(2, 4);
+    p3.addVert(0, 4);
+    result = this.concavePolygon.planarSweep();
+    assertEquals(3, result.size());
+    assertTrue(contains(p1, result));
+    assertTrue(contains(p2, result));
+    assertTrue(contains(p3, result));
+    for (final Polygon subdivision : result) {
+      assertFalse(subdivision.concavePoly());
+    }
+
+    // p1 is the lower left rectangle
+    p1.reset();
+    p1.addVert(0, 0);
+    p1.addVert(2, 0);
+    p1.addVert(2, 2);
+    p1.addVert(0, 2);
+    // p2 is the lower right rectangle
+    p2.reset();
+    p2.addVert(4, 0);
+    p2.addVert(6, 0);
+    p2.addVert(6, 2);
+    p2.addVert(4, 2);
+    // p3 is the middle rectangle
+    p3.reset();
+    p3.addVert(0, 2);
+    p3.addVert(6, 2);
+    p3.addVert(6, 4);
+    p3.addVert(0, 4);
+    // p4 is the upper left rectangle
+    Polygon p4 = new Polygon();
+    p4.addVert(0, 4);
+    p4.addVert(2, 4);
+    p4.addVert(2, 6);
+    p4.addVert(0, 6);
+    // p5 is the upper right rectangle
+    Polygon p5 = new Polygon();
+    p5.addVert(4, 4);
+    p5.addVert(6, 4);
+    p5.addVert(6, 6);
+    p5.addVert(4, 6);
+    result = this.H.planarSweep();
+    assertEquals(5, result.size());
+    assertTrue(contains(p1, result));
+    assertTrue(contains(p2, result));
+    assertTrue(contains(p3, result));
+    assertTrue(contains(p4, result));
+    assertTrue(contains(p5, result));
+    for (final Polygon subdivision : result) {
+      assertFalse(subdivision.concavePoly());
+    }
+
     final TestPolygons testCases = new TestPolygons();
-    //testCases.get(1).planarSweep();
-    
-    System.out.println("testing concave polygon");
-    System.out.println(this.concavePolygon.planarSweep());
-    //assertEquals(3, this.concavePolygon.planarSweep().size());
-    //for (final Polygon subdivision : this.concavePolygon.planarSweep()) {
-    //  assertFalse(subdivision.concavePoly());
-    //}
+    for (int i = 0; i < testCases.numPolygons(); ++i) {
+      result = testCases.get(i).planarSweep();
+      for (final Polygon p : result) {
+        assertFalse(p.concavePoly());
+      }
+    }
   }
 
   /**

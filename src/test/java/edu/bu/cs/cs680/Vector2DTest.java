@@ -3,7 +3,9 @@
  */
 package edu.bu.cs.cs680;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -13,26 +15,6 @@ import org.junit.Test;
  * @author Jeffrey Finkelstein <jeffreyf>
  */
 public class Vector2DTest {
-
-  /**
-   * Test method for {@link edu.bu.cs.cs680.Vector2D#Vector2D(double, double)}.
-   */
-  @Test
-  public void testVector2DDoubleDouble() {
-    final Vector2D vector = new Vector2D(0.0d, 1.0d);
-    assertEquals(0.0, vector.x, 0.0);
-    assertEquals(1.0, vector.y, 0.0);
-  }
-
-  /**
-   * Test method for {@link edu.bu.cs.cs680.Vector2D#Vector2D(float, float)}.
-   */
-  @Test
-  public void testVector2DFloatFloat() {
-    final Vector2D vector = new Vector2D(0.0f, 1.0f);
-    assertEquals(0.0, vector.x, 0.0);
-    assertEquals(1.0, vector.y, 0.0);
-  }
 
   /**
    * Test method for
@@ -57,16 +39,16 @@ public class Vector2DTest {
   public void testEqualTo() {
     final Vector2D vector1 = new Vector2D(0, 1);
     final Vector2D vector2 = new Vector2D(0, 2);
-    
+
     assertFalse(vector1.equalTo(null));
     assertFalse(vector2.equalTo(null));
-    
+
     assertTrue(vector1.equalTo(vector1));
     assertTrue(vector2.equalTo(vector2));
     assertFalse(vector1.equalTo(vector2));
     assertFalse(vector2.equalTo(vector1));
   }
-  
+
   /**
    * Test method for {@link edu.bu.cs.cs680.Vector2D#moveTo(float, float)}.
    */
@@ -77,10 +59,9 @@ public class Vector2DTest {
     assertEquals(1.0, vector.x, 0.0);
     assertEquals(2.0, vector.y, 0.0);
   }
-  
+
   /**
-   * Test method for
-   * {@link edu.bu.cs.cs680.Vector2D#scaledBy(float)}.
+   * Test method for {@link edu.bu.cs.cs680.Vector2D#scaledBy(float)}.
    */
   @Test
   public void testScaledBy() {
@@ -89,7 +70,7 @@ public class Vector2DTest {
     assertEquals(scale, v1.scaledBy(scale).x, 0.0);
     assertEquals(-2.0 * scale, v1.scaledBy(scale).y, 0.0);
   }
-  
+
   /**
    * Test method for {@link edu.bu.cs.cs680.Vector2D#sumWith(Vector2D)}.
    */
@@ -98,7 +79,7 @@ public class Vector2DTest {
     final Vector2D vector1 = new Vector2D(1.0, 2.0);
     final Vector2D vector2 = new Vector2D(3.0, 4.0);
     final Vector2D sum = vector1.sumWith(vector2);
-    
+
     assertEquals(4.0, sum.x, 0.0);
     assertEquals(6.0, sum.y, 0.0);
   }
@@ -122,6 +103,26 @@ public class Vector2DTest {
     vector.translate(-1.0f, 1.0f);
     assertEquals(0.0, vector.x, 0.0);
     assertEquals(3.0, vector.y, 0.0);
+  }
+
+  /**
+   * Test method for {@link edu.bu.cs.cs680.Vector2D#Vector2D(double, double)}.
+   */
+  @Test
+  public void testVector2DDoubleDouble() {
+    final Vector2D vector = new Vector2D(0.0d, 1.0d);
+    assertEquals(0.0, vector.x, 0.0);
+    assertEquals(1.0, vector.y, 0.0);
+  }
+
+  /**
+   * Test method for {@link edu.bu.cs.cs680.Vector2D#Vector2D(float, float)}.
+   */
+  @Test
+  public void testVector2DFloatFloat() {
+    final Vector2D vector = new Vector2D(0.0f, 1.0f);
+    assertEquals(0.0, vector.x, 0.0);
+    assertEquals(1.0, vector.y, 0.0);
   }
 
 }

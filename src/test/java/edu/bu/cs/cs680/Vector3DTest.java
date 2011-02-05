@@ -3,7 +3,7 @@
  */
 package edu.bu.cs.cs680;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
@@ -13,30 +13,6 @@ import org.junit.Test;
  * @author Jeffrey Finkelstein <jeffreyf>
  */
 public class Vector3DTest {
-
-  /**
-   * Test method for
-   * {@link edu.bu.cs.cs680.Vector3D#Vector3D(double, double, double)}.
-   */
-  @Test
-  public void testVector3DDoubleDoubleDouble() {
-    final Vector3D vector = new Vector3D(0.0d, 1.0d, 2.0d);
-    assertEquals(0.0, vector.x, 0.0);
-    assertEquals(1.0, vector.y, 0.0);
-    assertEquals(2.0, vector.z, 0.0);
-  }
-
-  /**
-   * Test method for
-   * {@link edu.bu.cs.cs680.Vector3D#Vector3D(float, float, float)}.
-   */
-  @Test
-  public void testVector3DFloatFloatFloat() {
-    final Vector3D vector = new Vector3D(0.0f, 1.0f, 2.0f);
-    assertEquals(0.0, vector.x, 0.0);
-    assertEquals(1.0, vector.y, 0.0);
-    assertEquals(2.0, vector.z, 0.0);
-  }
 
   /**
    * Test method for
@@ -86,16 +62,14 @@ public class Vector3DTest {
   }
 
   /**
-   * Test method for
-   * {@link edu.bu.cs.cs680.Vector3D#sumWith(edu.bu.cs.cs680.Vector3D)}.
+   * Test method for {@link edu.bu.cs.cs680.Vector3D#norm()}.
    */
   @Test
-  public void testSumWith() {
-    final Vector3D v1 = new Vector3D(1.0, 0.0, 1.0);
-    final Vector3D v2 = new Vector3D(0.0, 1.0, 0.0);
-    assertEquals(1.0, v1.sumWith(v2).x, 0.0);
-    assertEquals(1.0, v1.sumWith(v2).y, 0.0);
-    assertEquals(1.0, v1.sumWith(v2).z, 0.0);
+  public void testNorm() {
+    Vector3D v1 = new Vector3D(3.0, 0.0, 4.0);
+    assertEquals(5.0, v1.norm(), 0.0);
+    v1 = new Vector3D(3.0, 0.0, 0.0);
+    assertEquals(3.0, v1.norm(), 0.0);
   }
 
   /**
@@ -111,14 +85,40 @@ public class Vector3DTest {
   }
 
   /**
-   * Test method for {@link edu.bu.cs.cs680.Vector3D#norm()}.
+   * Test method for
+   * {@link edu.bu.cs.cs680.Vector3D#sumWith(edu.bu.cs.cs680.Vector3D)}.
    */
   @Test
-  public void testNorm() {
-    Vector3D v1 = new Vector3D(3.0, 0.0, 4.0);
-    assertEquals(5.0, v1.norm(), 0.0);
-    v1 = new Vector3D(3.0, 0.0, 0.0);
-    assertEquals(3.0, v1.norm(), 0.0);
+  public void testSumWith() {
+    final Vector3D v1 = new Vector3D(1.0, 0.0, 1.0);
+    final Vector3D v2 = new Vector3D(0.0, 1.0, 0.0);
+    assertEquals(1.0, v1.sumWith(v2).x, 0.0);
+    assertEquals(1.0, v1.sumWith(v2).y, 0.0);
+    assertEquals(1.0, v1.sumWith(v2).z, 0.0);
+  }
+
+  /**
+   * Test method for
+   * {@link edu.bu.cs.cs680.Vector3D#Vector3D(double, double, double)}.
+   */
+  @Test
+  public void testVector3DDoubleDoubleDouble() {
+    final Vector3D vector = new Vector3D(0.0d, 1.0d, 2.0d);
+    assertEquals(0.0, vector.x, 0.0);
+    assertEquals(1.0, vector.y, 0.0);
+    assertEquals(2.0, vector.z, 0.0);
+  }
+
+  /**
+   * Test method for
+   * {@link edu.bu.cs.cs680.Vector3D#Vector3D(float, float, float)}.
+   */
+  @Test
+  public void testVector3DFloatFloatFloat() {
+    final Vector3D vector = new Vector3D(0.0f, 1.0f, 2.0f);
+    assertEquals(0.0, vector.x, 0.0);
+    assertEquals(1.0, vector.y, 0.0);
+    assertEquals(2.0, vector.z, 0.0);
   }
 
 }

@@ -19,6 +19,34 @@ public class LineSegment extends Line {
   }
 
   /**
+   * Returns true if and only if the specified point is on this line segment.
+   * 
+   * Algorithm: computes the distance from this vector to the specified point
+   * and returns true if and only if the distance is zero.
+   * 
+   * @param point
+   *          The point to test.
+   */
+  public boolean contains(final Vector2D point) {
+
+    // the point may be at distance 0 from the extension of this line segment to
+    // infinity in either direction; ensure that it is not too far away from
+    // either endpoint
+    if (point.distanceTo(this.first()) > this.length()
+        || point.distanceTo(this.second()) > this.length()) {
+      return false;
+    }
+
+    // if it is not too far away, and it is at distance 0, then this line
+    // segment contains the point
+    if (this.distanceTo(point) == 0.0) {
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
    * Returns the point at which this line segment intersects the horizontal at
    * the specified y value.
    * 
@@ -52,6 +80,32 @@ public class LineSegment extends Line {
   }
 
   /**
+   * Return {@code true} if and only if the specified point is equal to one of
+   * the two endpoints of this line segment.
+   * 
+   * @param point
+   *          The point to test.
+   * @return {@code true} if and only if the specified point is equal to one of
+   *         the two endpoints of this line segment.
+   */
+  // TODO test for this method
+  public boolean isEndpoint(final Vector2D point) {
+    return this.first().equalTo(point) || this.second().equalTo(point);
+  }
+
+  /**
+   * Gets the length of this line segment.
+   * 
+   * Algorithm: compute the norm of the vector from the first point to the
+   * second point.
+   * 
+   * @return The length of this line segment.
+   */
+  protected double length() {
+    return this.toVector().norm();
+  }
+
+  /**
    * Returns the endpoint with the least y component, or if the y components are
    * equal, the second endpoint.
    * 
@@ -63,48 +117,6 @@ public class LineSegment extends Line {
     } else {
       return this.second();
     }
-  }
-
-  /**
-   * Returns the endpoint with the greatest y component, or if the y components
-   * are equal, the second endpoint.
-   * 
-   * @return The endpoint with the greatest y component.
-   */
-  public Vector2D upperEndpoint() {
-    if (this.first().y > this.second().y) {
-      return this.first();
-    } else {
-      return this.second();
-    }
-  }
-
-  /**
-   * Returns true if and only if the specified point is on this line segment.
-   * 
-   * Algorithm: computes the distance from this vector to the specified point
-   * and returns true if and only if the distance is zero.
-   * 
-   * @param point
-   *          The point to test.
-   */
-  public boolean contains(final Vector2D point) {
-
-    // the point may be at distance 0 from the extension of this line segment to
-    // infinity in either direction; ensure that it is not too far away from
-    // either endpoint
-    if (point.distanceTo(this.first()) > this.length()
-        || point.distanceTo(this.second()) > this.length()) {
-      return false;
-    }
-
-    // if it is not too far away, and it is at distance 0, then this line
-    // segment contains the point
-    if (this.distanceTo(point) == 0.0) {
-      return true;
-    }
-
-    return false;
   }
 
   /**
@@ -131,14 +143,16 @@ public class LineSegment extends Line {
   }
 
   /**
-   * Gets the length of this line segment.
+   * Returns the endpoint with the greatest y component, or if the y components
+   * are equal, the second endpoint.
    * 
-   * Algorithm: compute the norm of the vector from the first point to the
-   * second point.
-   * 
-   * @return The length of this line segment.
+   * @return The endpoint with the greatest y component.
    */
-  protected double length() {
-    return this.toVector().norm();
+  public Vector2D upperEndpoint() {
+    if (this.first().y > this.second().y) {
+      return this.first();
+    } else {
+      return this.second();
+    }
   }
 }

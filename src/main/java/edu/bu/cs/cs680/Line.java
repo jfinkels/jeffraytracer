@@ -67,9 +67,9 @@ public abstract class Line {
   /**
    * Determines whether this line is parallel to the specified other line.
    * 
-   * This method is symmetric, so if {@code v1} and {@code v2} are two
-   * {@code Line} objects, then {@code v1.parallelTo(v2)} if and only if
-   * {@code v2.parallelTo(v1)}.
+   * This method is symmetric, so if {@code v1} and {@code v2} are two {@code
+   * Line} objects, then {@code v1.parallelTo(v2)} if and only if {@code
+   * v2.parallelTo(v1)}.
    * 
    * Algorithm: since two vectors are parallel if they have the same direction,
    * all we need to check is whether this vector is a dilation of the other

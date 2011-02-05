@@ -27,6 +27,45 @@ public class Ray extends Line {
     super(start, passesThrough);
   }
 
+  // TODO test for this method
+  public Vector2D intersectionPointWith(final LineSegment line) {
+    final float intersectionTime = this.intersectionTimeWith(line);
+    if (Float.isNaN(intersectionTime)) {
+      return null;
+    }
+
+    final Vector2D v = line.toVector();
+    final Vector2D w = line.first().difference(this.first());
+
+    // get the vector which is the point of intersection
+    final Vector2D result = w.sumWith(v.scaledBy(intersectionTime)).sumWith(
+        this.first());
+
+    if (this.pointIsBehind(result)) {
+      return null;
+    }
+
+    return result;
+  }
+
+  // TODO test for this method
+  protected float intersectionTimeWith(final LineSegment line) {
+    if (this.parallelTo(line)) {
+      return Float.NaN;
+    }
+
+    final Vector2D u = line.toVector();
+    final Vector2D v = this.toVector();
+
+    // the vector from the beginning of this ray to the beginning of the
+    // specified line segment
+    final Vector2D w = line.first().difference(this.first());
+
+    // the denominator cannot be zero, since we have already checked whether
+    // these two lines are parallel
+    return (v.y * w.x - v.x * w.y) / (v.x * u.y - v.y * u.x);
+  }
+
   /**
    * Returns whether this ray intersects the specified line segment.
    * 

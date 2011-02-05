@@ -3,16 +3,49 @@
  */
 package edu.bu.cs.cs680;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 /**
  * Test class for the Line class.
  * 
- * @author Jeffrey Finkelstein
+ * @author Jeffrey Finkelstein <jeffreyf>
  */
 public class LineTest {
+
+  /**
+   * Test method for
+   * {@link edu.bu.cs.cs680.Line#distanceTo(edu.bu.cs.cs680.Vector3D)}.
+   */
+  @Test
+  public void testDistanceTo() {
+    final Line line = new LineSegment(new Vector2D(0.0, 0.0), new Vector2D(
+        2.0, 0.0));
+
+    assertEquals(1.0, line.distanceTo(new Vector2D(1.0, 1.0)), 0.0);
+    assertEquals(1.0, line.distanceTo(new Vector2D(0.0, 1.0)), 0.0);
+    assertEquals(1.0, line.distanceTo(new Vector2D(0.0, -1.0)), 0.0);
+
+    assertEquals(0.0, line.distanceTo(new Vector2D(0.0, 0.0)), 0.0);
+    assertEquals(0.0, line.distanceTo(new Vector2D(1.0, 0.0)), 0.0);
+    assertEquals(0.0, line.distanceTo(new Vector2D(2.0, 0.0)), 0.0);
+    assertEquals(0.0, line.distanceTo(new Vector2D(3.0, 0.0)), 0.0);
+  }
+
+  /**
+   * Test method for {@link edu.bu.cs.cs680.Line#first()}.
+   */
+  @Test
+  public void testFirst() {
+    final Line line = new LineSegment(new Vector2D(1.0, 2.0), new Vector2D(
+        3.0, 4.0));
+    assertEquals(1.0, line.first().x, 0.0);
+    assertEquals(2.0, line.first().y, 0.0);
+    assertEquals(0.0, line.first().z, 0.0);
+  }
 
   /**
    * Test method for
@@ -50,29 +83,22 @@ public class LineTest {
     line2 = new LineSegment(new Vector2D(0.0, 0.0), new Vector2D(0.0, 1.0));
     assertFalse(line1.parallelTo(line2));
     assertFalse(line2.parallelTo(line1));
-    
+
     final Line line3 = new LineSegment(new Vector2D(0, 1), new Vector2D(0, 0));
     assertTrue(line2.parallelTo(line3));
     assertTrue(line3.parallelTo(line2));
   }
 
   /**
-   * Test method for
-   * {@link edu.bu.cs.cs680.Line#distanceTo(edu.bu.cs.cs680.Vector3D)}.
+   * Test method for {@link edu.bu.cs.cs680.Line#second()}.
    */
   @Test
-  public void testDistanceTo() {
-    final Line line = new LineSegment(new Vector2D(0.0, 0.0), new Vector2D(
-        2.0, 0.0));
-    
-    assertEquals(1.0, line.distanceTo(new Vector2D(1.0, 1.0)), 0.0);
-    assertEquals(1.0, line.distanceTo(new Vector2D(0.0, 1.0)), 0.0);
-    assertEquals(1.0, line.distanceTo(new Vector2D(0.0, -1.0)), 0.0);
-  
-    assertEquals(0.0, line.distanceTo(new Vector2D(0.0, 0.0)), 0.0);
-    assertEquals(0.0, line.distanceTo(new Vector2D(1.0, 0.0)), 0.0);
-    assertEquals(0.0, line.distanceTo(new Vector2D(2.0, 0.0)), 0.0);
-    assertEquals(0.0, line.distanceTo(new Vector2D(3.0, 0.0)), 0.0);
+  public void testSecond() {
+    final Line line = new LineSegment(new Vector2D(1.0, 2.0), new Vector2D(
+        3.0, 4.0));
+    assertEquals(3.0, line.second().x, 0.0);
+    assertEquals(4.0, line.second().y, 0.0);
+    assertEquals(0.0, line.second().z, 0.0);
   }
 
   /**
@@ -89,30 +115,6 @@ public class LineTest {
     assertEquals(-1.0, line.toVector().x, 0.0);
     assertEquals(-2.0, line.toVector().y, 0.0);
     assertEquals(0.0, line.toVector().z, 0.0);
-  }
-
-  /**
-   * Test method for {@link edu.bu.cs.cs680.Line#first()}.
-   */
-  @Test
-  public void testFirst() {
-    final Line line = new LineSegment(new Vector2D(1.0, 2.0), new Vector2D(
-        3.0, 4.0));
-    assertEquals(1.0, line.first().x, 0.0);
-    assertEquals(2.0, line.first().y, 0.0);
-    assertEquals(0.0, line.first().z, 0.0);
-  }
-
-  /**
-   * Test method for {@link edu.bu.cs.cs680.Line#second()}.
-   */
-  @Test
-  public void testSecond() {
-    final Line line = new LineSegment(new Vector2D(1.0, 2.0), new Vector2D(
-        3.0, 4.0));
-    assertEquals(3.0, line.second().x, 0.0);
-    assertEquals(4.0, line.second().y, 0.0);
-    assertEquals(0.0, line.second().z, 0.0);
   }
 
 }

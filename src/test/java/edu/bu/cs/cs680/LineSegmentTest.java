@@ -35,6 +35,32 @@ public class LineSegmentTest {
   }
 
   /**
+   * Test method for {@link edu.bu.cs.cs680.LineSegment#intersects(LineSegment)}
+   * .
+   */
+  @Test
+  public void testIntersects() {
+    final LineSegment line1 = new LineSegment(new Vector2D(0, 0),
+        new Vector2D(1, 1));
+    final LineSegment line1Inverse = new LineSegment(new Vector2D(1, 1),
+        new Vector2D(0, 0));
+    final LineSegment line2 = new LineSegment(new Vector2D(1, 0),
+        new Vector2D(0, 1));
+    final LineSegment line3 = new LineSegment(new Vector2D(-1, -1),
+        new Vector2D(1, -1));
+
+    assertTrue(line1.intersects(line2));
+    assertTrue(line1Inverse.intersects(line2));
+    assertTrue(line2.intersects(line1));
+    assertTrue(line2.intersects(line1Inverse));
+    assertFalse(line1.intersects(line3));
+    assertFalse(line1Inverse.intersects(line3));
+    assertFalse(line3.intersects(line1Inverse));
+    assertFalse(line2.intersects(line3));
+    assertFalse(line3.intersects(line2));
+  }
+
+  /**
    * Test method for
    * {@link edu.bu.cs.cs680.LineSegment#intersectionWithHorizontalAt(float)}.
    */

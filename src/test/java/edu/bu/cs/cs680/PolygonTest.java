@@ -236,6 +236,24 @@ public class PolygonTest {
   }
 
   /**
+   * Test method for {@link edu.bu.cs.cs680.Polygon#isSelfIntersecting()}.
+   */
+  @Test
+  public void testIsSelfIntersecting() {
+    this.polygon.addVert(0, 0);
+    this.polygon.addVert(1, 0);
+    this.polygon.addVert(0, 1);
+    this.polygon.addVert(1, 1);
+    assertTrue(this.polygon.isSelfIntersecting());
+
+    assertFalse(this.square.isSelfIntersecting());
+    assertFalse(this.triangle.isSelfIntersecting());
+    assertFalse(this.concavePolygon.isSelfIntersecting());
+    assertFalse(this.H.isSelfIntersecting());
+    assertFalse(this.convexPolygon.isSelfIntersecting());
+  }
+
+  /**
    * Test method for
    * {@link edu.bu.cs.cs680.Polygon#isUpwardV(Vector2D, java.util.Collection)}.
    */

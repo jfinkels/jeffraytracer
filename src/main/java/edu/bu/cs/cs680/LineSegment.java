@@ -1,3 +1,6 @@
+/**
+ * LineSegment.java
+ */
 package edu.bu.cs.cs680;
 
 /**
@@ -154,5 +157,51 @@ public class LineSegment extends Line {
     } else {
       return this.second();
     }
+  }
+
+  /**
+   * Returns {@code true} if and only if this line segment intersects the
+   * specified other line segment.
+   * 
+   * @param lineSegment
+   *          The other line segment to check.
+   * @return {@code true} if and only if this line segment intersects the
+   *         specified other line segment.
+   */
+  public boolean intersects(final LineSegment that) {
+    if (this.parallelTo(that)) {
+      return false;
+    }
+
+    final Vector2D u = that.toVector();
+    final Vector2D v = this.toVector();
+
+    // the vector from the beginning of this ray to the beginning of the
+    // specified line segment
+    final Vector2D w = that.first().difference(this.first());
+
+    // the denominator cannot be zero, since we have already checked whether
+    // these two lines are parallel
+    final float intersectionTime1 = (v.y * w.x - v.x * w.y)
+        / (v.x * u.y - v.y * u.x);
+    final float intersectionTime2 = (u.x * w.y - u.y * w.x)
+        / (u.x * v.y - u.y * v.x);
+
+    // // get the vector which is the point of intersection
+    // final Vector2D intersection1 = w.sumWith(u.scaledBy(intersectionTime1))
+    // .sumWith(this.first());
+    // final Vector2D intersection2 = w.inverse().sumWith(
+    // v.scaledBy(intersectionTime2)).sumWith(that.first());
+    //
+    // // if the intersection point is behind this ray, then reject it
+    // if (this.pointIsBehind(intersection1) ||
+    // this.pointIsBehind(intersection2)) {
+    // return false;
+    // }
+
+    // return true if and only if the intersection time is between the tolerance
+    // and 1
+    return ((INTERSECTION_TOLERANCE < intersectionTime1) && (intersectionTime1 <= 1))
+        && ((INTERSECTION_TOLERANCE < intersectionTime2) && (intersectionTime2 <= 1));
   }
 }

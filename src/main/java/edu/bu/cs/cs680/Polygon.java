@@ -81,6 +81,24 @@ public class Polygon {
   }
 
   /**
+   * Returns {@code true} if and only if one of the edges of this polygon
+   * intersects another edge of this polygon.
+   * 
+   * @return {@code true} if and only if one of the edges of this polygon
+   *         intersects another edge of this polygon.
+   */
+  public boolean isSelfIntersecting() {
+    for (int i = 0; i < this.edges().size() - 1; ++i) {
+      for (int j = i + 1; j < this.edges().size(); ++j) {
+        if (this.edges().get(i).intersects(this.edges().get(j))) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  /**
    * Returns true if and only if the specified lists of vertices are the same
    * vertices, either in the same order or in reverse order.
    * 

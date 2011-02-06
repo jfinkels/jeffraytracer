@@ -6,6 +6,13 @@ package edu.bu.cs.cs680;
  * @author Jeffrey Finkelstein <jeffreyf>
  */
 public abstract class Line {
+  /**
+   * The tolerance to use when determining intersection of a ray with a line
+   * segment. This is necessary for the case in which the ray passes through a
+   * vertex shared by two edges, so that it intersects only one of the edges.
+   */
+  public static final float INTERSECTION_TOLERANCE = Float.MIN_VALUE;
+
   /** The first point of this line segment. */
   private final Vector2D v1;
   /** The second point of this line segment. */

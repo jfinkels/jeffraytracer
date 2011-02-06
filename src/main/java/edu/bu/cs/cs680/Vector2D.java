@@ -77,6 +77,18 @@ public class Vector2D extends Vector3D {
   }
 
   /**
+   * Returns a new vector which is the reflection through the origin of this
+   * vector.
+   * 
+   * @return A new vector which is the reflection through the origin of this
+   *         vector.
+   */
+  // TODO test for this method
+  public Vector2D inverse() {
+    return new Vector2D(-this.x, -this.y);
+  }
+
+  /**
    * Returns a new vector which is the result of scaling this vector by the
    * specified scalar.
    * 

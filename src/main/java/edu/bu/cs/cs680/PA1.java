@@ -152,6 +152,11 @@ public class PA1 extends JFrame implements GLEventListener, KeyListener,
       msg1 = "Polygon is concave";
     }
 
+    if (this.poly.isSelfIntersecting()) {
+      drawString(drawable, 20, this.canvas.getHeight() - 120,
+          "self-intersecting", GLUT.BITMAP_TIMES_ROMAN_10);
+    }
+
     drawString(drawable, 20, canvas.getHeight() - 60, msg1,
         GLUT.BITMAP_TIMES_ROMAN_24);
     if (disp_msg2 == true)

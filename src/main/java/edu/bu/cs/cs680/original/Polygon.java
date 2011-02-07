@@ -1,226 +1,154 @@
-//****************************************************************************
-// Polygon class.  
-//****************************************************************************
-// Comments : 
-//   Subroutines to manage and draw polygons
+// ****************************************************************************
+// Polygon class.
+// ****************************************************************************
+// Comments :
+// Subroutines to manage and draw polygons
 //
 // History :
-//   9 Jan 2008 Created by Tai-Peng Tian (tiantp@gmail.com) based on code by
-//   Stan Sclaroff (from CS480 '06 poly.c)
-package edu.bu.cs.cs680.original;
+// 7 February 2011 - updated code to be more Java-y
+// 9 Jan 2008 Created by Tai-Peng Tian (tiantp@gmail.com) based on code by
+// Stan Sclaroff (from CS480 '06 poly.c)
+package edu.bu.cs.cs480;
 
-import javax.media.opengl.*;
-import javax.media.opengl.glu.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Polygon 
-{
+/**
+ * A polygon with additional drawing capabilities.
+ * 
+ * @author Stan Sclaroff <sclaroff>
+ * @author Tai-Peng Tian <tiantp@gmail.com>
+ * @author Jeffrey Finkelstein <jeffreyf>
+ */
+public class Polygon {
 
-  private class coord
-  {
-    public float x, y;
-    public coord(float _x, float _y)
-    {
-      x = _x;
-      y = _y;
+  /** The currently selected vertex, which will be moved. */
+  private Point selectedVertex = null;
+  /** The list of vertices which make up this polygon. */
+  private final ArrayList<Point> vertices = new ArrayList<Point>();
+
+  /**
+   * Add a vertex to this polygon at the point specified by the given x and y
+   * values.
+   * 
+   * @param x
+   *          The x value of the vertex to add.
+   * @param y
+   *          The y value of the vertex to add.
+   */
+  public void addVert(final int x, final int y) {
+    this.vertices.add(new Point(x, y));
+  }
+
+  /**
+   * Returns {@code true} if and only if this polygon is concave.
+   * 
+   * @return {@code true} if and only if this polygon is concave.
+   */
+  public boolean isConcave() {
+    /**
+     * For now this always returns false. You should implement this method.
+     */
+    return false;
+  }
+
+  /**
+   * Returns {@code true} if and only if the specified point is inside this
+   * polygon.
+   * 
+   * @param x
+   *          The x value of the point to test.
+   * @param y
+   *          The y value of the point to test.
+   * @return {@code true} if and only if the specified point is inside this
+   *         polygon.
+   */
+  public boolean isInside(final int x, final int y) {
+    /**
+     * For now, this method always returns false. Remove this line when you
+     * implement your own algorithm.
+     */
+    return false;
+
+    /** Your code goes here. */
+  }
+
+  /**
+   * Moves the currently selected vertex to the specified location.
+   * 
+   * @param x
+   *          The x value of the point to which to move the currently selected
+   *          vertex.
+   * @param y
+   *          The y value of the point to which to move the currently selected
+   *          vertex.
+   */
+  public void moveVert(final int x, final int y) {
+    if (this.selectedVertex != null) {
+      this.selectedVertex.x = x;
+      this.selectedVertex.y = y;
     }
-    public void print()
-    {
-      System.out.print(x+", "+y);
-    }
   }
 
-  private int selected_vert;
-  private boolean is_concave;
-  private ArrayList<coord> verts;
-  private ColorType color;
-  private GLU glu;
-
-  public Polygon()
-  {
-    // Initialization for the data structure
-    color = new ColorType( 0f, 0f, 0f);
-    verts = new ArrayList<coord>();
-    glu = new GLU();
-
-    is_concave = false;
-    selected_vert = -1;
-    changeColor(1.0f,1.0f,1.0f);
+  /**
+   * Resets this polygon so that its list of vertices is empty and the currently
+   * selected vertex is {@code null}.
+   */
+  public void reset() {
+    this.selectedVertex = null;
+    this.vertices.clear();
   }
 
-  public void reset()
-  {
-    is_concave = false;
-    selected_vert = -1;
-    verts.clear();
-  }
-
-  public void print()
-  {
-    for (int i=0; i < verts.size(); i++)
-    {
-      coord c = verts.get(i);
-      c.print();
-      System.out.println();
-    }
-  }
-
-  // change color for drawing the outline of the polygon
-  public void changeColor(float r, float g, float b)
-  {
-    color.r = r;
-    color.g = g;
-    color.b = b;
-  }
-
-  // Generate necessary OpenGL commands to draw a convex polygon
-  public void drawConvexPoly( GLAutoDrawable drawable )
-  {
-    int i;
-   
-    GL gl = drawable.getGL();
-
-    if ( verts.size() == 0)
+  /**
+   * Selects the vertex closest to the specified point.
+   * 
+   * @param x
+   *          The x value of the point used to select the nearest vertex.
+   * @param y
+   *          The y value of the point used to select the nearest vertex.
+   */
+  public void selectVert(final int x, final int y) {
+    if (this.vertices.isEmpty())
       return;
-
-    /* push the current color */
-    gl.glPushAttrib(GL.GL_CURRENT_BIT);
-
-    /* set boundary color */
-    gl.glColor3f( color.r, color.g, color.b);
-
-    /* if only 1 vert, draw a point */
-    if (verts.size() == 1)
-      gl.glBegin(GL.GL_POINTS);
-
-    /* if only 2 verts, draw a line */
-    else if (verts.size() == 2)
-      gl.glBegin(GL.GL_LINES);
-
-    /* otherwise draw a polygon */
-    else 
-      gl.glBegin(GL.GL_POLYGON);
-
-    Iterator itr = verts.iterator();
-    while (itr.hasNext())
-    {
-      coord c = (coord) itr.next();
-      gl.glVertex2f(c.x, c.y);
-    }
-
-    gl.glEnd();
-
-    /* pop current color */
-    gl.glPopAttrib();
-
-  }
-
-  // move selected vertex to a  new position
-  public void moveVert( int x, int y )
-  {
-    // Ensure there is at least 1 vertex and the selected vertex is not out of
-    // bounds.
-    if (selected_vert >= 0 && selected_vert < verts.size())
-    {
-      coord c = verts.get(selected_vert); 
-      c.x = x;
-      c.y = y;
-    }
-  }
-
-  // add vertex to polygon
-  public void addVert( int x, int y )
-  {
-    verts.add( new coord(x,y));
-  }
-
-  // select a vertex based on a mouse click position (x,y)
-  public void selectVert( int x, int y)
-  {
-    int i, winner;
-    float dist_squared, winning_dist_squared, dx, dy;
-
-    if (verts.size() == 0) // polyon is empty
-      return;
-
-    coord c = verts.get(0);
-    dx = x - c.x;
-    dy = y - c.y;
-    winning_dist_squared = dx*dx + dy*dy;
-    winner = 0;
-
-    for (i=1; i<verts.size(); ++i)
-    {
-      c = verts.get(i);
-      dx = x - c.x;
-      dy = y - c.y;
-      dist_squared = dx*dx + dy*dy;
-      if (dist_squared < winning_dist_squared)
-      {
-        winner = i;
+    final Point c = this.vertices.get(0);
+    float dx = x - c.x;
+    float dy = y - c.y;
+    float winning_dist_squared = dx * dx + dy * dy;
+    Point winner = null;
+    for (final Point vertex : this.vertices) {
+      dx = x - vertex.x;
+      dy = y - vertex.y;
+      float dist_squared = dx * dx + dy * dy;
+      if (dist_squared < winning_dist_squared) {
+        winner = vertex;
         winning_dist_squared = dist_squared;
       }
     }
-
-    selected_vert = winner;
-
+    this.selectedVertex = winner;
   }
 
-  //
-  //  Functions to specified for this Assignment
-  //
-  //
-
-  // Determines if point (x,y) is within the convex polygon
-  public boolean insidePoly( int x, int y)
-  {
-    /* For now -- always returns FALSE */
-    /* remove it when you write your own inside outside test */
-    return false;
-
-    /* your code goes here */
+  /**
+   * Returns the String representation of this polygon.
+   * 
+   * @return The String representation of this polygon.
+   */
+  @Override
+  public String toString() {
+    String result = "Polygon[";
+    for (final Point vertex : this.vertices) {
+      result += vertex + ",";
+    }
+    result = result.substring(0, result.length() - 1);
+    result += "]";
+    return result;
   }
 
-  // Determines if the polygon is convex or concave
-  public boolean concavePoly()
-  {
-    /* For now -- always returns FALSE */
-    return false;
-  }
-
-  // Draws a convcave polygon
-  public void drawConcavePoly( GLAutoDrawable drawable )
-  {
-    GL gl = drawable.getGL();
-
-    /* this is only here until you write your concave handler */
-    /* comment it out once you do! */
-    drawConvexPoly( drawable );
-
-    /* your code for subdividing/drawing a concave polygon here */
+  /**
+   * Returns the list of vertices which comprise this polygon.
+   * 
+   * @return The list of vertices which comprise this polygon.
+   */
+  List<Point> vertices() {
+    return this.vertices;
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

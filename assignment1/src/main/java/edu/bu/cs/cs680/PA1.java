@@ -71,7 +71,6 @@ public class PA1 extends JFrame implements GLEventListener, KeyListener,
 
   private int numTestCase;
   private Polygon poly;
-  private Polygon holePolygon = null;
 
   private boolean show_io_all; // apply inside outside test on all pixels
 

@@ -71,10 +71,12 @@ public class PA1 extends JFrame implements GLEventListener, KeyListener,
 
   private int numTestCase;
   private Polygon poly;
+  private Polygon holePolygon = null;
 
   private boolean show_io_all; // apply inside outside test on all pixels
 
   private int testCase;
+  private boolean holeMode = false;
 
   public PA1() {
     capabilities = new GLCapabilities();
@@ -144,12 +146,12 @@ public class PA1 extends JFrame implements GLEventListener, KeyListener,
     }
 
     /* render the polygon */
-    if (poly.concavePoly() == false) {
-      poly.drawConvexPoly(drawable);
-      msg1 = "Polygon is convex";
-    } else {
+    if (poly.concavePoly()) {
       poly.drawConcavePoly(drawable);
       msg1 = "Polygon is concave";
+    } else {
+      poly.drawConvexPoly(drawable);
+      msg1 = "Polygon is convex";
     }
 
     if (this.poly.isSelfIntersecting()) {
@@ -157,9 +159,14 @@ public class PA1 extends JFrame implements GLEventListener, KeyListener,
           "self-intersecting", GLUT.BITMAP_TIMES_ROMAN_10);
     }
 
+    if (this.holeMode) {
+      drawString(drawable, 80, this.canvas.getHeight() - 120,
+          "drawing a hole...", GLUT.BITMAP_TIMES_ROMAN_10);
+    }
+
     drawString(drawable, 20, canvas.getHeight() - 60, msg1,
         GLUT.BITMAP_TIMES_ROMAN_24);
-    if (disp_msg2 == true)
+    if (disp_msg2)
       drawString(drawable, 20, canvas.getHeight() - 20, msg2,
           GLUT.BITMAP_TIMES_ROMAN_24);
   }
@@ -406,6 +413,10 @@ public class PA1 extends JFrame implements GLEventListener, KeyListener,
     case 'f':
       fill = !fill;
       break;
+    case 'H':
+    case 'h':
+      this.holeMode = !this.holeMode;
+      break;
     case 'C':
     case 'c':
       poly.reset();
@@ -433,14 +444,15 @@ public class PA1 extends JFrame implements GLEventListener, KeyListener,
   }
 
   public void mouseDragged(MouseEvent mouse) {
-
-    // int button = mouse.getButton();
-
     // Move the vertex around
-    if (move_vert == true) {
+    if (this.move_vert) {
       int x = mouse.getX();
       int y = mouse.getY();
-      poly.moveVert(x, y);
+      if (this.holeMode && this.poly.hole() != null) {
+        this.poly.hole().moveVert(x, y);
+      } else {
+        poly.moveVert(x, y);
+      }
     }
   }
 
@@ -454,30 +466,44 @@ public class PA1 extends JFrame implements GLEventListener, KeyListener,
   }
 
   public void mousePressed(MouseEvent mouse) {
-    int button = mouse.getButton();
-
-    // Add a new vertex using left mouse click
-    if (button == MouseEvent.BUTTON1)
-      poly.addVert(mouse.getX(), mouse.getY());
-
-    // Conduct Inside / Outside test using center mouse click
-    else if (button == MouseEvent.BUTTON2) {
-      disp_msg2 = true;
-      if (poly.insidePoly(mouse.getX(), mouse.getY()) == true)
-        msg2 = "Point is INSIDE polygon";
-      else
-        msg2 = "Point is OUTSIDE polygon";
+    // determine whether we are in hole drawing mode or not
+    final Polygon polygon;
+    if (this.holeMode) {
+      if (this.poly.hole() == null) {
+        this.poly.newHole();
+      }
+      polygon = this.poly.hole();
+    } else {
+      polygon = this.poly;
     }
 
-    // Pick the vertex closest to mouse down event using right button
-    else if (button == MouseEvent.BUTTON3) {
-      int x = mouse.getX();
-      int y = mouse.getY();
-      poly.selectVert(x, y);
-      poly.moveVert(x, y);
+    System.out.println("chosen polygon: " + polygon);
+
+    // get the type and location of the mouse click
+    int button = mouse.getButton();
+    int x = mouse.getX();
+    int y = mouse.getY();
+
+    // on left mouse press, add a new vertex to the appropriate polygon
+    if (button == MouseEvent.BUTTON1) {
+      polygon.addVert(x, y);
+
+      // on middle mouse press, do inside/outside test
+    } else if (button == MouseEvent.BUTTON2) {
+      disp_msg2 = true;
+      if (polygon.insidePoly(x, y)) {
+        msg2 = "Point is INSIDE polygon";
+      } else {
+        msg2 = "Point is OUTSIDE polygon";
+      }
+
+      // on right mouse press, select the nearest vertex and move it to the
+      // mouse press location
+    } else if (button == MouseEvent.BUTTON3) {
+      polygon.selectVert(x, y);
+      polygon.moveVert(x, y);
       move_vert = true;
     }
-
   }
 
   public void mouseReleased(MouseEvent mouse) {

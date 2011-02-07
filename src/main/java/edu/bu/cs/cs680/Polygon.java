@@ -81,24 +81,6 @@ public class Polygon {
   }
 
   /**
-   * Returns {@code true} if and only if one of the edges of this polygon
-   * intersects another edge of this polygon.
-   * 
-   * @return {@code true} if and only if one of the edges of this polygon
-   *         intersects another edge of this polygon.
-   */
-  public boolean isSelfIntersecting() {
-    for (int i = 0; i < this.edges().size() - 1; ++i) {
-      for (int j = i + 1; j < this.edges().size(); ++j) {
-        if (this.edges().get(i).intersects(this.edges().get(j))) {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
-  /**
    * Returns true if and only if the specified lists of vertices are the same
    * vertices, either in the same order or in reverse order.
    * 
@@ -210,11 +192,19 @@ public class Polygon {
     }
   }
 
+  /** The polygon which is contained entirely inside this polygon. */
+  private Polygon hole = null;
+
   /** The currently selected vertex. */
   private Vector2D selected_vert = null;
 
   /** The list of all vertices in counter-clockwise order. */
   private final ArrayList<Vector2D> vertices = new ArrayList<Vector2D>();
+
+  // TODO test for this method
+  public void newHole() {
+    this.hole = new Polygon();
+  }
 
   /**
    * Adds a vertex to this polygon at the specified point.
@@ -299,6 +289,14 @@ public class Polygon {
 
     gl.glEnd();
     gl.glPopAttrib();
+
+    if (this.hole != null) {
+      if (this.hole.concavePoly()) {
+        this.hole.drawConcavePoly(drawable);
+      } else {
+        this.hole.drawConvexPoly(drawable);
+      }
+    }
   }
 
   /**
@@ -336,6 +334,32 @@ public class Polygon {
   }
 
   /**
+   * Gets the Polygon which is contained entirely inside this polygon.
+   * 
+   * @return The Polygon which is contained entirely inside this polygon.
+   */
+  // TODO test for this method
+  public Polygon hole() {
+    return this.hole;
+  }
+
+  /**
+   * Gets the list containing all the edges of this polygon and all the edges of
+   * the hole polygon which it contains.
+   * 
+   * @return The list containing all the edges of this polygon and all the edges
+   *         of the hole polygon which it contains.
+   */
+  // TODO test for this method
+  protected List<LineSegment> edgesPlusHoleEdges() {
+    final List<LineSegment> result = this.edges();
+    if (this.hole != null) {
+      result.addAll(this.hole.edges());
+    }
+    return result;
+  }
+
+  /**
    * Determines if a specified point is inside this polygon.
    * 
    * Algorithm: given the specified initial point, draw a random ray starting
@@ -362,7 +386,7 @@ public class Polygon {
     // if the ray intersects a line segment at its vertex
     int i = 0;
     int counter = 0;
-    final int numEdges = this.edges().size();
+    final int numEdges = this.edgesPlusHoleEdges().size();
     while (i < numEdges) {
       // reset the counter for number of intersections
       counter = 0;
@@ -375,7 +399,7 @@ public class Polygon {
 
       // loop over edges to see how many intersections we get
       for (i = 0; i < numEdges; ++i) {
-        final LineSegment edge = this.edges().get(i);
+        final LineSegment edge = this.edgesPlusHoleEdges().get(i);
         if (ray.intersects(edge)) {
           final Vector2D intersectionPoint = ray.intersectionPointWith(edge);
           if (edge.isEndpoint(intersectionPoint)) {
@@ -386,6 +410,25 @@ public class Polygon {
       }
     }
     return counter % 2 == 1;
+  }
+
+  /**
+   * Returns {@code true} if and only if one of the edges of this polygon
+   * intersects another edge of this polygon.
+   * 
+   * @return {@code true} if and only if one of the edges of this polygon
+   *         intersects another edge of this polygon.
+   */
+  public boolean isSelfIntersecting() {
+    for (int i = 0; i < this.edgesPlusHoleEdges().size() - 1; ++i) {
+      for (int j = i + 1; j < this.edgesPlusHoleEdges().size(); ++j) {
+        if (this.edgesPlusHoleEdges().get(i).intersects(
+            this.edgesPlusHoleEdges().get(j))) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   /**
@@ -415,7 +458,7 @@ public class Polygon {
     // horizontal edges
     final AbstractQueue<LineSegment> remainingEdges = new PriorityQueue<LineSegment>(
         11, EdgeComparator.INSTANCE);
-    for (final LineSegment edge : this.edges()) {
+    for (final LineSegment edge : this.edgesPlusHoleEdges()) {
       if (!edge.isHorizontal()) {
         remainingEdges.add(edge);
       }
@@ -424,7 +467,7 @@ public class Polygon {
     // order vertices from bottom to top, then left to right
     final QueueSet<Vector2D> remainingVertices = new QueueSet<Vector2D>(
         BottomToTopComparator.INSTANCE);
-    for (final LineSegment edge : this.edges()) {
+    for (final LineSegment edge : this.edgesPlusHoleEdges()) {
       remainingVertices.add(edge.lowerEndpoint());
       remainingVertices.add(edge.upperEndpoint());
     }
@@ -544,8 +587,19 @@ public class Polygon {
     return result;
   }
 
+  /**
+   * Returns {@code true} if and only if the specified point is on the border of
+   * this polygon, including the border of the hole of this polygon if it
+   * exists.
+   * 
+   * @param point
+   *          The point to test.
+   * @return {@code true} if and only if the specified point is on the border of
+   *         this polygon.
+   */
+  // TODO test for this method
   protected boolean pointIsOnBorder(final Vector2D point) {
-    for (final LineSegment edge : this.edges()) {
+    for (final LineSegment edge : this.edgesPlusHoleEdges()) {
       if (edge.contains(point)) {
         return true;
       }
@@ -566,9 +620,11 @@ public class Polygon {
    * vertices.
    */
   public void reset() {
-    // is_concave = false;
     this.selected_vert = null;
     this.vertices.clear();
+    if (this.hole != null && !this.hole.vertices.isEmpty()) {
+      this.hole.reset();
+    }
   }
 
   // select a vertex based on a mouse click position (x,y)

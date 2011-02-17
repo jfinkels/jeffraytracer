@@ -476,8 +476,6 @@ public class PA1 extends JFrame implements GLEventListener, KeyListener,
       polygon = this.poly;
     }
 
-    System.out.println("chosen polygon: " + polygon);
-
     // get the type and location of the mouse click
     int button = mouse.getButton();
     int x = mouse.getX();

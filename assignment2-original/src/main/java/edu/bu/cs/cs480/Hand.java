@@ -1,18 +1,21 @@
-// ****************************************************************************
-// Hand class.
-// ****************************************************************************
-// Comments :
-// Support Routines for a Simple Hand Model. To complete the assignment,
-// add in the necessary data structure and code to implement functionalities
-// for manipulating and drawing the hand model. As a place holder, we have
-// draw a simple ellipse for demonstration purposes.
-//
-//
-// History :
-// 16 Jan 08 Created by Tai-Peng Tian (tiantp@gmail.com) based on C code by
-// Stan Sclaroff (from CS480 '06 Hand.c )
-//
-//
+/**
+ * Hand.java - hand model which can draw itself in OpenGL
+ * 
+ * History:
+ * 
+ * 18 February 2011
+ * 
+ * - added documentation
+ * 
+ * (Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>)
+ * 
+ * 16 January 2008
+ * 
+ * - translated from C code by Stan Sclaroff from CS480 2006 assignment 2,
+ * "hand.c"
+ * 
+ * (Tai-Peng Tian <tiantp@gmail.com>)
+ */
 package edu.bu.cs.cs480;
 
 import javax.media.opengl.GL;
@@ -25,46 +28,66 @@ import com.sun.opengl.util.GLUT;
  * 
  * This class provides methods for rotating individual joints on individual
  * fingers as well.
+ * 
+ * @author Tai-Peng Tian <tiantp@gmail.com>
+ * @since Spring 2008
  */
 public class Hand {
 
   /** The x-, y-, or z-axis. */
   enum AxisType {
     X, Y, Z
-  };
+  }
 
   /** The type of finger to toggle. */
   enum FingerType {
     FIFTH, FIRST, FOURTH, SECOND, THIRD
-  };
+  }
 
   /** The type of joint at which to enable rotation. */
   enum JointType {
     DISTAL, MIDDLE, PALM
-  };
+  }
 
   /**
    * The change in rotation angle (in degrees) to apply on each rotation update.
    */
   private static final double DELTA_ANGLE = 1.0;
   /** The currently active fingers. */
-  private final boolean active_fingers[] = new boolean[] { false, false, false,
-      false, false };
+  private final boolean active_fingers[] = new boolean[] { false, false,
+      false, false, false };
   /** The currently active joint type. */
   private JointType active_joint = JointType.DISTAL;
   /** The currently active axis of rotation. */
   private AxisType active_rotation_axis = AxisType.X;
   /** The OpenGL handle (integer) for the OpenGL call list object. */
   private int hand_object;
-  /** Whether the state of the hand model has changed since the last update. */
-  private boolean state_has_changed = false;
+  /**
+   * Whether the state of the hand model has changed since the last update.
+   * 
+   * This is initially true so that the hand will show up initially.
+   */
+  private boolean state_has_changed = true;
+
+  private final GLUT glut;
+
+  /**
+   * Instantiates this hand with access to the specified OpenGL utility toolkit
+   * object.
+   * 
+   * @param glut
+   *          The OpenGL utility toolkit object.
+   */
+  public Hand(final GLUT glut) {
+    this.glut = glut;
+  }
 
   /**
    * Decreases the rotation of the currently selected joint on the currently
    * selected fingers by {@value #DELTA_ANGLE} degrees.
    */
-  public void decrement_rotation_angle() {
-    state_has_changed = true; // flag to recreate the display list
+  public void rotateActiveJointsForward() {
+    this.state_has_changed = true; // flag to recreate the display list
 
     // you will need to rewrite this function
     System.out.println("Hand::decrement_rotation_angle()");
@@ -84,8 +107,8 @@ public class Hand {
    * Increases the rotation of the currently selected joint on the currently
    * selected fingers by {@value #DELTA_ANGLE} degrees.
    */
-  public void increment_rotation_angle() {
-    state_has_changed = true; // flag to recreate the display list
+  public void rotateActiveJointsBackward() {
+    this.state_has_changed = true; // flag to recreate the display list
 
     // you will need to rewrite this function
     System.out.println("Hand::increment_rotation_angle()");
@@ -122,7 +145,7 @@ public class Hand {
       System.out.println(" Middle Chosen ");
       break;
     }
-    active_joint = joint;
+    this.active_joint = joint;
   }
 
   /**
@@ -143,7 +166,7 @@ public class Hand {
       System.out.println("Z-axis chosen");
       break;
     }
-    active_rotation_axis = axis;
+    this.active_rotation_axis = axis;
   }
 
   /**
@@ -177,25 +200,33 @@ public class Hand {
       System.out.println(" Toggling Fifth Finger");
       break;
     }
-    active_fingers[loc] = !active_fingers[loc];
+    this.active_fingers[loc] = !this.active_fingers[loc];
   }
 
-  public void update(GL gl) {
-    if (state_has_changed) {
-      gl.glNewList(hand_object, GL.GL_COMPILE);
+  /**
+   * Updates the current model of the hand and fingers.
+   * 
+   * @param gl
+   *          The OpenGL object with which to draw the hand and fingers.
+   */
+  public void update(final GL gl) {
+    if (this.state_has_changed) {
+      gl.glNewList(this.hand_object, GL.GL_COMPILE);
 
-      // You need to rewrite the code for constructing the display
-      // list
+      /**
+       * You will need to rewrite the following code in order to display the
+       * hand with its fingers.
+       */
 
-      // Create an ellipsoid by scaling a sphere
+      // create an ellipsoid by scaling a sphere
       gl.glColor3f(0.8f, 0.5f, 0.2f);
-      GLUT glut = new GLUT();
       gl.glScalef(1.0f, 1.0f, 0.5f);
-      glut.glutSolidSphere(1, 36, 18);
+      this.glut.glutSolidSphere(1, 36, 18);
 
       gl.glEndList();
 
-      state_has_changed = false;
+      // reset the state_has_changed flag
+      this.state_has_changed = false;
     }
   }
 }

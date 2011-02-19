@@ -1,106 +1,161 @@
-// ************************************************************************
-// Generate Triangle Mesh Approximation to a Cylinder using Opengl
-// ************************************************************************
-// Comments :
-// For a cylinder whose base is at (tx,ty,tz), with given radius and
-// height, this function generates an OpenGL triangle mesh approximation to
-// the cylinder (with normals).
-//
-// History :
-// 30 Jan 2008. Translated from c code by Tai-Peng Tian (tiantp@gmail.com).
-// Original C code by Stan Sclaroff
+/**
+ * SolidCylinder.java - a cylinder which can draw itself using a triangle mesh
+ * approximation in OpenGL
+ * 
+ * History:
+ * 
+ * 18 February 2011
+ * 
+ * - added documentation
+ * 
+ * (Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>)
+ * 
+ * 30 January 2008
+ * 
+ * - translated from C code by Stan Sclaroff
+ * 
+ * (Tai-Peng Tian <tiantp@gmail.com>)
+ */
 package edu.bu.cs.cs480;
 
 import java.util.ArrayList;
 
 import javax.media.opengl.GL;
 
+/**
+ * A solid cylinder which provides methods for drawing using OpenGL.
+ * 
+ * @author Tai-Peng Tian <tiantp@gmail.com>
+ * @since Spring 2008
+ */
 public class SolidCylinder {
-  private ArrayList<Coord> circle2D;
-  private ArrayList<Coord> circle2D_normal;
-  private int DL; // display list
-  private double z_top, z_bottom; // z coords of the cylinder top and btm
+  /** The points along the edges of the approximated circle. */
+  private final ArrayList<Point3D> circle2D = new ArrayList<Point3D>();
+  /** The points which are normal to the edges of the approximated circle. */
+  private final ArrayList<Point3D> circle2D_normal = new ArrayList<Point3D>();
+  /**
+   * The OpenGL handle to the display list which contains all the components
+   * which comprise this cylinder.
+   */
+  private int DL;
+  /** The z component of the top face of the cylinder. */
+  private final double z_top;
+  /** The z component of the bottom face of the cylinder. */
+  private final double z_bottom;
 
-  public SolidCylinder(double tx, double ty, double tz, double radius,
-      double height, int n_subdivision_steps) {
+  /**
+   * Instantiates this cylinder with center of bottom base at (tx, ty, tz) with
+   * the specified radius and height.
+   * 
+   * The n_subdivision_steps parameter specifies the number of triangle
+   * subdivisions to use when approximating the sides of the cylinder. A higher
+   * number means more triangles and therefore a smoother cylinder.
+   * 
+   * @param tx
+   *          The x component of the center of the bottom base of the cylinder.
+   * @param ty
+   *          The y component of the center of the bottom base of the cylinder.
+   * @param tz
+   *          The z component of the center of the bottom base of the cylinder.
+   * @param radius
+   *          The radius of the cylinder.
+   * @param height
+   *          The height of the cylinder.
+   * @param n_subdivision_steps
+   *          The number of triangle subdivisions to use when approximating the
+   *          sides of the cylinder.
+   */
+  public SolidCylinder(final double tx, final double ty, final double tz,
+      final double radius, final double height, final int n_subdivision_steps) {
 
-    circle2D = new ArrayList<Coord>();
-    circle2D_normal = new ArrayList<Coord>();
-
-    // Cylinder is centered at (0,0,0) and aligned along Z-axis
-    z_top = tz + height;
-    z_bottom = tz;
+    // cylinder is centered at (0,0,0) and aligned along Z-axis
+    this.z_top = tz + height;
+    this.z_bottom = tz;
 
     // Approximation of the 2D circle with polyline
-    double d_theta = 2 * 3.1415926 / n_subdivision_steps;
-    double theta = 0;
-    for (int i = 0; i < n_subdivision_steps; ++i) {
-      Coord normal = new Coord(radius * Math.cos(theta), radius
+    final double d_theta = 2 * 3.1415926 / n_subdivision_steps;
+    for (double theta = 0; theta < 2 * Math.PI; theta += d_theta) {
+      final Point3D normal = new Point3D(radius * Math.cos(theta), radius
           * Math.sin(theta), 0);
-      circle2D_normal.add(normal);
-      circle2D.add(new Coord(normal.x + tx, normal.y + ty, 1));
+      this.circle2D_normal.add(normal);
+      this.circle2D.add(new Point3D(normal.x() + tx, normal.y() + ty, 1));
       theta += d_theta;
     }
 
   }
 
-  public void draw(GL gl) {
-    gl.glCallList(DL);
+  /**
+   * Draws the cylinder by drawing the appropriate GL call list which contains
+   * its component parts.
+   * 
+   * @param gl
+   *          The OpenGL object with which to draw the cylinder.
+   */
+  public void draw(final GL gl) {
+    gl.glCallList(this.DL);
   }
 
-  public void init(GL gl) {
-    // Create the display list
-    DL = gl.glGenLists(1);
-    Coord n, p; // temp variables to store retrieved obj from ArrayList
+  /**
+   * Initializes the GL call lists which make up the components of this cylinder
+   * using the specified OpenGL object.
+   * 
+   * @param gl
+   *          The OpenGL object on which to create the call lists which comprise
+   *          this cylinder.
+   */
+  public void init(final GL gl) {
+    this.DL = gl.glGenLists(1);
 
-    gl.glNewList(DL, GL.GL_COMPILE);
+    gl.glNewList(this.DL, GL.GL_COMPILE);
 
-    // Quad strip for cylinder sides
+    Point3D n, p; // temp variables to store retrieved obj from ArrayList
+
+    // begin a triangle strip for the sides of the cylinder
     gl.glBegin(GL.GL_TRIANGLE_STRIP);
-    for (int i = 0; i < circle2D.size(); i++) {
-      n = circle2D_normal.get(i);
-      p = circle2D.get(i);
+    for (int i = 0; i < this.circle2D.size(); i++) {
+      n = this.circle2D_normal.get(i);
+      p = this.circle2D.get(i);
 
-      gl.glNormal3d(n.x, n.y, 0);
-      gl.glVertex3d(p.x, p.y, z_bottom);
-      gl.glNormal3d(n.x, n.y, 0);
-      gl.glVertex3d(p.x, p.y, z_top);
+      gl.glNormal3d(n.x(), n.y(), 0);
+      gl.glVertex3d(p.x(), p.y(), this.z_bottom);
+      gl.glNormal3d(n.x(), n.y(), 0);
+      gl.glVertex3d(p.x(), p.y(), this.z_top);
     }
 
-    n = circle2D_normal.get(0);
-    p = circle2D.get(0);
-    gl.glNormal3d(n.x, n.y, 0);
-    gl.glVertex3d(p.x, p.y, z_bottom);
-    gl.glNormal3d(n.x, n.y, 0);
-    gl.glVertex3d(p.x, p.y, z_top);
+    n = this.circle2D_normal.get(0);
+    p = this.circle2D.get(0);
+    gl.glNormal3d(n.x(), n.y(), 0);
+    gl.glVertex3d(p.x(), p.y(), this.z_bottom);
+    gl.glNormal3d(n.x(), n.y(), 0);
+    gl.glVertex3d(p.x(), p.y(), this.z_top);
 
-    gl.glEnd(); // gl.glBegin(GL_TRIANGLE_STRIP)
+    gl.glEnd(); // end the sides of the cylinder
 
-    // Top end cap polygon
+    // begin a polygon which approximates the top of the cylinder
     gl.glBegin(GL.GL_POLYGON);
-    for (int i = 0; i < circle2D.size(); i++) {
-      p = circle2D.get(i);
-      gl.glVertex3d(p.x, p.y, z_top);
+    for (int i = 0; i < this.circle2D.size(); i++) {
+      p = this.circle2D.get(i);
+      gl.glVertex3d(p.x(), p.y(), this.z_top);
       gl.glNormal3d(0, 0, 1);
     }
-    p = circle2D.get(0);
-    gl.glVertex3d(p.x, p.y, z_top);
+    p = this.circle2D.get(0);
+    gl.glVertex3d(p.x(), p.y(), this.z_top);
     gl.glNormal3d(0, 0, 1);
 
-    gl.glEnd(); // gl.glBegin(GL.GL_POLYGON);
+    gl.glEnd(); // end the top of the cylinder
 
-    // Bottom end cap polygon
+    // begin a polygon which approximates the bottom of the cylinder
     gl.glBegin(GL.GL_POLYGON);
-    for (int i = 0; i < circle2D.size(); i++) {
-      p = circle2D.get(i);
-      gl.glVertex3d(p.x, p.y, z_bottom);
+    for (int i = 0; i < this.circle2D.size(); i++) {
+      p = this.circle2D.get(i);
+      gl.glVertex3d(p.x(), p.y(), this.z_bottom);
       gl.glNormal3d(0, 0, 1);
     }
-    p = circle2D.get(0);
-    gl.glVertex3d(p.x, p.y, z_bottom);
+    p = this.circle2D.get(0);
+    gl.glVertex3d(p.x(), p.y(), this.z_bottom);
     gl.glNormal3d(0, 0, 1);
 
-    gl.glEnd(); // gl.glBegin(GL.GL_POLYGON);
+    gl.glEnd(); // end the bottom of the cylinder
 
     gl.glEndList();
   }

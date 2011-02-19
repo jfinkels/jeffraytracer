@@ -1,37 +1,21 @@
-// ****************************************************************************
-// Example Main Program for CS480 Programming Assignment 2
-// ****************************************************************************
-// Description: This is a simple example program that allows the
-// user to display a hand model and change its parameters.
-//
-// The following keys control the program:
-//
-// Q,q, <escape>: quit
-// R: reset viewing angle
-//
-// Left mouse click + drag motion: rotate the hand view
-//
-// 1 : toggle the first finger (thumb) active in rotation
-// 2 : toggle the second finger active in rotation
-// 3 : toggle the third finger active in rotation
-// 4 : toggle the fourth finger active in rotation
-// 5 : toggle the fifth finger active in rotation
-//
-// X : use the X axis rotation at the active joint(s)
-// Y : use the Y axis rotation at the active joint(s)
-// Z : use the Z axis rotation at the active joint(s)
-//
-// P : select joint that connects finger to palm
-// M : select middle joint
-// D : select last (distal) joint
-//
-// up-arrow, down-arrow: increase/decrease rotation angle
-//
-// ****************************************************************************
-// History :
-// 16 Jan 2008 Created by Tai-Peng Tian (tiantp@gmail.com) based on the C
-// code by Stan Sclaroff
-//
+/**
+ * PA2.java - driver for the hand model simulation
+ * 
+ * History:
+ * 
+ * 19 February 2011
+ * 
+ * - added documentation
+ * 
+ * (Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>)
+ * 
+ * 16 January 2008
+ * 
+ * - translated from C code by Stan Sclaroff
+ * 
+ * (Tai-Peng Tian <tiantp@gmail.com>)
+ * 
+ */
 package edu.bu.cs.cs480;
 
 import java.awt.event.KeyEvent;
@@ -49,7 +33,14 @@ import javax.media.opengl.glu.GLU;
 import javax.swing.JFrame;
 
 import com.sun.opengl.util.FPSAnimator;
+import com.sun.opengl.util.GLUT;
 
+/**
+ * The main class which drives the hand model simulation.
+ * 
+ * @author Tai-Peng Tian <tiantp@gmail.com>
+ * @since Spring 2008
+ */
 public class PA2 extends JFrame implements GLEventListener, KeyListener,
     MouseListener, MouseMotionListener {
   /** Randomly generated serial version UID. */
@@ -66,19 +57,21 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
   }
 
   /** The animator which controls the framerate at which the canvas is animated. */
-  private final FPSAnimator animator;
+  final FPSAnimator animator;
   /** The canvas on which we draw the scene. */
   private final GLCanvas canvas;
   /** The capabilities of the canvas. */
   private final GLCapabilities capabilities = new GLCapabilities();
   /** The default width of the created window. */
-  private final int DEFAULT_WINDOW_HEIGHT = 512;
+  public static final int DEFAULT_WINDOW_HEIGHT = 512;
   /** The default height of the created window. */
-  private final int DEFAULT_WINDOW_WIDTH = 512;
-  /** The GL utility object. */
+  public static final int DEFAULT_WINDOW_WIDTH = 512;
+  /** The OpenGL utility object. */
   private final GLU glu = new GLU();
+  /** The OpenGL utility toolkit object. */
+  private final GLUT glut = new GLUT();
   /** The hand model which will be changed by keyboard and mouse presses. */
-  private final Hand hand = new Hand();
+  private final Hand hand = new Hand(this.glut);
 
   /** The last x and y coordinates of the mouse press. */
   private int last_x = 0, last_y = 0;
@@ -136,7 +129,7 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
     gl.glLoadIdentity();
 
     // rotate the world by the appropriate rotation quaternion
-    gl.glMultMatrixf(this.viewing_quaternion.to_matrix(), 0);
+    gl.glMultMatrixf(this.viewing_quaternion.toMatrix(), 0);
 
     // update the position of the hand if it needs to be updated, and draw it
     this.hand.update(gl);
@@ -206,12 +199,12 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
     switch (key.getKeyCode()) {
     case KeyEvent.VK_KP_UP:
     case KeyEvent.VK_UP:
-      this.hand.increment_rotation_angle();
+      this.hand.rotateActiveJointsBackward();
       break;
 
     case KeyEvent.VK_KP_DOWN:
     case KeyEvent.VK_DOWN:
-      hand.decrement_rotation_angle();
+      this.hand.rotateActiveJointsForward();
       break;
 
     default:
@@ -265,8 +258,9 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
     case 'q':
     case KeyEvent.VK_ESCAPE:
       new Thread() {
+        @Override
         public void run() {
-          animator.stop();
+          PA2.this.animator.stop();
         }
       }.start();
       System.exit(0);
@@ -447,21 +441,21 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
    *          {@inheritDoc}
    */
   public void reshape(final GLAutoDrawable drawable, final int x, final int y,
-      final int width, int height) {
+      final int width, final int height) {
     final GL gl = drawable.getGL();
 
     // prevent division by zero by ensuring window has height 1 at least
-    height = Math.max(1, height);
+    final int newHeight = Math.max(1, height);
 
     // compute the aspect ratio
-    final double ratio = (double) width / height;
+    final double ratio = (double) width / newHeight;
 
     // reset the projection coordinate system before modifying it
     gl.glMatrixMode(GL.GL_PROJECTION);
     gl.glLoadIdentity();
 
     // set the viewport to be the entire window
-    gl.glViewport(0, 0, width, height);
+    gl.glViewport(0, 0, width, newHeight);
 
     // set the clipping volume
     this.glu.gluPerspective(25, ratio, 0.1, 100);

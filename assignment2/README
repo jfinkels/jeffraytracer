@@ -25,4 +25,6 @@ P : select joint that connects finger to palm
 M : select middle joint
 D : select last (distal) joint
 
+K : prints the angles of the five fingers for debugging purposes
+
 up-arrow, down-arrow: increase/decrease rotation angle

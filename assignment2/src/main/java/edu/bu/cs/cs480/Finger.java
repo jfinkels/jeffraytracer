@@ -9,20 +9,48 @@ import java.util.List;
 
 import javax.media.opengl.GL;
 
+import com.sun.opengl.util.GLUT;
+
 /**
  * A finger which has three joints, and which can draw itself using OpenGL.
  * 
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
-public class Finger implements Displayable {
-  private final Joint distal = new Joint(0, 0, 1.0, .1, 0.5);
+public class Finger implements UpdatingDisplayable {
+  /** The OpenGL handle (integer) for the OpenGL call list object. */
+  private int displayListHandle;
+  /** The distal joint of this finger. */
+  private final Joint distal = new Joint(0, 0, 1.0, .1, 0.3);
+  /** The middle joint of this finger. */
   private final Joint middle = new Joint(0, 0, 0.5, .1, 0.5);
+  /** The palm joint of this finger. */
   private final Joint palm = new Joint(0, 0, 0, .1, 0.5);
-
+  /**
+   * An immutable view of the joints of this finger.
+   * 
+   * This declaration must come after the three joints have been initialized.
+   */
   private final List<Joint> joints = Collections.unmodifiableList(Arrays
       .asList(this.palm, this.middle, this.distal));
 
+  /** The x component of the position of this finger. */
+  private final double x;
+  /** The y component of the position of this finger. */
+  private final double y;
+  /** The z component of the position of this finger. */
+  private final double z;
+
+  /**
+   * Instantiates this finger at the specified (x, y, z) position.
+   * 
+   * @param x
+   *          The x component of the position of this finger.
+   * @param y
+   *          The y component of the position of this finger.
+   * @param z
+   *          The z component of the position of this finger.
+   */
   public Finger(final double x, final double y, final double z) {
     this.x = x;
     this.y = y;
@@ -51,39 +79,84 @@ public class Finger implements Displayable {
     this.palm.setZNegativeExtent(0);
   }
 
-  public List<Joint> joints() {
-    return this.joints;
-  }
-
+  /**
+   * Gets the distal joint of this finger.
+   * 
+   * @return The distal joint of this finger.
+   */
   public Joint distal() {
     return this.distal;
   }
 
+  /**
+   * {@inheritDoc}
+   * 
+   * @param gl
+   *          {@inheritDoc}
+   */
   public void draw(final GL gl) {
     gl.glCallList(this.displayListHandle);
   }
 
-  public void init(final GL gl) {
+  /**
+   * {@inheritDoc}
+   * 
+   * @param gl
+   *          {@inheritDoc}
+   */
+  public void initialize(final GL gl) {
     this.displayListHandle = gl.glGenLists(1);
     for (final Joint joint : this.joints) {
-      joint.init(gl);
+      joint.initialize(gl);
     }
   }
 
+  /**
+   * Gets an immutable view on the joints of this finger.
+   * 
+   * @return An immutable view on the joints of this finger.
+   */
+  public List<Joint> joints() {
+    return this.joints;
+  }
+
+  /**
+   * Gets the middle joint of this finger.
+   * 
+   * @return The middle joint of this finger.
+   */
   public Joint middle() {
     return this.middle;
   }
 
+  /**
+   * Gets the palm joint of this finger.
+   * 
+   * @return The palm joint of this finger.
+   */
   public Joint palm() {
     return this.palm;
   }
 
-  private int displayListHandle;
+  /**
+   * Calls the {@link Joint#setGlut(GLUT)} method on the joints of this finger
+   * providing the specified GLUT object as the parameter.
+   * 
+   * @param glut
+   *          The GLUT object to use to draw spheres on the ends of the joints.
+   */
+  public void setGlut(final GLUT glut) {
+    for (final Joint joint : this.joints) {
+      joint.setGlut(glut);
+    }
+  }
 
-  private final double x;
-  private final double y;
-  private final double z;
-
+  /**
+   * {@inheritDoc}
+   * 
+   * @param gl
+   *          {@inheritDoc}
+   */
   public void update(final GL gl) {
     gl.glNewList(this.displayListHandle, GL.GL_COMPILE);
 
@@ -101,9 +174,9 @@ public class Finger implements Displayable {
     // push the current color
     gl.glPushAttrib(GL.GL_CURRENT_BIT);
 
-    gl.glColor3f(this.palm().color().red(), this.palm().color()
-        .green(), this.palm().color().blue());
-    
+    gl.glColor3f(this.palm().color().red(), this.palm().color().green(), this
+        .palm().color().blue());
+
     // translate out
     gl.glTranslated(0, 0, 0);
     // rotate around x axis
@@ -118,7 +191,8 @@ public class Finger implements Displayable {
     // draw the distal joint
     this.palm.draw(gl);
 
-    gl.glPopAttrib(); // pop the color
+    // pop the current color
+    gl.glPopAttrib();
 
     // rotate the middle joint
     gl.glPushMatrix();
@@ -126,8 +200,8 @@ public class Finger implements Displayable {
     // push the current color
     gl.glPushAttrib(GL.GL_CURRENT_BIT);
 
-    gl.glColor3f(this.middle().color().red(), this.middle().color()
-        .green(), this.middle().color().blue());
+    gl.glColor3f(this.middle().color().red(), this.middle().color().green(),
+        this.middle().color().blue());
 
     // translate out
     gl.glTranslated(0, 0, 0.5);
@@ -145,15 +219,15 @@ public class Finger implements Displayable {
 
     // pop color
     gl.glPopAttrib();
-    
+
     // rotate the distal joint
     gl.glPushMatrix();
 
     // push the current color
     gl.glPushAttrib(GL.GL_CURRENT_BIT);
 
-    gl.glColor3f(this.distal().color().red(), this.distal().color()
-        .green(), this.distal().color().blue());
+    gl.glColor3f(this.distal().color().red(), this.distal().color().green(),
+        this.distal().color().blue());
 
     // translate out
     gl.glTranslated(0, 0, 1);
@@ -171,7 +245,7 @@ public class Finger implements Displayable {
 
     // pop the current color
     gl.glPopAttrib();
-    
+
     gl.glPopMatrix(); // distal joint rotation
 
     gl.glPopMatrix(); // middle joint rotation
@@ -181,5 +255,32 @@ public class Finger implements Displayable {
     gl.glPopMatrix(); // putting finger in the right orientation
 
     gl.glEndList();
+  }
+
+  /**
+   * Gets the x component of the position of this finger.
+   * 
+   * @return The x component of the position of this finger.
+   */
+  public double x() {
+    return this.x;
+  }
+
+  /**
+   * Gets the y component of the position of this finger.
+   * 
+   * @return The y component of the position of this finger.
+   */
+  public double y() {
+    return this.y;
+  }
+
+  /**
+   * Gets the z component of the position of this finger.
+   * 
+   * @return The z component of the position of this finger.
+   */
+  public double z() {
+    return this.z;
   }
 }

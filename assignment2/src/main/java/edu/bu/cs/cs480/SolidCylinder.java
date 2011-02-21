@@ -28,7 +28,7 @@ import javax.media.opengl.GL;
  * @author Tai-Peng Tian <tiantp@gmail.com>
  * @since Spring 2008
  */
-public class SolidCylinder {
+public class SolidCylinder implements Displayable {
   /** The points along the edges of the approximated circle. */
   private final ArrayList<Point3D> circle2D = new ArrayList<Point3D>();
   /** The points which are normal to the edges of the approximated circle. */
@@ -38,6 +38,12 @@ public class SolidCylinder {
    * which comprise this cylinder.
    */
   private int displayListHandle;
+  /** The radius of this cylinder. */
+  private final double radius;
+  /** The x component of the position of the base of this cylinder. */
+  private final double x;
+  /** The y component of the position of the base of this cylinder. */
+  private final double y;
   /** The z component of the bottom face of the cylinder. */
   private final double z_bottom;
   /** The z component of the top face of the cylinder. */
@@ -82,6 +88,9 @@ public class SolidCylinder {
       theta += d_theta;
     }
 
+    this.radius = radius;
+    this.x = tx;
+    this.y = ty;
   }
 
   /**
@@ -103,11 +112,11 @@ public class SolidCylinder {
    *          The OpenGL object on which to create the call lists which comprise
    *          this cylinder.
    */
-  public void init(final GL gl) {
+  public void initialize(final GL gl) {
     this.displayListHandle = gl.glGenLists(1);
 
     gl.glNewList(this.displayListHandle, GL.GL_COMPILE);
-    
+
     Point3D n, p; // temp variables to store retrieved obj from ArrayList
 
     // begin a triangle strip for the sides of the cylinder
@@ -158,5 +167,47 @@ public class SolidCylinder {
     gl.glEnd(); // end the bottom of the cylinder
 
     gl.glEndList();
+  }
+
+  /**
+   * Gets the radius of this cylinder.
+   * 
+   * @return The radius of this cylinder.
+   */
+  protected double radius() {
+    return this.radius;
+  }
+
+  /**
+   * Gets the x component of the position of the center of the base of this
+   * cylinder.
+   * 
+   * @return The x component of the position of the center of the base of this
+   *         cylinder.
+   */
+  protected double x() {
+    return this.x;
+  }
+
+  /**
+   * Gets the y component of the position of the center of the base of this
+   * cylinder.
+   * 
+   * @return The y component of the position of the center of the base of this
+   *         cylinder.
+   */
+  protected double y() {
+    return this.y;
+  }
+
+  /**
+   * Gets the z component of the position of the center of the top of this
+   * cylinder.
+   * 
+   * @return The z component of the position of the center of the top of this
+   *         cylinder.
+   */
+  protected double zTop() {
+    return this.z_top;
   }
 }

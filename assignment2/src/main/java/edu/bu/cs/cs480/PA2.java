@@ -18,7 +18,6 @@
  */
 package edu.bu.cs.cs480;
 
-import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -42,37 +41,19 @@ import com.sun.opengl.util.GLUT;
  * The main class which drives the hand model simulation.
  * 
  * @author Tai-Peng Tian <tiantp@gmail.com>
+ * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2008
  */
 public class PA2 extends JFrame implements GLEventListener, KeyListener,
     MouseListener, MouseMotionListener {
   /** The default width of the created window. */
   public static final int DEFAULT_WINDOW_HEIGHT = 512;
-
   /** The default height of the created window. */
   public static final int DEFAULT_WINDOW_WIDTH = 512;
-
+  /** The angle by which to rotate the joint on user request to rotate. */
+  public static final double ROTATION_ANGLE = 2.0;
   /** Randomly generated serial version UID. */
   private static final long serialVersionUID = -7060944143920496524L;
-
-  /**
-   * If the set contains the specified element, then remove it; if the set does
-   * not contain the specified element, then add it.
-   * 
-   * @param <E>
-   *          The type of element to add or remove.
-   * @param set
-   *          The set from which to add or remove the element.
-   * @param element
-   *          The element to add or remove.
-   */
-  private static <E> void addOrRemove(final Set<E> set, final E element) {
-    if (set.contains(element)) {
-      set.remove(element);
-    } else {
-      set.add(element);
-    }
-  }
 
   /**
    * Runs the hand simulation in a single JFrame.
@@ -94,24 +75,20 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
   private final GLU glu = new GLU();
   /** The OpenGL utility toolkit object. */
   private final GLUT glut = new GLUT();
-
   /** The hand model which will be changed by keyboard and mouse presses. */
   private final Hand hand = new Hand(this.glut);
   /** The last x and y coordinates of the mouse press. */
   private int last_x = 0, last_y = 0;
-
   /** Whether the world is being rotated. */
   private boolean rotate_world = false;
-
   /** The axis around which to rotate the selected joints. */
   private Axis selectedAxis = Axis.X;
-
   /** The currently selected fingers, on which to select joints to rotate. */
   private final Set<Finger> selectedFingers = new HashSet<Finger>();
-
   /** The currently selected joints to rotate. */
   private final Set<Joint> selectedJoints = new HashSet<Joint>();
-
+  /** Whether the state of the model has been changed. */
+  private boolean stateChanged = true;
   /** The quaternion which controls the rotation of the world. */
   private Quaternion viewing_quaternion = new Quaternion();
 
@@ -166,6 +143,7 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
     gl.glMultMatrixf(this.viewing_quaternion.toMatrix(), 0);
 
     // update the position of the hand if it needs to be updated
+    // TODO only need to update the positions of the selected fingers
     if (this.stateChanged) {
       this.hand.update(gl);
       this.stateChanged = false;
@@ -200,7 +178,7 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
     final GL gl = drawable.getGL();
 
     // perform any initialization needed by the hand model
-    this.hand.init(gl);
+    this.hand.initialize(gl);
 
     // set up for shaded display of the hand
     final float light0_position[] = { 1, 1, 1, 0 };
@@ -225,8 +203,6 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
     gl.glEnable(GL.GL_DEPTH_TEST);
     gl.glEnable(GL.GL_NORMALIZE);
   }
-
-  public static final double ROTATION_ANGLE = 2.0;
 
   /**
    * Interprets key presses according to the following scheme:
@@ -257,8 +233,6 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
     }
   }
 
-  private boolean stateChanged = true;
-
   /**
    * This method is intentionally unimplemented.
    * 
@@ -267,6 +241,107 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
    */
   public void keyReleased(final KeyEvent key) {
     // intentionally unimplemented
+  }
+
+  /**
+   * Prints the angles of each joint in each finger of the hand for debugging
+   * purposes.
+   */
+  private void printHandAngles() {
+    System.out.print("pinky finger - palm joint - x angle: ");
+    System.out.println(this.hand.pinkyFinger().palm().xAngle());
+    System.out.print("pinky finger - palm joint - y angle: ");
+    System.out.println(this.hand.pinkyFinger().palm().yAngle());
+    System.out.print("pinky finger - palm joint - z angle: ");
+    System.out.println(this.hand.pinkyFinger().palm().zAngle());
+    System.out.print("pinky finger - middle joint - x angle: ");
+    System.out.println(this.hand.pinkyFinger().middle().xAngle());
+    System.out.print("pinky finger - middle joint - y angle: ");
+    System.out.println(this.hand.pinkyFinger().middle().yAngle());
+    System.out.print("pinky finger - middle joint - z angle: ");
+    System.out.println(this.hand.pinkyFinger().middle().zAngle());
+    System.out.print("pinky finger - distal joint - x angle: ");
+    System.out.println(this.hand.pinkyFinger().distal().xAngle());
+    System.out.print("pinky finger - distal joint - y angle: ");
+    System.out.println(this.hand.pinkyFinger().distal().yAngle());
+    System.out.print("pinky finger - distal joint - z angle: ");
+    System.out.println(this.hand.pinkyFinger().distal().zAngle());
+
+    System.out.print("ring finger - palm joint - x angle: ");
+    System.out.println(this.hand.ringFinger().palm().xAngle());
+    System.out.print("ring finger - palm joint - y angle: ");
+    System.out.println(this.hand.ringFinger().palm().yAngle());
+    System.out.print("ring finger - palm joint - z angle: ");
+    System.out.println(this.hand.ringFinger().palm().zAngle());
+    System.out.print("ring finger - middle joint - x angle: ");
+    System.out.println(this.hand.ringFinger().middle().xAngle());
+    System.out.print("ring finger - middle joint - y angle: ");
+    System.out.println(this.hand.ringFinger().middle().yAngle());
+    System.out.print("ring finger - middle joint - z angle: ");
+    System.out.println(this.hand.ringFinger().middle().zAngle());
+    System.out.print("ring finger - distal joint - x angle: ");
+    System.out.println(this.hand.ringFinger().distal().xAngle());
+    System.out.print("ring finger - distal joint - y angle: ");
+    System.out.println(this.hand.ringFinger().distal().yAngle());
+    System.out.print("ring finger - distal joint - z angle: ");
+    System.out.println(this.hand.ringFinger().distal().zAngle());
+
+    System.out.print("middle finger - palm joint - x angle: ");
+    System.out.println(this.hand.middleFinger().palm().xAngle());
+    System.out.print("middle finger - palm joint - y angle: ");
+    System.out.println(this.hand.middleFinger().palm().yAngle());
+    System.out.print("middle finger - palm joint - z angle: ");
+    System.out.println(this.hand.middleFinger().palm().zAngle());
+    System.out.print("middle finger - middle joint - x angle: ");
+    System.out.println(this.hand.middleFinger().middle().xAngle());
+    System.out.print("middle finger - middle joint - y angle: ");
+    System.out.println(this.hand.middleFinger().middle().yAngle());
+    System.out.print("middle finger - middle joint - z angle: ");
+    System.out.println(this.hand.middleFinger().middle().zAngle());
+    System.out.print("middle finger - distal joint - x angle: ");
+    System.out.println(this.hand.middleFinger().distal().xAngle());
+    System.out.print("middle finger - distal joint - y angle: ");
+    System.out.println(this.hand.middleFinger().distal().yAngle());
+    System.out.print("middle finger - distal joint - z angle: ");
+    System.out.println(this.hand.middleFinger().distal().zAngle());
+
+    System.out.print("index finger - palm joint - x angle: ");
+    System.out.println(this.hand.indexFinger().palm().xAngle());
+    System.out.print("index finger - palm joint - y angle: ");
+    System.out.println(this.hand.indexFinger().palm().yAngle());
+    System.out.print("index finger - palm joint - z angle: ");
+    System.out.println(this.hand.indexFinger().palm().zAngle());
+    System.out.print("index finger - middle joint - x angle: ");
+    System.out.println(this.hand.indexFinger().middle().xAngle());
+    System.out.print("index finger - middle joint - y angle: ");
+    System.out.println(this.hand.indexFinger().middle().yAngle());
+    System.out.print("index finger - middle joint - z angle: ");
+    System.out.println(this.hand.indexFinger().middle().zAngle());
+    System.out.print("index finger - distal joint - x angle: ");
+    System.out.println(this.hand.indexFinger().distal().xAngle());
+    System.out.print("index finger - distal joint - y angle: ");
+    System.out.println(this.hand.indexFinger().distal().yAngle());
+    System.out.print("index finger - distal joint - z angle: ");
+    System.out.println(this.hand.indexFinger().distal().zAngle());
+
+    System.out.print("thumb - palm joint - x angle: ");
+    System.out.println(this.hand.thumb().palm().xAngle());
+    System.out.print("thumb - palm joint - y angle: ");
+    System.out.println(this.hand.thumb().palm().yAngle());
+    System.out.print("thumb - palm joint - z angle: ");
+    System.out.println(this.hand.thumb().palm().zAngle());
+    System.out.print("thumb - middle joint - x angle: ");
+    System.out.println(this.hand.thumb().middle().xAngle());
+    System.out.print("thumb - middle joint - y angle: ");
+    System.out.println(this.hand.thumb().middle().yAngle());
+    System.out.print("thumb - middle joint - z angle: ");
+    System.out.println(this.hand.thumb().middle().zAngle());
+    System.out.print("thumb - distal joint - x angle: ");
+    System.out.println(this.hand.thumb().distal().xAngle());
+    System.out.print("thumb - distal joint - y angle: ");
+    System.out.println(this.hand.thumb().distal().yAngle());
+    System.out.print("thumb - distal joint - z angle: ");
+    System.out.println(this.hand.thumb().distal().zAngle());
   }
 
   /**
@@ -296,6 +371,8 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
    * 
    * R : resets the view to the initial rotation
    * 
+   * K : prints the angles of the five fingers for debugging purposes
+   * 
    * Q, Esc : exits the program
    * 
    */
@@ -313,6 +390,18 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
       System.exit(0);
       break;
 
+    // print the angles of the fingers
+    case 'K':
+    case 'k':
+      printHandAngles();
+      break;
+
+    // set the state of the hand to the next test case
+    case 'T':
+    case 't':
+      
+      break;
+
     // set the viewing quaternion to 0 rotation
     case 'R':
     case 'r':
@@ -325,7 +414,7 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
         this.selectedFingers.remove(this.hand.thumb());
         for (final Joint joint : this.hand.thumb().joints()) {
           this.selectedJoints.remove(joint);
-          joint.setColor(new FloatColor(0.8f, 0.5f, 0.2f));
+          joint.setColor(FloatColor.ORANGE);
         }
       } else {
         this.selectedFingers.add(this.hand.thumb());
@@ -337,7 +426,7 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
         this.selectedFingers.remove(this.hand.indexFinger());
         for (final Joint joint : this.hand.indexFinger().joints()) {
           this.selectedJoints.remove(joint);
-          joint.setColor(new FloatColor(0.8f, 0.5f, 0.2f));
+          joint.setColor(FloatColor.ORANGE);
         }
       } else {
         this.selectedFingers.add(this.hand.indexFinger());
@@ -349,7 +438,7 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
         this.selectedFingers.remove(this.hand.middleFinger());
         for (final Joint joint : this.hand.middleFinger().joints()) {
           this.selectedJoints.remove(joint);
-          joint.setColor(new FloatColor(0.8f, 0.5f, 0.2f));
+          joint.setColor(FloatColor.ORANGE);
         }
       } else {
         this.selectedFingers.add(this.hand.middleFinger());
@@ -361,7 +450,7 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
         this.selectedFingers.remove(this.hand.ringFinger());
         for (final Joint joint : this.hand.ringFinger().joints()) {
           this.selectedJoints.remove(joint);
-          joint.setColor(new FloatColor(0.8f, 0.5f, 0.2f));
+          joint.setColor(FloatColor.ORANGE);
         }
       } else {
         this.selectedFingers.add(this.hand.ringFinger());
@@ -373,7 +462,7 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
         this.selectedFingers.remove(this.hand.pinkyFinger());
         for (final Joint joint : this.hand.pinkyFinger().joints()) {
           this.selectedJoints.remove(joint);
-          joint.setColor(new FloatColor(0.8f, 0.5f, 0.2f));
+          joint.setColor(FloatColor.ORANGE);
         }
       } else {
         this.selectedFingers.add(this.hand.pinkyFinger());
@@ -387,10 +476,10 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
       for (final Finger finger : this.selectedFingers) {
         if (this.selectedJoints.contains(finger.distal())) {
           this.selectedJoints.remove(finger.distal());
-          finger.distal().setColor(new FloatColor(0.8f, 0.5f, 0.2f));
+          finger.distal().setColor(FloatColor.ORANGE);
         } else {
           this.selectedJoints.add(finger.distal());
-          finger.distal().setColor(new FloatColor(1, 0, 0));
+          finger.distal().setColor(FloatColor.RED);
         }
         this.stateChanged = true;
       }
@@ -400,10 +489,10 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
       for (final Finger finger : this.selectedFingers) {
         if (this.selectedJoints.contains(finger.palm())) {
           this.selectedJoints.remove(finger.palm());
-          finger.palm().setColor(new FloatColor(0.8f, 0.5f, 0.2f));
+          finger.palm().setColor(FloatColor.ORANGE);
         } else {
           this.selectedJoints.add(finger.palm());
-          finger.palm().setColor(new FloatColor(1, 0, 0));
+          finger.palm().setColor(FloatColor.RED);
         }
         this.stateChanged = true;
       }
@@ -413,10 +502,10 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
       for (final Finger finger : this.selectedFingers) {
         if (this.selectedJoints.contains(finger.middle())) {
           this.selectedJoints.remove(finger.middle());
-          finger.middle().setColor(new FloatColor(0.8f, 0.5f, 0.2f));
+          finger.middle().setColor(FloatColor.ORANGE);
         } else {
           this.selectedJoints.add(finger.middle());
-          finger.middle().setColor(new FloatColor(1, 0, 0));
+          finger.middle().setColor(FloatColor.RED);
         }
         this.stateChanged = true;
       }

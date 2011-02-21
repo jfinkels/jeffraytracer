@@ -30,16 +30,17 @@ import com.sun.opengl.util.GLUT;
  * fingers as well.
  * 
  * @author Tai-Peng Tian <tiantp@gmail.com>
+ * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2008
  */
-public class Hand implements Displayable {
+public class Hand implements UpdatingDisplayable {
 
   /** The OpenGL handle (integer) for the OpenGL call list object. */
   private int displayListHandle;
   /** The fingers of this hand, indexed from thumb to pinky. */
   private final Finger[] fingers = new Finger[] { new Finger(-.5, 0, .7),
       new Finger(-.2, 0, .7), new Finger(0.1, 0, .7), new Finger(0.4, 0, 0.7),
-      new Finger(0.7, 0, 0.7) };
+      new Thumb(0.5, 0, 0) };
   /** The OpenGL utility toolkit object. */
   private final GLUT glut;
 
@@ -52,12 +53,15 @@ public class Hand implements Displayable {
    */
   public Hand(final GLUT glut) {
     this.glut = glut;
+    for (final Finger finger : this.fingers) {
+      finger.setGlut(glut);
+    }
   }
 
   /**
    * Draws the hand on the specified OpenGL object based on the current state.
    * 
-   * The {@link #init(GL)} method must be called before this method.
+   * The {@link #initialize(GL)} method must be called before this method.
    * 
    * @param gl
    *          The GL object with which to draw the hand.
@@ -69,6 +73,11 @@ public class Hand implements Displayable {
     }
   }
 
+  /**
+   * Gets the index finger.
+   * 
+   * @return The index finger.
+   */
   public Finger indexFinger() {
     return this.fingers[1];
   }
@@ -83,7 +92,7 @@ public class Hand implements Displayable {
    *          The OpenGL object from which to get a handle (which is just a
    *          unique integer) for a call list.
    */
-  public void init(final GL gl) {
+  public void initialize(final GL gl) {
     this.displayListHandle = gl.glGenLists(1);
 
     // create an ellipsoid by scaling a sphere
@@ -97,24 +106,42 @@ public class Hand implements Displayable {
 
     // initialize each finger
     for (final Finger finger : this.fingers) {
-      finger.init(gl);
+      finger.initialize(gl);
     }
-
-    this.update(gl);
   }
 
+  /**
+   * Gets the middle finger.
+   * 
+   * @return The middle finger.
+   */
   public Finger middleFinger() {
     return this.fingers[2];
   }
 
+  /**
+   * Gets the pinky finger.
+   * 
+   * @return The pinky finger.
+   */
   public Finger pinkyFinger() {
     return this.fingers[4];
   }
 
+  /**
+   * Gets the ring finger.
+   * 
+   * @return The ring finger.
+   */
   public Finger ringFinger() {
     return this.fingers[3];
   }
 
+  /**
+   * Gets the thumb.
+   * 
+   * @return The thumb.
+   */
   public Finger thumb() {
     return this.fingers[0];
   }
@@ -129,5 +156,7 @@ public class Hand implements Displayable {
     for (final Finger finger : this.fingers) {
       finger.update(gl);
     }
+    
+    
   }
 }

@@ -76,7 +76,7 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
   /** The OpenGL utility toolkit object. */
   private final GLUT glut = new GLUT();
   /** The hand model which will be changed by keyboard and mouse presses. */
-  private final Hand hand = new Hand(this.glut);
+  private final Hand hand = new Hand();
   /** The last x and y coordinates of the mouse press. */
   private int last_x = 0, last_y = 0;
   /** Whether the world is being rotated. */
@@ -86,7 +86,7 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
   /** The currently selected fingers, on which to select joints to rotate. */
   private final Set<Finger> selectedFingers = new HashSet<Finger>();
   /** The currently selected joints to rotate. */
-  private final Set<Joint> selectedJoints = new HashSet<Joint>();
+  private final Set<RotatableComponent> selectedJoints = new HashSet<RotatableComponent>();
   /** Whether the state of the model has been changed. */
   private boolean stateChanged = true;
   /** The quaternion which controls the rotation of the world. */
@@ -178,6 +178,7 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
     final GL gl = drawable.getGL();
 
     // perform any initialization needed by the hand model
+    this.hand.setGlut(this.glut);
     this.hand.initialize(gl);
 
     // set up for shaded display of the hand
@@ -216,15 +217,15 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
     switch (key.getKeyCode()) {
     case KeyEvent.VK_KP_UP:
     case KeyEvent.VK_UP:
-      for (final Joint joint : this.selectedJoints) {
-        joint.rotate(this.selectedAxis, ROTATION_ANGLE);
+      for (final RotatableComponent component : this.selectedJoints) {
+        component.rotate(this.selectedAxis, ROTATION_ANGLE);
       }
       this.stateChanged = true;
       break;
     case KeyEvent.VK_KP_DOWN:
     case KeyEvent.VK_DOWN:
-      for (final Joint joint : this.selectedJoints) {
-        joint.rotate(this.selectedAxis, -ROTATION_ANGLE);
+      for (final RotatableComponent component : this.selectedJoints) {
+        component.rotate(this.selectedAxis, -ROTATION_ANGLE);
       }
       this.stateChanged = true;
       break;
@@ -357,6 +358,8 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
    * 
    * 5 : toggle the fifth finger active in rotation
    * 
+   * H : toggle the hand for rotation
+   * 
    * X : use the X axis rotation at the active joint(s)
    * 
    * Y : use the Y axis rotation at the active joint(s)
@@ -470,6 +473,18 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
       this.stateChanged = true;
       break;
 
+      // toggle the hand for rotation
+    case 'H':
+    case 'h':
+      if (this.selectedJoints.contains(this.hand)) {
+        this.selectedJoints.remove(this.hand);
+        this.hand.setColor(FloatColor.ORANGE);
+      } else {
+        this.selectedJoints.add(this.hand);
+        this.hand.setColor(FloatColor.RED);
+      }
+      break;
+      
     // select joint
     case 'D':
     case 'd':

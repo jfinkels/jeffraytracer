@@ -33,7 +33,7 @@ import com.sun.opengl.util.GLUT;
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2008
  */
-public class Hand implements UpdatingDisplayable {
+public class Hand extends RotatableComponent implements UpdatingDisplayable, Colorable {
 
   /** The OpenGL handle (integer) for the OpenGL call list object. */
   private int displayListHandle;
@@ -42,16 +42,29 @@ public class Hand implements UpdatingDisplayable {
       new Finger(-.2, 0, .7), new Finger(0.1, 0, .7), new Finger(0.4, 0, 0.7),
       new Thumb(0.5, 0, 0) };
   /** The OpenGL utility toolkit object. */
-  private final GLUT glut;
+  private GLUT glut = null;
+  
+  private FloatColor color = FloatColor.ORANGE;
+  
+  public void setColor(final FloatColor color) {
+    this.color = color;
+  }
 
   /**
-   * Instantiates this hand with access to the specified OpenGL utility toolkit
-   * object.
-   * 
-   * @param glut
-   *          The OpenGL utility toolkit object.
+   * Instantiates this hand.
    */
-  public Hand(final GLUT glut) {
+  public Hand() {
+
+    // set limits on how far the wrist can bend
+    this.setXPositiveExtent(70);
+    this.setXNegativeExtent(-90);
+    this.setYPositiveExtent(15);
+    this.setYNegativeExtent(-15);
+    this.setZPositiveExtent(0);
+    this.setZNegativeExtent(0);
+  }
+    
+  public void setGlut(final GLUT glut) {
     this.glut = glut;
     for (final Finger finger : this.fingers) {
       finger.setGlut(glut);
@@ -92,17 +105,8 @@ public class Hand implements UpdatingDisplayable {
    *          The OpenGL object from which to get a handle (which is just a
    *          unique integer) for a call list.
    */
-  public void initialize(final GL gl) {
+  public void initialize(final GL gl) {    
     this.displayListHandle = gl.glGenLists(1);
-
-    // create an ellipsoid by scaling a sphere
-    gl.glNewList(this.displayListHandle, GL.GL_COMPILE);
-    gl.glPushMatrix();
-    gl.glColor3f(0.8f, 0.5f, 0.2f);
-    gl.glScalef(1.0f, 1.0f, 0.5f);
-    this.glut.glutSolidSphere(1, 36, 18);
-    gl.glPopMatrix();
-    gl.glEndList();
 
     // initialize each finger
     for (final Finger finger : this.fingers) {
@@ -157,6 +161,31 @@ public class Hand implements UpdatingDisplayable {
       finger.update(gl);
     }
     
+    if (this.glut == null) {
+      throw new RuntimeException(
+          "The GLUT object must be set on this joint before updating the joint model.");
+    }
+        
+    gl.glNewList(this.displayListHandle, GL.GL_COMPILE);
+
+    gl.glPushMatrix();
     
+    // rotate around x axis
+    gl.glRotated(this.xAngle(), 1, 0, 0);
+    // rotate around y axis
+    gl.glRotated(this.yAngle(), 0, 1, 0);
+    // rotate around z axis
+    gl.glRotated(this.zAngle(), 0, 0, 1);
+    
+    gl.glPushMatrix();
+    gl.glColor3f(0.8f, 0.5f, 0.2f);
+    // create an ellipsoid by scaling a sphere
+    gl.glScalef(1.0f, 1.0f, 0.5f);
+    this.glut.glutSolidSphere(1, 36, 18);
+    gl.glPopMatrix();
+    
+    gl.glPopMatrix();
+    
+    gl.glEndList();
   }
 }

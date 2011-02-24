@@ -52,6 +52,18 @@ public class Joint extends RotatableComponent implements Colorable, Displayable 
       final double radius, final double height) {
     this.cylinder = new SolidCylinder(x, y, z, radius, height, NUM_STEPS);
   }
+  
+  protected double x() {
+    return this.cylinder.x();
+  }
+  
+  protected double y() {
+    return this.cylinder.y();
+  }
+  
+  protected double z() {
+    return this.cylinder.z();
+  }
 
   private final SolidCylinder cylinder;
 

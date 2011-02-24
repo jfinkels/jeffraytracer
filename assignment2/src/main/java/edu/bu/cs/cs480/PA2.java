@@ -76,7 +76,9 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
   /** The OpenGL utility toolkit object. */
   private final GLUT glut = new GLUT();
   /** The hand model which will be changed by keyboard and mouse presses. */
-  private final Hand hand = new Hand();
+  // private final Hand hand = new Hand();
+  /** The arm model which will be changed by keyboard and mouse presses. */
+  private final Arm arm = new Arm(0, 0, 0, 0.5, 5);
   /** The last x and y coordinates of the mouse press. */
   private int last_x = 0, last_y = 0;
   /** Whether the world is being rotated. */
@@ -145,14 +147,18 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
     // update the position of the hand if it needs to be updated
     // TODO only need to update the positions of the selected fingers
     if (this.stateChanged) {
-      this.hand.update(gl);
+      // this.arm.update(gl);
+      //this.hand.update(gl);
+      this.forearm.update(gl);
       this.stateChanged = false;
     }
 
     // draw the hand
-    this.hand.draw(gl);
+    // this.arm.draw(gl);
+    //this.hand.draw(gl);
+    this.forearm.draw(gl);
   }
-
+private Forearm forearm = this.arm.forearm();
   /**
    * This method is intentionally unimplemented.
    * 
@@ -178,8 +184,12 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
     final GL gl = drawable.getGL();
 
     // perform any initialization needed by the hand model
-    this.hand.setGlut(this.glut);
-    this.hand.initialize(gl);
+    // this.arm.setGlut(this.glut);
+    // this.arm.initialize(gl);
+     this.arm.forearm().setGlut(this.glut);
+     this.arm.forearm().initialize(gl);
+    //this.hand.setGlut(this.glut);
+    //this.hand.initialize(gl);
 
     // set up for shaded display of the hand
     final float light0_position[] = { 1, 1, 1, 0 };
@@ -243,6 +253,8 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
   public void keyReleased(final KeyEvent key) {
     // intentionally unimplemented
   }
+
+  private final Hand hand = this.arm.hand();
 
   /**
    * Prints the angles of each joint in each finger of the hand for debugging
@@ -358,7 +370,11 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
    * 
    * 5 : toggle the fifth finger active in rotation
    * 
-   * H : toggle the hand for rotation
+   * 6 : toggle the hand for rotation
+   * 
+   * 7 : toggle the forearm for rotation
+   * 
+   * 8 : toggle the upper arm for rotation
    * 
    * X : use the X axis rotation at the active joint(s)
    * 
@@ -402,7 +418,7 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
     // set the state of the hand to the next test case
     case 'T':
     case 't':
-      
+
       break;
 
     // set the viewing quaternion to 0 rotation
@@ -473,9 +489,8 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
       this.stateChanged = true;
       break;
 
-      // toggle the hand for rotation
-    case 'H':
-    case 'h':
+    // toggle the hand for rotation
+    case '6':
       if (this.selectedJoints.contains(this.hand)) {
         this.selectedJoints.remove(this.hand);
         this.hand.setColor(FloatColor.ORANGE);
@@ -483,8 +498,33 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
         this.selectedJoints.add(this.hand);
         this.hand.setColor(FloatColor.RED);
       }
+      this.stateChanged = true;
       break;
-      
+
+    // toggle the forearm for rotation
+    case '7':
+      if (this.selectedJoints.contains(this.arm.forearm())) {
+        this.selectedJoints.remove(this.arm.forearm());
+        this.arm.forearm().setColor(FloatColor.ORANGE);
+      } else {
+        this.selectedJoints.add(this.arm.forearm());
+        this.arm.forearm().setColor(FloatColor.RED);
+      }
+      this.stateChanged = true;
+      break;
+
+    // toggle the upper arm for rotation
+    case '8':
+      if (this.selectedJoints.contains(this.arm)) {
+        this.selectedJoints.remove(this.arm);
+        this.arm.setColor(FloatColor.ORANGE);
+      } else {
+        this.selectedJoints.add(this.arm);
+        this.arm.setColor(FloatColor.RED);
+      }
+      this.stateChanged = true;
+      break;
+
     // select joint
     case 'D':
     case 'd':

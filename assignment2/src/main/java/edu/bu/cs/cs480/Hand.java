@@ -33,7 +33,8 @@ import com.sun.opengl.util.GLUT;
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2008
  */
-public class Hand extends RotatableComponent implements UpdatingDisplayable, Colorable {
+public class Hand extends RotatableComponent implements UpdatingDisplayable,
+    Colorable {
 
   /** The OpenGL handle (integer) for the OpenGL call list object. */
   private int displayListHandle;
@@ -43,27 +44,38 @@ public class Hand extends RotatableComponent implements UpdatingDisplayable, Col
       new Thumb(0.5, 0, 0) };
   /** The OpenGL utility toolkit object. */
   private GLUT glut = null;
-  
+
   private FloatColor color = FloatColor.ORANGE;
-  
+
   public void setColor(final FloatColor color) {
     this.color = color;
   }
 
+  private final double x;
+  private final double y;
+  private final double z;
+
   /**
    * Instantiates this hand.
    */
-  public Hand() {
-
+  public Hand(final double x, final double y, final double z) {
+    this.x = x;
+    this.y = y;
+    this.z = z;
+    
     // set limits on how far the wrist can bend
     this.setXPositiveExtent(70);
     this.setXNegativeExtent(-90);
-    this.setYPositiveExtent(15);
-    this.setYNegativeExtent(-15);
-    this.setZPositiveExtent(0);
-    this.setZNegativeExtent(0);
+    this.setYPositiveExtent(0);
+    this.setYNegativeExtent(0);
+    this.setZPositiveExtent(15);
+    this.setZNegativeExtent(-15);
   }
-    
+  
+  double x() { return this.x; }
+  double y() {return this.y;}
+  double z() {return this.z;}
+
   public void setGlut(final GLUT glut) {
     this.glut = glut;
     for (final Finger finger : this.fingers) {
@@ -81,9 +93,6 @@ public class Hand extends RotatableComponent implements UpdatingDisplayable, Col
    */
   public void draw(final GL gl) {
     gl.glCallList(this.displayListHandle);
-    for (final Finger finger : this.fingers) {
-      finger.draw(gl);
-    }
   }
 
   /**
@@ -105,7 +114,7 @@ public class Hand extends RotatableComponent implements UpdatingDisplayable, Col
    *          The OpenGL object from which to get a handle (which is just a
    *          unique integer) for a call list.
    */
-  public void initialize(final GL gl) {    
+  public void initialize(final GL gl) {
     this.displayListHandle = gl.glGenLists(1);
 
     // initialize each finger
@@ -157,35 +166,48 @@ public class Hand extends RotatableComponent implements UpdatingDisplayable, Col
    *          The OpenGL object with which to draw the hand and fingers.
    */
   public void update(final GL gl) {
+
+    // update the state of each of the fingers
     for (final Finger finger : this.fingers) {
       finger.update(gl);
     }
-    
+
     if (this.glut == null) {
       throw new RuntimeException(
           "The GLUT object must be set on this joint before updating the joint model.");
     }
-        
+
     gl.glNewList(this.displayListHandle, GL.GL_COMPILE);
 
     gl.glPushMatrix();
-    
+
+    // push the current color
+    gl.glPushAttrib(GL.GL_CURRENT_BIT);
+    gl.glColor3f(this.color.red(), this.color.green(), this.color.blue());
+
     // rotate around x axis
     gl.glRotated(this.xAngle(), 1, 0, 0);
     // rotate around y axis
     gl.glRotated(this.yAngle(), 0, 1, 0);
     // rotate around z axis
     gl.glRotated(this.zAngle(), 0, 0, 1);
-    
+
+    // create an ellipsoid for the palm by scaling a sphere
     gl.glPushMatrix();
-    gl.glColor3f(0.8f, 0.5f, 0.2f);
-    // create an ellipsoid by scaling a sphere
     gl.glScalef(1.0f, 1.0f, 0.5f);
     this.glut.glutSolidSphere(1, 36, 18);
     gl.glPopMatrix();
-    
+
+    // draw the fingers
+    for (final Finger finger : this.fingers) {
+      finger.draw(gl);
+    }
+
+    // pop the current color
+    gl.glPopAttrib();
+
     gl.glPopMatrix();
-    
+
     gl.glEndList();
   }
 }

@@ -174,7 +174,7 @@ public class SolidCylinder implements Displayable {
    * 
    * @return The radius of this cylinder.
    */
-  protected double radius() {
+  public double radius() {
     return this.radius;
   }
 
@@ -185,7 +185,7 @@ public class SolidCylinder implements Displayable {
    * @return The x component of the position of the center of the base of this
    *         cylinder.
    */
-  protected double x() {
+  public double x() {
     return this.x;
   }
 
@@ -196,10 +196,14 @@ public class SolidCylinder implements Displayable {
    * @return The y component of the position of the center of the base of this
    *         cylinder.
    */
-  protected double y() {
+  public double y() {
     return this.y;
   }
 
+  public double z() {
+    return this.z_bottom;    
+  }
+  
   /**
    * Gets the z component of the position of the center of the top of this
    * cylinder.

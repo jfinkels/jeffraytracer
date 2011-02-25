@@ -1,5 +1,5 @@
 /**
- * 
+ * Component.java - an object with a position, rotation, and children
  */
 package edu.bu.cs.cs480;
 
@@ -9,7 +9,10 @@ import java.util.Set;
 import javax.media.opengl.GL;
 
 /**
+ * An object which can draw itself.
+ * 
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
+ * @since Spring 2011
  */
 public class Component implements Rotatable, UpdatingDisplayable, Colorable {
   /** The handle to the OpenGL call list to use to draw this component. */
@@ -30,19 +33,19 @@ public class Component implements Rotatable, UpdatingDisplayable, Colorable {
   /** The minimum angle to which this joint can be rotated around the x axis. */
   private double xNegativeExtent = 0;
   /** The maximum angle to which this joint can be rotated around the x axis. */
-  private double xPositiveExtent = 180;
+  private double xPositiveExtent = 360;
   /** The current angle at which this joint is rotated around the y axis. */
   private double yAngle = 0.0;
   /** The minimum angle to which this joint can be rotated around the y axis. */
   private double yNegativeExtent = 0;
   /** The maximum angle to which this joint can be rotated around the y axis. */
-  private double yPositiveExtent = 180;
+  private double yPositiveExtent = 360;
   /** The current angle at which this joint is rotated around the z axis. */
   private double zAngle = 0.0;
   /** The minimum angle to which this joint can be rotated around the z axis. */
   private double zNegativeExtent = 0;
   /** The maximum angle to which this joint can be rotated around the z axis. */
-  private double zPositiveExtent = 180;
+  private double zPositiveExtent = 360;
 
   /**
    * Instantiates this component with the specified position and the displayable
@@ -58,6 +61,10 @@ public class Component implements Rotatable, UpdatingDisplayable, Colorable {
     this.displayable = displayable;
   }
 
+  public Component(final Point3D position) {
+    this(position, null);
+  }
+
   /**
    * Adds the specified child to the set of children of this component.
    * 
@@ -66,6 +73,12 @@ public class Component implements Rotatable, UpdatingDisplayable, Colorable {
    */
   public void addChild(final Component component) {
     this.children.add(component);
+  }
+
+  public void addChildren(final Component... components) {
+    for (final Component component : components) {
+      this.addChild(component);
+    }
   }
 
   /**
@@ -95,6 +108,11 @@ public class Component implements Rotatable, UpdatingDisplayable, Colorable {
   public void initialize(final GL gl) {
     // create a new OpenGL call list handle
     this.callListHandle = gl.glGenLists(1);
+
+    // initialize the displayable object which this component represents
+    if (this.displayable != null) {
+      this.displayable.initialize(gl);
+    }
 
     // initialize each of the children of this component
     for (final Component child : this.children) {
@@ -228,13 +246,13 @@ public class Component implements Rotatable, UpdatingDisplayable, Colorable {
    */
   @Override
   public void update(final GL gl) {
-
     // update each of the children of this component
     for (final Component child : this.children) {
       child.update(gl);
     }
 
     gl.glNewList(this.callListHandle, GL.GL_COMPILE);
+    gl.glPushMatrix();
 
     // translate this component to where it will be located in the scene last
     gl.glTranslated(this.position.x(), this.position.y(), this.position.z());
@@ -245,16 +263,19 @@ public class Component implements Rotatable, UpdatingDisplayable, Colorable {
     gl.glRotated(this.zAngle, 0, 0, 1);
 
     // draw the displayable which this component represents in its color
-    gl.glPushAttrib(GL.GL_CURRENT_BIT);
-    gl.glColor3f(this.color.red(), this.color.green(), this.color.blue());
-    this.displayable.draw(gl);
-    gl.glPopAttrib();
+    if (this.displayable != null) {
+      gl.glPushAttrib(GL.GL_CURRENT_BIT);
+      gl.glColor3f(this.color.red(), this.color.green(), this.color.blue());
+      this.displayable.draw(gl);
+      gl.glPopAttrib();
+    }
 
     // draw all the children of this component
     for (final Component child : this.children) {
       child.draw(gl);
     }
 
+    gl.glPopMatrix();
     gl.glEndList();
   }
 

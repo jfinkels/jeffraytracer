@@ -43,12 +43,32 @@ public class SolidCylinder implements Displayable {
   /** The points which are normal to the edges of the approximated circle. */
   private final ArrayList<Point3D> circleNormal = new ArrayList<Point3D>();
   /** The OpenGL utility toolkit object to use for drawing a sphere. */
-  private GLUT glut = null;
+  private final GLUT glut;
   /** The height of this cylinder. */
   private final double height;
-
   /** The radius of this cylinder. */
   private final double radius;
+  /**
+   * The default number of steps for approximating the circumference of this
+   * cylinder.
+   */
+  public static final int DEFAULT_APPROXIMATION_STEPS = 50;
+
+  /**
+   * Instantiates this cylinder with center of bottom base at (0, 0, 0) with the
+   * specified radius and height.
+   * 
+   * @param radius
+   *          The radius of the cylinder.
+   * @param height
+   *          The height of the cylinder.
+   * @param glut
+   *          The OpenGL utility toolkit to use for drawing the sphere at the
+   *          top of the cylinder.
+   */
+  public SolidCylinder(final double radius, final double height, final GLUT glut) {
+    this(radius, height, glut, DEFAULT_APPROXIMATION_STEPS);
+  }
 
   /**
    * Instantiates this cylinder with center of bottom base at (0, 0, 0) with the
@@ -62,14 +82,18 @@ public class SolidCylinder implements Displayable {
    *          The radius of the cylinder.
    * @param height
    *          The height of the cylinder.
+   * @param glut
+   *          The OpenGL utility toolkit to use for drawing the sphere at the
+   *          top of the cylinder.
    * @param approximationSteps
    *          The number of subdivisions to use when approximating the sides of
    *          the cylinder.
    */
   public SolidCylinder(final double radius, final double height,
-      final int approximationSteps) {
+      final GLUT glut, final int approximationSteps) {
     this.radius = radius;
     this.height = height;
+    this.glut = glut;
 
     // compute the points which approximate the circle
     final double twoPi = 2 * Math.PI;
@@ -111,7 +135,8 @@ public class SolidCylinder implements Displayable {
     Point3D n = null;
 
     gl.glNewList(this.callListHandle, GL.GL_COMPILE);
-
+    gl.glPushMatrix();
+    
     // begin a triangle strip for the sides of the cylinder
     gl.glBegin(GL.GL_TRIANGLE_STRIP);
     for (int i = 0; i < this.circle.size(); i++) {
@@ -163,6 +188,7 @@ public class SolidCylinder implements Displayable {
     this.glut.glutSolidSphere(this.radius, 36, 18);
     gl.glPopMatrix();
 
+    gl.glPopMatrix();
     gl.glEndList();
   }
 
@@ -172,8 +198,8 @@ public class SolidCylinder implements Displayable {
    * @param glut
    *          The OpenGL utility toolkit object.
    */
-  public void setGlut(final GLUT glut) {
-    this.glut = glut;
-  }
+  // public void setGlut(final GLUT glut) {
+  // this.glut = glut;
+  // }
 
 }

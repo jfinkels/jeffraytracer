@@ -31,19 +31,19 @@ public class Component implements Rotatable, UpdatingDisplayable, Colorable {
   /** The current angle at which this joint is rotated around the x axis. */
   private double xAngle = 0.0;
   /** The minimum angle to which this joint can be rotated around the x axis. */
-  private double xNegativeExtent = 0;
+  private double xNegativeExtent = -360;
   /** The maximum angle to which this joint can be rotated around the x axis. */
   private double xPositiveExtent = 360;
   /** The current angle at which this joint is rotated around the y axis. */
   private double yAngle = 0.0;
   /** The minimum angle to which this joint can be rotated around the y axis. */
-  private double yNegativeExtent = 0;
+  private double yNegativeExtent = -360;
   /** The maximum angle to which this joint can be rotated around the y axis. */
   private double yPositiveExtent = 360;
   /** The current angle at which this joint is rotated around the z axis. */
   private double zAngle = 0.0;
   /** The minimum angle to which this joint can be rotated around the z axis. */
-  private double zNegativeExtent = 0;
+  private double zNegativeExtent = -360;
   /** The maximum angle to which this joint can be rotated around the z axis. */
   private double zPositiveExtent = 360;
 

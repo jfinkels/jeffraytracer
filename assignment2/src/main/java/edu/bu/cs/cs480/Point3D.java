@@ -35,7 +35,9 @@ public class Point3D {
   private final double y;
   /** The z component of this point. */
   private final double z;
-
+  /** The origin, (0, 0, 0). */
+  public static final Point3D ORIGIN = new Point3D(0, 0, 0);
+  
   /**
    * Instantiates this point with the three specified components.
    * 

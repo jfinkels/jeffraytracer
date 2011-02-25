@@ -22,75 +22,88 @@ import java.util.ArrayList;
 
 import javax.media.opengl.GL;
 
+import com.sun.opengl.util.GLUT;
+
 /**
- * A solid cylinder which provides methods for drawing using OpenGL.
+ * A solid cylinder with a rounded top which provides methods for drawing using
+ * OpenGL.
  * 
  * @author Tai-Peng Tian <tiantp@gmail.com>
+ * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2008
  */
 public class SolidCylinder implements Displayable {
-  /** The points along the edges of the approximated circle. */
-  private final ArrayList<Point3D> circle2D = new ArrayList<Point3D>();
-  /** The points which are normal to the edges of the approximated circle. */
-  private final ArrayList<Point3D> circle2D_normal = new ArrayList<Point3D>();
   /**
    * The OpenGL handle to the display list which contains all the components
    * which comprise this cylinder.
    */
-  private int displayListHandle;
+  private int callListHandle;
+  /** The points along the edges of the approximated circle. */
+  private final ArrayList<Point3D> circle = new ArrayList<Point3D>();
+  /** The points which are normal to the edges of the approximated circle. */
+  private final ArrayList<Point3D> circleNormal = new ArrayList<Point3D>();
+  /** The OpenGL utility toolkit object to use for drawing a sphere. */
+  private final GLUT glut;
+  /** The height of this cylinder. */
+  private final double height;
   /** The radius of this cylinder. */
   private final double radius;
-  /** The x component of the position of the base of this cylinder. */
-  private final double x;
-  /** The y component of the position of the base of this cylinder. */
-  private final double y;
-  /** The z component of the bottom face of the cylinder. */
-  private final double z_bottom;
-  /** The z component of the top face of the cylinder. */
-  private final double z_top;
+  /**
+   * The default number of steps for approximating the circumference of this
+   * cylinder.
+   */
+  public static final int DEFAULT_APPROXIMATION_STEPS = 50;
 
   /**
-   * Instantiates this cylinder with center of bottom base at (tx, ty, tz) with
-   * the specified radius and height.
+   * Instantiates this cylinder with center of bottom base at (0, 0, 0) with the
+   * specified radius and height.
    * 
-   * The n_subdivision_steps parameter specifies the number of triangle
-   * subdivisions to use when approximating the sides of the cylinder. A higher
-   * number means more triangles and therefore a smoother cylinder.
-   * 
-   * @param tx
-   *          The x component of the center of the bottom base of the cylinder.
-   * @param ty
-   *          The y component of the center of the bottom base of the cylinder.
-   * @param tz
-   *          The z component of the center of the bottom base of the cylinder.
    * @param radius
    *          The radius of the cylinder.
    * @param height
    *          The height of the cylinder.
-   * @param n_subdivision_steps
-   *          The number of triangle subdivisions to use when approximating the
-   *          sides of the cylinder.
+   * @param glut
+   *          The OpenGL utility toolkit to use for drawing the sphere at the
+   *          top of the cylinder.
    */
-  public SolidCylinder(final double tx, final double ty, final double tz,
-      final double radius, final double height, final int n_subdivision_steps) {
+  public SolidCylinder(final double radius, final double height, final GLUT glut) {
+    this(radius, height, glut, DEFAULT_APPROXIMATION_STEPS);
+  }
 
-    // cylinder is centered at (0,0,0) and aligned along Z-axis
-    this.z_bottom = tz;
-    this.z_top = this.z_bottom + height;
+  /**
+   * Instantiates this cylinder with center of bottom base at (0, 0, 0) with the
+   * specified radius and height.
+   * 
+   * The approximationSteps parameter specifies the number of subdivisions to
+   * use when approximating the sides of the cylinder. A higher number means a
+   * smoother cylinder.
+   * 
+   * @param radius
+   *          The radius of the cylinder.
+   * @param height
+   *          The height of the cylinder.
+   * @param glut
+   *          The OpenGL utility toolkit to use for drawing the sphere at the
+   *          top of the cylinder.
+   * @param approximationSteps
+   *          The number of subdivisions to use when approximating the sides of
+   *          the cylinder.
+   */
+  public SolidCylinder(final double radius, final double height,
+      final GLUT glut, final int approximationSteps) {
+    this.radius = radius;
+    this.height = height;
+    this.glut = glut;
 
-    // Approximation of the 2D circle with polyline
-    final double d_theta = 2 * 3.1415926 / n_subdivision_steps;
-    for (double theta = 0; theta < 2 * Math.PI; theta += d_theta) {
+    // compute the points which approximate the circle
+    final double twoPi = 2 * Math.PI;
+    final double increment = twoPi / approximationSteps;
+    for (double theta = 0; theta < twoPi; theta += increment) {
       final Point3D normal = new Point3D(radius * Math.cos(theta), radius
           * Math.sin(theta), 0);
-      this.circle2D_normal.add(normal);
-      this.circle2D.add(new Point3D(normal.x() + tx, normal.y() + ty, 1));
-      theta += d_theta;
+      this.circleNormal.add(normal);
+      this.circle.add(new Point3D(normal.x(), normal.y(), 1));
     }
-
-    this.radius = radius;
-    this.x = tx;
-    this.y = ty;
   }
 
   /**
@@ -101,117 +114,92 @@ public class SolidCylinder implements Displayable {
    *          The OpenGL object with which to draw the cylinder.
    */
   public void draw(final GL gl) {
-    gl.glCallList(this.displayListHandle);
+    gl.glCallList(this.callListHandle);
   }
 
   /**
    * Initializes the GL call lists which make up the components of this cylinder
    * using the specified OpenGL object.
    * 
+   * Pre-condition: the {@link #glut} member is not {@code null}
+   * 
    * @param gl
    *          The OpenGL object on which to create the call lists which comprise
    *          this cylinder.
    */
   public void initialize(final GL gl) {
-    this.displayListHandle = gl.glGenLists(1);
+    this.callListHandle = gl.glGenLists(1);
 
-    gl.glNewList(this.displayListHandle, GL.GL_COMPILE);
+    // temporary variables for iterating over points in circle and circleNormal
+    Point3D p = null;
+    Point3D n = null;
 
-    Point3D n, p; // temp variables to store retrieved obj from ArrayList
-
+    gl.glNewList(this.callListHandle, GL.GL_COMPILE);
+    gl.glPushMatrix();
+    
     // begin a triangle strip for the sides of the cylinder
     gl.glBegin(GL.GL_TRIANGLE_STRIP);
-    for (int i = 0; i < this.circle2D.size(); i++) {
-      n = this.circle2D_normal.get(i);
-      p = this.circle2D.get(i);
+    for (int i = 0; i < this.circle.size(); i++) {
+      p = this.circle.get(i);
+      n = this.circleNormal.get(i);
 
       gl.glNormal3d(n.x(), n.y(), 0);
-      gl.glVertex3d(p.x(), p.y(), this.z_bottom);
+      gl.glVertex3d(p.x(), p.y(), 0);
       gl.glNormal3d(n.x(), n.y(), 0);
-      gl.glVertex3d(p.x(), p.y(), this.z_top);
+      gl.glVertex3d(p.x(), p.y(), this.height);
     }
 
-    n = this.circle2D_normal.get(0);
-    p = this.circle2D.get(0);
+    n = this.circleNormal.get(0);
+    p = this.circle.get(0);
     gl.glNormal3d(n.x(), n.y(), 0);
-    gl.glVertex3d(p.x(), p.y(), this.z_bottom);
+    gl.glVertex3d(p.x(), p.y(), 0);
     gl.glNormal3d(n.x(), n.y(), 0);
-    gl.glVertex3d(p.x(), p.y(), this.z_top);
+    gl.glVertex3d(p.x(), p.y(), this.height);
 
     gl.glEnd(); // end the sides of the cylinder
 
     // begin a polygon which approximates the top of the cylinder
     gl.glBegin(GL.GL_POLYGON);
-    for (int i = 0; i < this.circle2D.size(); i++) {
-      p = this.circle2D.get(i);
-      gl.glVertex3d(p.x(), p.y(), this.z_top);
+    for (final Point3D point : this.circle) {
+      gl.glVertex3d(point.x(), point.y(), this.height);
       gl.glNormal3d(0, 0, 1);
     }
-    p = this.circle2D.get(0);
-    gl.glVertex3d(p.x(), p.y(), this.z_top);
+    p = this.circle.get(0);
+    gl.glVertex3d(p.x(), p.y(), this.height);
     gl.glNormal3d(0, 0, 1);
 
     gl.glEnd(); // end the top of the cylinder
 
     // begin a polygon which approximates the bottom of the cylinder
     gl.glBegin(GL.GL_POLYGON);
-    for (int i = 0; i < this.circle2D.size(); i++) {
-      p = this.circle2D.get(i);
-      gl.glVertex3d(p.x(), p.y(), this.z_bottom);
+    for (final Point3D point : this.circle) {
+      gl.glVertex3d(point.x(), point.y(), 0);
       gl.glNormal3d(0, 0, 1);
     }
-    p = this.circle2D.get(0);
-    gl.glVertex3d(p.x(), p.y(), this.z_bottom);
+    p = this.circle.get(0);
+    gl.glVertex3d(p.x(), p.y(), 0);
     gl.glNormal3d(0, 0, 1);
 
     gl.glEnd(); // end the bottom of the cylinder
 
+    // draw the rounded top
+    gl.glPushMatrix();
+    gl.glTranslated(0, 0, this.height);
+    this.glut.glutSolidSphere(this.radius, 36, 18);
+    gl.glPopMatrix();
+
+    gl.glPopMatrix();
     gl.glEndList();
   }
 
   /**
-   * Gets the radius of this cylinder.
+   * Set the GLUT object for drawing a sphere.
    * 
-   * @return The radius of this cylinder.
+   * @param glut
+   *          The OpenGL utility toolkit object.
    */
-  public double radius() {
-    return this.radius;
-  }
+  // public void setGlut(final GLUT glut) {
+  // this.glut = glut;
+  // }
 
-  /**
-   * Gets the x component of the position of the center of the base of this
-   * cylinder.
-   * 
-   * @return The x component of the position of the center of the base of this
-   *         cylinder.
-   */
-  public double x() {
-    return this.x;
-  }
-
-  /**
-   * Gets the y component of the position of the center of the base of this
-   * cylinder.
-   * 
-   * @return The y component of the position of the center of the base of this
-   *         cylinder.
-   */
-  public double y() {
-    return this.y;
-  }
-
-  public double z() {
-    return this.z_bottom;    
-  }
-  
-  /**
-   * Gets the z component of the position of the center of the top of this
-   * cylinder.
-   * 
-   * @return The z component of the position of the center of the top of this
-   *         cylinder.
-   */
-  protected double zTop() {
-    return this.z_top;
-  }
 }

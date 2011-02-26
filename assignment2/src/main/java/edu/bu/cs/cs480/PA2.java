@@ -152,7 +152,7 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
   /** Randomly generated serial version UID. */
   private static final long serialVersionUID = -7060944143920496524L;
   /** The height of the upper arm. */
-  public static final double UPPER_ARM_HEIGHT = 1.5;
+  public static final double UPPER_ARM_HEIGHT = 1.8;
 
   /**
    * Runs the hand simulation in a single JFrame.
@@ -377,7 +377,7 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
         new RoundedCylinder(FINGER_RADIUS, PALM_JOINT_HEIGHT, this.glut));
     final Component palm4 = new Component(new Point3D(0.3, 0, 0.75),
         new RoundedCylinder(FINGER_RADIUS, PALM_JOINT_HEIGHT, this.glut));
-    final Component palm5 = new Component(new Point3D(0.5, 0, 0),
+    final Component palm5 = new Component(new Point3D(0.24, 0, 0.23),
         new RoundedCylinder(FINGER_RADIUS, PALM_JOINT_HEIGHT, this.glut));
 
     // put together the fingers for easier selection by keyboard input later on

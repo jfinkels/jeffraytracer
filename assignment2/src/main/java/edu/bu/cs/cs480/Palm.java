@@ -13,19 +13,32 @@ import com.sun.opengl.util.GLUT;
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
-public class Palm implements Displayable {
+public class Palm extends Circular implements Displayable {
 
-  private final double radius;
-  private final GLUT glut;
+  /**
+   * The OpenGL handle to the display list which contains all the components
+   * which comprise this cylinder.
+   */
+  private int callListHandle;
 
+  /**
+   * Instantiates this object with the specified radius and OpenGL utility
+   * toolkit object for drawing the sphere.
+   * 
+   * @param radius
+   *          The radius of this object.
+   * @param glut
+   *          The OpenGL utility toolkit object for drawing the sphere.
+   */
   public Palm(final double radius, final GLUT glut) {
-    this.radius = radius;
-    this.glut = glut;
+    super(radius, glut);
   }
 
-  /*
-   * (non-Javadoc)
+  /**
+   * {@inheritDoc}
    * 
+   * @param gl
+   *          {@inheritDoc}
    * @see edu.bu.cs.cs480.Displayable#draw(javax.media.opengl.GL)
    */
   @Override
@@ -33,10 +46,11 @@ public class Palm implements Displayable {
     gl.glCallList(this.callListHandle);
   }
 
-  private int callListHandle;
-
-  /*
-   * (non-Javadoc)
+  /**
+   * Defines the OpenGL call list which draws a scaled sphere.
+   * 
+   * @param gl
+   *          {@inheritDoc}
    * 
    * @see edu.bu.cs.cs480.Displayable#initialize(javax.media.opengl.GL)
    */
@@ -47,11 +61,11 @@ public class Palm implements Displayable {
     // create an ellipsoid for the palm by scaling a sphere
     gl.glNewList(this.callListHandle, GL.GL_COMPILE);
     gl.glPushMatrix();
-    // position this so that the sphere is drawn above the x-y plane, not at the
-    // origin
-    gl.glTranslated(0, 0, this.radius);
-    gl.glScalef(0.8f, 0.5f, 1);
-    this.glut.glutSolidSphere(this.radius, 36, 18);
+    // position this so that the sphere is drawn above the x-y plane, not at
+    // the origin
+    gl.glTranslated(0, 0, this.radius());
+    gl.glScalef(0.9f, 0.5f, 1);
+    this.glut().glutSolidSphere(this.radius(), 36, 18);
     gl.glPopMatrix();
     gl.glEndList();
   }

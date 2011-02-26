@@ -48,21 +48,31 @@ public class Component implements Rotatable, UpdatingDisplayable, Colorable {
   private double zPositiveExtent = 360;
 
   /**
-   * Instantiates this component with the specified position and the displayable
-   * which this component represents.
+   * Instantiates this component with the specified position, but with nothing
+   * to display.
    * 
    * @param position
-   *          The opsition of this component.
+   *          The position of this component.
+   */
+  public Component(final Point3D position) {
+    this(position, null);
+  }
+
+  /**
+   * Instantiates this component with the specified position and the
+   * displayable which this component represents.
+   * 
+   * If the specified displayable object is {@code null}, this component will
+   * only provide a positioning and rotation.
+   * 
+   * @param position
+   *          The position of this component.
    * @param displayable
    *          The object which this component represents.
    */
   public Component(final Point3D position, final Displayable displayable) {
     this.position = position;
     this.displayable = displayable;
-  }
-
-  public Component(final Point3D position) {
-    this(position, null);
   }
 
   /**
@@ -75,6 +85,14 @@ public class Component implements Rotatable, UpdatingDisplayable, Colorable {
     this.children.add(component);
   }
 
+  /**
+   * Convenience method which simply calls the {@link #addChild(Component)}
+   * method for each of the components specified in the parameter list of this
+   * method.
+   * 
+   * @param components
+   *          The components to add as children of this component.
+   */
   public void addChildren(final Component... components) {
     for (final Component component : components) {
       this.addChild(component);
@@ -96,8 +114,8 @@ public class Component implements Rotatable, UpdatingDisplayable, Colorable {
   }
 
   /**
-   * Initializes the call list which this component uses for drawing, then calls
-   * the corresponding method on the children of this component.
+   * Initializes the call list which this component uses for drawing, then
+   * calls the corresponding method on the children of this component.
    * 
    * @param gl
    *          The OpenGL object with which to perform the drawing.
@@ -121,12 +139,12 @@ public class Component implements Rotatable, UpdatingDisplayable, Colorable {
   }
 
   /**
-   * Rotates this joint around the specified axis by the specified angle.
+   * {@inheritDoc}
    * 
    * @param axis
-   *          The axis of rotation.
-   * @param angleDelta
-   *          The angle by which to rotate this joint.
+   *          {@inheritDoc}
+   * @param angleDeltan
+   *          {@inheritDoc}
    */
   public void rotate(final Axis axis, final double angleDelta) {
     if (axis.equals(Axis.X)) {
@@ -158,72 +176,60 @@ public class Component implements Rotatable, UpdatingDisplayable, Colorable {
   }
 
   /**
-   * Sets the minimum angle to which this joint can be rotated around the x
-   * axis.
+   * {@inheritDoc}
    * 
    * @param newXNegativeExtent
-   *          The minimum angle to which this joint can be rotated around the x
-   *          axis.
+   *          {@inheritDoc}
    */
   public void setXNegativeExtent(final double newXNegativeExtent) {
     this.xNegativeExtent = newXNegativeExtent;
   }
 
   /**
-   * Sets the maximum angle to which this joint can be rotated around the x
-   * axis.
+   * {@inheritDoc}
    * 
    * @param newXPositiveExtent
-   *          The maximum angle to which this joint can be rotated around the x
-   *          axis.
+   *          {@inheritDoc}
    */
   public void setXPositiveExtent(final double newXPositiveExtent) {
     this.xPositiveExtent = newXPositiveExtent;
   }
 
   /**
-   * Sets the minimum angle to which this joint can be rotated around the y
-   * axis.
+   * {@inheritDoc}
    * 
    * @param newYNegativeExtent
-   *          The minimum angle to which this joint can be rotated around the y
-   *          axis.
+   *          {@inheritDoc}
    */
   public void setYNegativeExtent(final double newYNegativeExtent) {
     this.yNegativeExtent = newYNegativeExtent;
   }
 
   /**
-   * Sets the maximum angle to which this joint can be rotated around the y
-   * axis.
+   * {@inheritDoc}
    * 
    * @param newYPositiveExtent
-   *          The maximum angle to which this joint can be rotated around the y
-   *          axis.
+   *          {@inheritDoc}
    */
   public void setYPositiveExtent(final double newYPositiveExtent) {
     this.yPositiveExtent = newYPositiveExtent;
   }
 
   /**
-   * Sets the minimum angle to which this joint can be rotated around the z
-   * axis.
+   * {@inheritDoc}
    * 
    * @param newZNegativeExtent
-   *          The minimum angle to which this joint can be rotated around the z
-   *          axis.
+   *          {@inheritDoc}
    */
   public void setZNegativeExtent(final double newZNegativeExtent) {
     this.zNegativeExtent = newZNegativeExtent;
   }
 
   /**
-   * Sets the maximum angle to which this joint can be rotated around the z
-   * axis.
+   * {@inheritDoc}
    * 
    * @param newZPositiveExtent
-   *          The maximum angle to which this joint can be rotated around the z
-   *          axis.
+   *          {@inheritDoc}
    */
   public void setZPositiveExtent(final double newZPositiveExtent) {
     this.zPositiveExtent = newZPositiveExtent;
@@ -280,27 +286,27 @@ public class Component implements Rotatable, UpdatingDisplayable, Colorable {
   }
 
   /**
-   * Gets the current angle at which this joint is rotated around the x axis.
+   * {@inheritDoc}
    * 
-   * @return The current angle at which this joint is rotated around the x axis.
+   * @return {@inheritDoc}
    */
   public double xAngle() {
     return this.xAngle;
   }
 
   /**
-   * Gets the current angle at which this joint is rotated around the y axis.
+   * {@inheritDoc}
    * 
-   * @return The current angle at which this joint is rotated around the y axis.
+   * @return {@inheritDoc}
    */
   public double yAngle() {
     return this.yAngle;
   }
 
   /**
-   * Gets the current angle at which this joint is rotated around the z axis.
+   * {@inheritDoc}
    * 
-   * @return The current angle at which this joint is rotated around the z axis.
+   * @return {@inheritDoc}
    */
   public double zAngle() {
     return this.zAngle;

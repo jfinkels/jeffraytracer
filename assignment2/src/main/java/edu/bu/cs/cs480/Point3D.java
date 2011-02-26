@@ -29,14 +29,14 @@ package edu.bu.cs.cs480;
  * @since Spring 2008
  */
 public class Point3D {
+  /** The origin, (0, 0, 0). */
+  public static final Point3D ORIGIN = new Point3D(0, 0, 0);
   /** The x component of this point. */
   private final double x;
   /** The y component of this point. */
   private final double y;
   /** The z component of this point. */
   private final double z;
-  /** The origin, (0, 0, 0). */
-  public static final Point3D ORIGIN = new Point3D(0, 0, 0);
   
   /**
    * Instantiates this point with the three specified components.

@@ -371,11 +371,11 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
     // all the palm joints, displaced by various amounts from the palm
     final Component palm1 = new Component(new Point3D(-0.3, 0, 0.7),
         new RoundedCylinder(FINGER_RADIUS, PALM_JOINT_HEIGHT, this.glut));
-    final Component palm2 = new Component(new Point3D(-.17, 0, 0.9),
+    final Component palm2 = new Component(new Point3D(-.1, 0, 0.9),
         new RoundedCylinder(FINGER_RADIUS, PALM_JOINT_HEIGHT, this.glut));
-    final Component palm3 = new Component(new Point3D(0.1, 0, 0.7),
+    final Component palm3 = new Component(new Point3D(0.1, 0, 0.95),
         new RoundedCylinder(FINGER_RADIUS, PALM_JOINT_HEIGHT, this.glut));
-    final Component palm4 = new Component(new Point3D(0.4, 0, 0.7),
+    final Component palm4 = new Component(new Point3D(0.3, 0, 0.75),
         new RoundedCylinder(FINGER_RADIUS, PALM_JOINT_HEIGHT, this.glut));
     final Component palm5 = new Component(new Point3D(0.5, 0, 0),
         new RoundedCylinder(FINGER_RADIUS, PALM_JOINT_HEIGHT, this.glut));
@@ -495,8 +495,6 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
       distalJoint.setZNegativeExtent(0);
     }
   }
-
-  // private final Hand hand = this.arm.hand();
 
   /**
    * Redisplays the scene containing the hand model.

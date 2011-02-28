@@ -358,22 +358,23 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
 
     // rotate the thumb so that it is at a thumb-like angle
     palm5.rotate(Axis.Y, 50);
-
+    palm5.rotate(Axis.Z, -60);
+    
     // set rotation limits for the shoulder
     this.upperArm.setXPositiveExtent(45);
     this.upperArm.setXNegativeExtent(-45);
     this.upperArm.setYPositiveExtent(135);
     this.upperArm.setYNegativeExtent(-135);
     this.upperArm.setZPositiveExtent(45);
-    this.upperArm.setZNegativeExtent(0);
+    this.upperArm.setZNegativeExtent(-90);
 
     // set rotation limits for the elbow
     this.forearm.setXPositiveExtent(180);
     this.forearm.setXNegativeExtent(0);
     this.forearm.setYPositiveExtent(0);
     this.forearm.setYNegativeExtent(0);
-    this.forearm.setZPositiveExtent(0);
-    this.forearm.setZNegativeExtent(0);
+    this.forearm.setZPositiveExtent(45);
+    this.forearm.setZNegativeExtent(-90);
 
     // set rotation limits for the wrist
     this.hand.setXPositiveExtent(90);
@@ -398,8 +399,8 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
     palm5.setXNegativeExtent(0);
     palm5.setYPositiveExtent(62);
     palm5.setYNegativeExtent(38);
-    palm5.setZPositiveExtent(0);
-    palm5.setZNegativeExtent(0);
+    palm5.setZPositiveExtent(-60);
+    palm5.setZNegativeExtent(-60);
 
     // set rotation limits for the middle joints of the finger
     for (final Component middleJoint : Arrays.asList(middle1, middle2,
@@ -575,6 +576,8 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
     this.fingers[4].palmJoint().setAngles(state.get(THUMB_PALM_NAME));
     this.fingers[4].middleJoint().setAngles(state.get(THUMB_MIDDLE_NAME));
     this.fingers[4].distalJoint().setAngles(state.get(THUMB_DISTAL_NAME));
+    
+    this.stateChanged = true;
   }
 
   /**

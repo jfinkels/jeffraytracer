@@ -23,10 +23,12 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.media.opengl.GL;
@@ -189,109 +191,7 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
   /** The axis around which to rotate the selected joints. */
   private Axis selectedAxis = Axis.X;
   /** The set of components which are currently selected for rotation. */
-  private final Set<Component> selectedComponents = new HashSet<Component>(8);
-
-  /**
-   * Prints the angles of each joint in each finger of the hand for debugging
-   * purposes.
-   */
-  // private void printHandAngles() {
-  // System.out.print("pinky finger - palm joint - x angle: ");
-  // System.out.println(this.hand.pinkyFinger().palm().xAngle());
-  // System.out.print("pinky finger - palm joint - y angle: ");
-  // System.out.println(this.hand.pinkyFinger().palm().yAngle());
-  // System.out.print("pinky finger - palm joint - z angle: ");
-  // System.out.println(this.hand.pinkyFinger().palm().zAngle());
-  // System.out.print("pinky finger - middle joint - x angle: ");
-  // System.out.println(this.hand.pinkyFinger().middle().xAngle());
-  // System.out.print("pinky finger - middle joint - y angle: ");
-  // System.out.println(this.hand.pinkyFinger().middle().yAngle());
-  // System.out.print("pinky finger - middle joint - z angle: ");
-  // System.out.println(this.hand.pinkyFinger().middle().zAngle());
-  // System.out.print("pinky finger - distal joint - x angle: ");
-  // System.out.println(this.hand.pinkyFinger().distal().xAngle());
-  // System.out.print("pinky finger - distal joint - y angle: ");
-  // System.out.println(this.hand.pinkyFinger().distal().yAngle());
-  // System.out.print("pinky finger - distal joint - z angle: ");
-  // System.out.println(this.hand.pinkyFinger().distal().zAngle());
-  //
-  // System.out.print("ring finger - palm joint - x angle: ");
-  // System.out.println(this.hand.ringFinger().palm().xAngle());
-  // System.out.print("ring finger - palm joint - y angle: ");
-  // System.out.println(this.hand.ringFinger().palm().yAngle());
-  // System.out.print("ring finger - palm joint - z angle: ");
-  // System.out.println(this.hand.ringFinger().palm().zAngle());
-  // System.out.print("ring finger - middle joint - x angle: ");
-  // System.out.println(this.hand.ringFinger().middle().xAngle());
-  // System.out.print("ring finger - middle joint - y angle: ");
-  // System.out.println(this.hand.ringFinger().middle().yAngle());
-  // System.out.print("ring finger - middle joint - z angle: ");
-  // System.out.println(this.hand.ringFinger().middle().zAngle());
-  // System.out.print("ring finger - distal joint - x angle: ");
-  // System.out.println(this.hand.ringFinger().distal().xAngle());
-  // System.out.print("ring finger - distal joint - y angle: ");
-  // System.out.println(this.hand.ringFinger().distal().yAngle());
-  // System.out.print("ring finger - distal joint - z angle: ");
-  // System.out.println(this.hand.ringFinger().distal().zAngle());
-  //
-  // System.out.print("middle finger - palm joint - x angle: ");
-  // System.out.println(this.hand.middleFinger().palm().xAngle());
-  // System.out.print("middle finger - palm joint - y angle: ");
-  // System.out.println(this.hand.middleFinger().palm().yAngle());
-  // System.out.print("middle finger - palm joint - z angle: ");
-  // System.out.println(this.hand.middleFinger().palm().zAngle());
-  // System.out.print("middle finger - middle joint - x angle: ");
-  // System.out.println(this.hand.middleFinger().middle().xAngle());
-  // System.out.print("middle finger - middle joint - y angle: ");
-  // System.out.println(this.hand.middleFinger().middle().yAngle());
-  // System.out.print("middle finger - middle joint - z angle: ");
-  // System.out.println(this.hand.middleFinger().middle().zAngle());
-  // System.out.print("middle finger - distal joint - x angle: ");
-  // System.out.println(this.hand.middleFinger().distal().xAngle());
-  // System.out.print("middle finger - distal joint - y angle: ");
-  // System.out.println(this.hand.middleFinger().distal().yAngle());
-  // System.out.print("middle finger - distal joint - z angle: ");
-  // System.out.println(this.hand.middleFinger().distal().zAngle());
-  //
-  // System.out.print("index finger - palm joint - x angle: ");
-  // System.out.println(this.hand.indexFinger().palm().xAngle());
-  // System.out.print("index finger - palm joint - y angle: ");
-  // System.out.println(this.hand.indexFinger().palm().yAngle());
-  // System.out.print("index finger - palm joint - z angle: ");
-  // System.out.println(this.hand.indexFinger().palm().zAngle());
-  // System.out.print("index finger - middle joint - x angle: ");
-  // System.out.println(this.hand.indexFinger().middle().xAngle());
-  // System.out.print("index finger - middle joint - y angle: ");
-  // System.out.println(this.hand.indexFinger().middle().yAngle());
-  // System.out.print("index finger - middle joint - z angle: ");
-  // System.out.println(this.hand.indexFinger().middle().zAngle());
-  // System.out.print("index finger - distal joint - x angle: ");
-  // System.out.println(this.hand.indexFinger().distal().xAngle());
-  // System.out.print("index finger - distal joint - y angle: ");
-  // System.out.println(this.hand.indexFinger().distal().yAngle());
-  // System.out.print("index finger - distal joint - z angle: ");
-  // System.out.println(this.hand.indexFinger().distal().zAngle());
-  //
-  // System.out.print("thumb - palm joint - x angle: ");
-  // System.out.println(this.hand.thumb().palm().xAngle());
-  // System.out.print("thumb - palm joint - y angle: ");
-  // System.out.println(this.hand.thumb().palm().yAngle());
-  // System.out.print("thumb - palm joint - z angle: ");
-  // System.out.println(this.hand.thumb().palm().zAngle());
-  // System.out.print("thumb - middle joint - x angle: ");
-  // System.out.println(this.hand.thumb().middle().xAngle());
-  // System.out.print("thumb - middle joint - y angle: ");
-  // System.out.println(this.hand.thumb().middle().yAngle());
-  // System.out.print("thumb - middle joint - z angle: ");
-  // System.out.println(this.hand.thumb().middle().zAngle());
-  // System.out.print("thumb - distal joint - x angle: ");
-  // System.out.println(this.hand.thumb().distal().xAngle());
-  // System.out.print("thumb - distal joint - y angle: ");
-  // System.out.println(this.hand.thumb().distal().yAngle());
-  // System.out.print("thumb - distal joint - z angle: ");
-  // System.out.println(this.hand.thumb().distal().zAngle());
-  // }
-
+  private final Set<Component> selectedComponents = new HashSet<Component>(18);
   /**
    * The set of fingers which have been selected for rotation.
    * 
@@ -310,6 +210,28 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
   private final Component upperArm;
   /** The quaternion which controls the rotation of the world. */
   private Quaternion viewing_quaternion = new Quaternion();
+  /** The set of all components. */
+  private final List<Component> components;
+
+  public static String INDEX_PALM_NAME = "index palm";
+  public static String INDEX_MIDDLE_NAME = "index middle";
+  public static String INDEX_DISTAL_NAME = "index distal";
+  public static String RING_PALM_NAME = "ring palm";
+  public static String RING_MIDDLE_NAME = "ring middle";
+  public static String RING_DISTAL_NAME = "ring distal";
+  public static String MIDDLE_PALM_NAME = "middle palm";
+  public static String MIDDLE_MIDDLE_NAME = "middle middle";
+  public static String MIDDLE_DISTAL_NAME = "middle distal";
+  public static String PINKY_PALM_NAME = "pinky palm";
+  public static String PINKY_MIDDLE_NAME = "pinky middle";
+  public static String PINKY_DISTAL_NAME = "pinky distal";
+  public static String THUMB_PALM_NAME = "thumb palm";
+  public static String THUMB_MIDDLE_NAME = "thumb middle";
+  public static String THUMB_DISTAL_NAME = "thumb distal";
+  public static String HAND_NAME = "hand";
+  public static String FOREARM_NAME = "forearm";
+  public static String UPPER_ARM_NAME = "upper arm";
+  public static String TOP_LEVEL_NAME = "top level";
 
   /**
    * Initializes the necessary OpenGL objects and adds a canvas to this JFrame.
@@ -337,48 +259,53 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
     // all the distal joints
     final Component distal1 = new Component(new Point3D(0, 0,
         MIDDLE_JOINT_HEIGHT), new RoundedCylinder(FINGER_RADIUS,
-        DISTAL_JOINT_HEIGHT, this.glut));
+        DISTAL_JOINT_HEIGHT, this.glut), PINKY_DISTAL_NAME);
     final Component distal2 = new Component(new Point3D(0, 0,
         MIDDLE_JOINT_HEIGHT), new RoundedCylinder(FINGER_RADIUS,
-        DISTAL_JOINT_HEIGHT, this.glut));
+        DISTAL_JOINT_HEIGHT, this.glut), RING_DISTAL_NAME);
     final Component distal3 = new Component(new Point3D(0, 0,
         MIDDLE_JOINT_HEIGHT), new RoundedCylinder(FINGER_RADIUS,
-        DISTAL_JOINT_HEIGHT, this.glut));
+        DISTAL_JOINT_HEIGHT, this.glut), MIDDLE_DISTAL_NAME);
     final Component distal4 = new Component(new Point3D(0, 0,
         MIDDLE_JOINT_HEIGHT), new RoundedCylinder(FINGER_RADIUS,
-        DISTAL_JOINT_HEIGHT, this.glut));
+        DISTAL_JOINT_HEIGHT, this.glut), INDEX_DISTAL_NAME);
     final Component distal5 = new Component(new Point3D(0, 0,
         MIDDLE_JOINT_HEIGHT), new RoundedCylinder(FINGER_RADIUS,
-        DISTAL_JOINT_HEIGHT, this.glut));
+        DISTAL_JOINT_HEIGHT, this.glut), THUMB_DISTAL_NAME);
 
     // all the middle joints
     final Component middle1 = new Component(new Point3D(0, 0,
         PALM_JOINT_HEIGHT), new RoundedCylinder(FINGER_RADIUS,
-        MIDDLE_JOINT_HEIGHT, this.glut));
+        MIDDLE_JOINT_HEIGHT, this.glut), PINKY_MIDDLE_NAME);
     final Component middle2 = new Component(new Point3D(0, 0,
         PALM_JOINT_HEIGHT), new RoundedCylinder(FINGER_RADIUS,
-        MIDDLE_JOINT_HEIGHT, this.glut));
+        MIDDLE_JOINT_HEIGHT, this.glut), RING_MIDDLE_NAME);
     final Component middle3 = new Component(new Point3D(0, 0,
         PALM_JOINT_HEIGHT), new RoundedCylinder(FINGER_RADIUS,
-        MIDDLE_JOINT_HEIGHT, this.glut));
+        MIDDLE_JOINT_HEIGHT, this.glut), MIDDLE_MIDDLE_NAME);
     final Component middle4 = new Component(new Point3D(0, 0,
         PALM_JOINT_HEIGHT), new RoundedCylinder(FINGER_RADIUS,
-        MIDDLE_JOINT_HEIGHT, this.glut));
+        MIDDLE_JOINT_HEIGHT, this.glut), INDEX_MIDDLE_NAME);
     final Component middle5 = new Component(new Point3D(0, 0,
         PALM_JOINT_HEIGHT), new RoundedCylinder(FINGER_RADIUS,
-        MIDDLE_JOINT_HEIGHT, this.glut));
+        MIDDLE_JOINT_HEIGHT, this.glut), THUMB_MIDDLE_NAME);
 
     // all the palm joints, displaced by various amounts from the palm
     final Component palm1 = new Component(new Point3D(-0.3, 0, 0.7),
-        new RoundedCylinder(FINGER_RADIUS, PALM_JOINT_HEIGHT, this.glut));
+        new RoundedCylinder(FINGER_RADIUS, PALM_JOINT_HEIGHT, this.glut),
+        PINKY_PALM_NAME);
     final Component palm2 = new Component(new Point3D(-.1, 0, 0.9),
-        new RoundedCylinder(FINGER_RADIUS, PALM_JOINT_HEIGHT, this.glut));
+        new RoundedCylinder(FINGER_RADIUS, PALM_JOINT_HEIGHT, this.glut),
+        RING_PALM_NAME);
     final Component palm3 = new Component(new Point3D(0.1, 0, 0.95),
-        new RoundedCylinder(FINGER_RADIUS, PALM_JOINT_HEIGHT, this.glut));
+        new RoundedCylinder(FINGER_RADIUS, PALM_JOINT_HEIGHT, this.glut),
+        MIDDLE_PALM_NAME);
     final Component palm4 = new Component(new Point3D(0.3, 0, 0.75),
-        new RoundedCylinder(FINGER_RADIUS, PALM_JOINT_HEIGHT, this.glut));
+        new RoundedCylinder(FINGER_RADIUS, PALM_JOINT_HEIGHT, this.glut),
+        INDEX_PALM_NAME);
     final Component palm5 = new Component(new Point3D(0.24, 0, 0.23),
-        new RoundedCylinder(FINGER_RADIUS, PALM_JOINT_HEIGHT, this.glut));
+        new RoundedCylinder(FINGER_RADIUS, PALM_JOINT_HEIGHT, this.glut),
+        THUMB_PALM_NAME);
 
     // put together the fingers for easier selection by keyboard input later on
     this.fingers = new Finger[] { new Finger(palm1, middle1, distal1),
@@ -389,19 +316,20 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
 
     // the hand, which models the wrist joint
     this.hand = new Component(new Point3D(0, 0, FOREARM_HEIGHT), new Palm(
-        HAND_RADIUS, this.glut));
+        HAND_RADIUS, this.glut), HAND_NAME);
 
     // the forearm, which models the elbow joint
     this.forearm = new Component(new Point3D(0, 0, UPPER_ARM_HEIGHT),
-        new RoundedCylinder(ARM_RADIUS, FOREARM_HEIGHT, this.glut));
+        new RoundedCylinder(ARM_RADIUS, FOREARM_HEIGHT, this.glut),
+        FOREARM_NAME);
 
     // the upper arm which models the shoulder joint
     this.upperArm = new Component(new Point3D(0, 0, 0), new RoundedCylinder(
-        ARM_RADIUS, UPPER_ARM_HEIGHT, this.glut));
+        ARM_RADIUS, UPPER_ARM_HEIGHT, this.glut), UPPER_ARM_NAME);
 
     // the top level component which provides an initial position and rotation
     // to the scene (but does not cause anything to be drawn)
-    this.topLevelComponent = new Component(INITIAL_POSITION);
+    this.topLevelComponent = new Component(INITIAL_POSITION, TOP_LEVEL_NAME);
 
     this.topLevelComponent.addChild(this.upperArm);
     // the funny bone's connected to the...forearm
@@ -427,7 +355,7 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
 
     // rotate the elbow to be half bent
     this.forearm.rotate(Axis.Y, 90);
-    
+
     // rotate the thumb so that it is at a thumb-like angle
     palm5.rotate(Axis.Y, 50);
 
@@ -459,17 +387,17 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
     for (final Component palmJoint : Arrays.asList(palm1, palm2, palm3, palm4)) {
       palmJoint.setXPositiveExtent(90);
       palmJoint.setXNegativeExtent(-15);
-      palmJoint.setYPositiveExtent(50);
-      palmJoint.setYNegativeExtent(50);
+      palmJoint.setYPositiveExtent(10);
+      palmJoint.setYNegativeExtent(-10);
       palmJoint.setZPositiveExtent(0);
       palmJoint.setZNegativeExtent(0);
     }
-    
+
     // and set the rotation limits for the palm joint of the thumb
     palm5.setXPositiveExtent(80);
     palm5.setXNegativeExtent(0);
-    palm5.setYPositiveExtent(12);
-    palm5.setYNegativeExtent(-12);
+    palm5.setYPositiveExtent(62);
+    palm5.setYNegativeExtent(38);
     palm5.setZPositiveExtent(0);
     palm5.setZNegativeExtent(0);
 
@@ -494,6 +422,11 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
       distalJoint.setZPositiveExtent(0);
       distalJoint.setZNegativeExtent(0);
     }
+
+    // create the list of all the components for debugging purposes
+    this.components = Arrays.asList(palm1, middle1, distal1, palm2, middle2,
+        distal2, palm3, middle3, distal3, palm4, middle4, distal4, palm5,
+        middle5, distal5, this.hand, this.forearm, this.upperArm);
   }
 
   /**
@@ -621,6 +554,8 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
     // intentionally unimplemented
   }
 
+  private final CyclicIterator<Map<String, Angled>> testCases = new TestCases();
+
   /**
    * Interprets typed keys according to the following scheme:
    * 
@@ -673,16 +608,34 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
       System.exit(0);
       break;
 
-    // print the angles of the fingers
+    // print the angles of the components
     case 'K':
     case 'k':
-      // printHandAngles();
+      printJoints();
       break;
 
     // set the state of the hand to the next test case
     case 'T':
     case 't':
-
+      final Map<String, Angled> testCase = this.testCases.next();
+      this.upperArm.setAngles(testCase.get(UPPER_ARM_NAME));
+      this.forearm.setAngles(testCase.get(FOREARM_NAME));
+      this.hand.setAngles(testCase.get(HAND_NAME));
+      this.fingers[0].palmJoint.setAngles(testCase.get(PINKY_PALM_NAME));
+      this.fingers[0].middleJoint.setAngles(testCase.get(PINKY_MIDDLE_NAME));
+      this.fingers[0].distalJoint.setAngles(testCase.get(PINKY_DISTAL_NAME));
+      this.fingers[1].palmJoint.setAngles(testCase.get(RING_PALM_NAME));
+      this.fingers[1].middleJoint.setAngles(testCase.get(RING_MIDDLE_NAME));
+      this.fingers[1].distalJoint.setAngles(testCase.get(RING_DISTAL_NAME));
+      this.fingers[2].palmJoint.setAngles(testCase.get(MIDDLE_PALM_NAME));
+      this.fingers[2].middleJoint.setAngles(testCase.get(MIDDLE_MIDDLE_NAME));
+      this.fingers[2].distalJoint.setAngles(testCase.get(MIDDLE_DISTAL_NAME));
+      this.fingers[3].palmJoint.setAngles(testCase.get(INDEX_PALM_NAME));
+      this.fingers[3].middleJoint.setAngles(testCase.get(INDEX_MIDDLE_NAME));
+      this.fingers[3].distalJoint.setAngles(testCase.get(INDEX_DISTAL_NAME));
+      this.fingers[4].palmJoint.setAngles(testCase.get(THUMB_PALM_NAME));
+      this.fingers[4].middleJoint.setAngles(testCase.get(THUMB_MIDDLE_NAME));
+      this.fingers[4].distalJoint.setAngles(testCase.get(THUMB_DISTAL_NAME));
       break;
 
     // set the viewing quaternion to 0 rotation
@@ -738,85 +691,6 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
       toggleSelection(this.upperArm);
       break;
 
-    /*
-     * case '1': if (this.selectedFingers.contains(this.hand.thumb())) {
-     * this.selectedFingers.remove(this.hand.thumb()); for (final Joint joint :
-     * this.hand.thumb().joints()) { this.selectedJoints.remove(joint);
-     * joint.setColor(FloatColor.ORANGE); } } else {
-     * this.selectedFingers.add(this.hand.thumb()); } this.stateChanged = true;
-     * break; case '2': if
-     * (this.selectedFingers.contains(this.hand.indexFinger())) {
-     * this.selectedFingers.remove(this.hand.indexFinger()); for (final Joint
-     * joint : this.hand.indexFinger().joints()) {
-     * this.selectedJoints.remove(joint); joint.setColor(FloatColor.ORANGE); }
-     * } else { this.selectedFingers.add(this.hand.indexFinger()); }
-     * this.stateChanged = true; break; case '3': if
-     * (this.selectedFingers.contains(this.hand.middleFinger())) {
-     * this.selectedFingers.remove(this.hand.middleFinger()); for (final Joint
-     * joint : this.hand.middleFinger().joints()) {
-     * this.selectedJoints.remove(joint); joint.setColor(FloatColor.ORANGE); }
-     * } else { this.selectedFingers.add(this.hand.middleFinger()); }
-     * this.stateChanged = true; break; case '4': if
-     * (this.selectedFingers.contains(this.hand.ringFinger())) {
-     * this.selectedFingers.remove(this.hand.ringFinger()); for (final Joint
-     * joint : this.hand.ringFinger().joints()) {
-     * this.selectedJoints.remove(joint); joint.setColor(FloatColor.ORANGE); }
-     * } else { this.selectedFingers.add(this.hand.ringFinger()); }
-     * this.stateChanged = true; break; case '5': if
-     * (this.selectedFingers.contains(this.hand.pinkyFinger())) {
-     * this.selectedFingers.remove(this.hand.pinkyFinger()); for (final Joint
-     * joint : this.hand.pinkyFinger().joints()) {
-     * this.selectedJoints.remove(joint); joint.setColor(FloatColor.ORANGE); }
-     * } else { this.selectedFingers.add(this.hand.pinkyFinger()); }
-     * this.stateChanged = true; break;
-     * 
-     * // toggle the hand for rotation case '6': if
-     * (this.selectedJoints.contains(this.hand)) {
-     * this.selectedJoints.remove(this.hand);
-     * this.hand.setColor(FloatColor.ORANGE); } else {
-     * this.selectedJoints.add(this.hand); this.hand.setColor(FloatColor.RED);
-     * } this.stateChanged = true; break;
-     * 
-     * // toggle the forearm for rotation case '7': if
-     * (this.selectedJoints.contains(this.arm.forearm())) {
-     * this.selectedJoints.remove(this.arm.forearm());
-     * this.arm.forearm().setColor(FloatColor.ORANGE); } else {
-     * this.selectedJoints.add(this.arm.forearm());
-     * this.arm.forearm().setColor(FloatColor.RED); } this.stateChanged = true;
-     * break;
-     * 
-     * // toggle the upper arm for rotation case '8': if
-     * (this.selectedJoints.contains(this.arm)) {
-     * this.selectedJoints.remove(this.arm);
-     * this.arm.setColor(FloatColor.ORANGE); } else {
-     * this.selectedJoints.add(this.arm); this.arm.setColor(FloatColor.RED); }
-     * this.stateChanged = true; break;
-     */
-
-    // select joint
-    /*
-     * case 'D': case 'd': for (final Finger finger : this.selectedFingers) {
-     * if (this.selectedJoints.contains(finger.distal())) {
-     * this.selectedJoints.remove(finger.distal());
-     * finger.distal().setColor(FloatColor.ORANGE); } else {
-     * this.selectedJoints.add(finger.distal());
-     * finger.distal().setColor(FloatColor.RED); } this.stateChanged = true; }
-     * break; case 'P': case 'p': for (final Finger finger :
-     * this.selectedFingers) { if (this.selectedJoints.contains(finger.palm()))
-     * { this.selectedJoints.remove(finger.palm());
-     * finger.palm().setColor(FloatColor.ORANGE); } else {
-     * this.selectedJoints.add(finger.palm());
-     * finger.palm().setColor(FloatColor.RED); } this.stateChanged = true; }
-     * break; case 'M': case 'm': for (final Finger finger :
-     * this.selectedFingers) { if
-     * (this.selectedJoints.contains(finger.middle())) {
-     * this.selectedJoints.remove(finger.middle());
-     * finger.middle().setColor(FloatColor.ORANGE); } else {
-     * this.selectedJoints.add(finger.middle());
-     * finger.middle().setColor(FloatColor.RED); } this.stateChanged = true; }
-     * break;
-     */
-
     // change the axis of rotation at current active joint
     case 'X':
     case 'x':
@@ -832,6 +706,25 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
       break;
     default:
       break;
+    }
+  }
+
+  /**
+   * Prints the joints on the System.out print stream.
+   */
+  private void printJoints() {
+    this.printJoints(System.out);
+  }
+
+  /**
+   * Prints the joints on the specified PrintStream.
+   * 
+   * @param printStream
+   *          The stream on which to print each of the components.
+   */
+  private void printJoints(final PrintStream printStream) {
+    for (final Component component : this.components) {
+      printStream.println(component);
     }
   }
 

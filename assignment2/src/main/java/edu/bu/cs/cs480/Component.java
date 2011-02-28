@@ -14,7 +14,8 @@ import javax.media.opengl.GL;
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
-public class Component implements Rotatable, UpdatingDisplayable, Colorable {
+public class Component implements Rotatable, Nameable, UpdatingDisplayable,
+    Colorable {
   /** The handle to the OpenGL call list to use to draw this component. */
   private int callListHandle;
   /**
@@ -54,8 +55,8 @@ public class Component implements Rotatable, UpdatingDisplayable, Colorable {
    * @param position
    *          The position of this component.
    */
-  public Component(final Point3D position) {
-    this(position, null);
+  public Component(final Point3D position, final String name) {
+    this(position, null, name);
   }
 
   /**
@@ -70,10 +71,15 @@ public class Component implements Rotatable, UpdatingDisplayable, Colorable {
    * @param displayable
    *          The object which this component represents.
    */
-  public Component(final Point3D position, final Displayable displayable) {
+  public Component(final Point3D position, final Displayable displayable,
+      final String name) {
     this.position = position;
     this.displayable = displayable;
+    this.name = name;
   }
+
+  /** The human-readable name of this component. */
+  private final String name;
 
   /**
    * Adds the specified child to the set of children of this component.
@@ -160,6 +166,17 @@ public class Component implements Rotatable, UpdatingDisplayable, Colorable {
       this.zAngle = Math.min(this.zAngle, this.zPositiveExtent);
       this.zAngle = Math.max(this.zAngle, this.zNegativeExtent);
     }
+  }
+
+  public void setAngles(final double x, final double y, final double z) {
+    this.xAngle = x;
+    this.yAngle = y;
+    this.zAngle = z;
+  }
+
+  public void setAngles(final Angled angledObject) {
+    this.setAngles(angledObject.xAngle(), angledObject.yAngle(), angledObject
+        .zAngle());
   }
 
   /**
@@ -260,7 +277,7 @@ public class Component implements Rotatable, UpdatingDisplayable, Colorable {
     gl.glNewList(this.callListHandle, GL.GL_COMPILE);
     gl.glPushMatrix();
 
-    // translate this component to where it will be located in the scene last
+    // translate this component to where it will be located in the scene
     gl.glTranslated(this.position.x(), this.position.y(), this.position.z());
 
     // first, rotate this component around each of the three axes
@@ -310,5 +327,16 @@ public class Component implements Rotatable, UpdatingDisplayable, Colorable {
    */
   public double zAngle() {
     return this.zAngle;
+  }
+
+  /**
+   * {@inheritDoc}
+   * 
+   * @return {@inheritDoc}
+   * @see edu.bu.cs.cs480.Nameable#name()
+   */
+  @Override
+  public String name() {
+    return this.name;
   }
 }

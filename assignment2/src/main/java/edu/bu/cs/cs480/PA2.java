@@ -554,7 +554,28 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
     // intentionally unimplemented
   }
 
-  private final CyclicIterator<Map<String, Angled>> testCases = new TestCases();
+  private final TestCases testCases = new TestCases();
+
+  private void setModelState(final Map<String, Angled> state) {
+    this.upperArm.setAngles(state.get(UPPER_ARM_NAME));
+    this.forearm.setAngles(state.get(FOREARM_NAME));
+    this.hand.setAngles(state.get(HAND_NAME));
+    this.fingers[0].palmJoint().setAngles(state.get(PINKY_PALM_NAME));
+    this.fingers[0].middleJoint().setAngles(state.get(PINKY_MIDDLE_NAME));
+    this.fingers[0].distalJoint().setAngles(state.get(PINKY_DISTAL_NAME));
+    this.fingers[1].palmJoint().setAngles(state.get(RING_PALM_NAME));
+    this.fingers[1].middleJoint().setAngles(state.get(RING_MIDDLE_NAME));
+    this.fingers[1].distalJoint().setAngles(state.get(RING_DISTAL_NAME));
+    this.fingers[2].palmJoint().setAngles(state.get(MIDDLE_PALM_NAME));
+    this.fingers[2].middleJoint().setAngles(state.get(MIDDLE_MIDDLE_NAME));
+    this.fingers[2].distalJoint().setAngles(state.get(MIDDLE_DISTAL_NAME));
+    this.fingers[3].palmJoint().setAngles(state.get(INDEX_PALM_NAME));
+    this.fingers[3].middleJoint().setAngles(state.get(INDEX_MIDDLE_NAME));
+    this.fingers[3].distalJoint().setAngles(state.get(INDEX_DISTAL_NAME));
+    this.fingers[4].palmJoint().setAngles(state.get(THUMB_PALM_NAME));
+    this.fingers[4].middleJoint().setAngles(state.get(THUMB_MIDDLE_NAME));
+    this.fingers[4].distalJoint().setAngles(state.get(THUMB_DISTAL_NAME));
+  }
 
   /**
    * Interprets typed keys according to the following scheme:
@@ -580,6 +601,8 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
    * Y : use the Y axis rotation at the active joint(s)
    * 
    * Z : use the Z axis rotation at the active joint(s)
+   * 
+   * C : resets the hand to the stop sign
    * 
    * P : select joint that connects finger to palm
    * 
@@ -614,28 +637,16 @@ public class PA2 extends JFrame implements GLEventListener, KeyListener,
       printJoints();
       break;
 
+    // resets to the stop sign
+    case 'C':
+    case 'c':
+      this.setModelState(this.testCases.stop());
+      break;
+
     // set the state of the hand to the next test case
     case 'T':
     case 't':
-      final Map<String, Angled> testCase = this.testCases.next();
-      this.upperArm.setAngles(testCase.get(UPPER_ARM_NAME));
-      this.forearm.setAngles(testCase.get(FOREARM_NAME));
-      this.hand.setAngles(testCase.get(HAND_NAME));
-      this.fingers[0].palmJoint.setAngles(testCase.get(PINKY_PALM_NAME));
-      this.fingers[0].middleJoint.setAngles(testCase.get(PINKY_MIDDLE_NAME));
-      this.fingers[0].distalJoint.setAngles(testCase.get(PINKY_DISTAL_NAME));
-      this.fingers[1].palmJoint.setAngles(testCase.get(RING_PALM_NAME));
-      this.fingers[1].middleJoint.setAngles(testCase.get(RING_MIDDLE_NAME));
-      this.fingers[1].distalJoint.setAngles(testCase.get(RING_DISTAL_NAME));
-      this.fingers[2].palmJoint.setAngles(testCase.get(MIDDLE_PALM_NAME));
-      this.fingers[2].middleJoint.setAngles(testCase.get(MIDDLE_MIDDLE_NAME));
-      this.fingers[2].distalJoint.setAngles(testCase.get(MIDDLE_DISTAL_NAME));
-      this.fingers[3].palmJoint.setAngles(testCase.get(INDEX_PALM_NAME));
-      this.fingers[3].middleJoint.setAngles(testCase.get(INDEX_MIDDLE_NAME));
-      this.fingers[3].distalJoint.setAngles(testCase.get(INDEX_DISTAL_NAME));
-      this.fingers[4].palmJoint.setAngles(testCase.get(THUMB_PALM_NAME));
-      this.fingers[4].middleJoint.setAngles(testCase.get(THUMB_MIDDLE_NAME));
-      this.fingers[4].distalJoint.setAngles(testCase.get(THUMB_DISTAL_NAME));
+      this.setModelState(this.testCases.next());
       break;
 
     // set the viewing quaternion to 0 rotation

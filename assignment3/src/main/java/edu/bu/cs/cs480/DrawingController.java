@@ -1,5 +1,5 @@
 /**
- * 
+ * DrawingController.java - controller for drawing on an OpenGL canvas
  */
 package edu.bu.cs.cs480;
 
@@ -8,43 +8,38 @@ import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.glu.GLU;
 
-import com.sun.opengl.util.GLUT;
-
 import edu.bu.cs.cs480.model.Component;
 import edu.bu.cs.cs480.model.FloatColor;
 import edu.bu.cs.cs480.model.Point3D;
 
 /**
- * @author Jeffrey Finkelstein <jeffreyf>
+ * The controller for drawing on the OpenGL canvas.
+ * 
+ * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
+ * @since Spring 2011
  */
 public class DrawingController implements GLEventListener {
   /** The color for components which are selected for rotation. */
   public static final FloatColor ACTIVE_COLOR = FloatColor.RED;
   /** The color for components which are not selected for rotation. */
   public static final FloatColor INACTIVE_COLOR = FloatColor.ORANGE;
+  /** The initial position of the top level component in the scene. */
+  public static final Point3D INITIAL_POSITION = new Point3D(0, 0, 0);
 
+  /** The OpenGL utility object. */
+  private final GLU glu = new GLU();
   /** The OpenGL utility toolkit object. */
-  private final GLUT glut = new GLUT();
+  // private final GLUT glut = new GLUT();
+  /** The controller for view rotations. */
+  private RotationController rotationController = null;
   /** Whether the state of the model has been changed. */
   private boolean stateChanged = true;
   /**
    * The top level component in the scene which controls the positioning and
    * rotation of everything in the scene.
    */
-  private final Component topLevelComponent;
-  private RotationController rotationController;
-
-/** The initial position of the top level component in the scene. */
-  public static final Point3D INITIAL_POSITION = new Point3D(0, 0, 0);
-
-  public DrawingController() {
-    // set up the scene
-    this.topLevelComponent = new Component(INITIAL_POSITION, "top level");
-  }
-
-  public void setRotationController(final RotationController rotationController) {
-    this.rotationController = rotationController;
-  }
+  private final Component topLevelComponent = new Component(INITIAL_POSITION,
+      "top level");
 
   /**
    * Redisplays the scene containing the model.
@@ -172,6 +167,14 @@ public class DrawingController implements GLEventListener {
     gl.glMatrixMode(GL.GL_MODELVIEW);
   }
 
-  /** The OpenGL utility object. */
-  private final GLU glu = new GLU();
+  /**
+   * Sets the controller for view rotations, so that the display can be updated
+   * based on the rotation requested by the user.
+   * 
+   * @param rotationController
+   *          The controller for view rotations.
+   */
+  public void setRotationController(final RotationController rotationController) {
+    this.rotationController = rotationController;
+  }
 }

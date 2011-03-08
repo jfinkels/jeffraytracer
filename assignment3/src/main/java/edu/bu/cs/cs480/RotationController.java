@@ -26,15 +26,6 @@ public class RotationController implements MouseListener, MouseMotionListener {
   private Quaternion viewingRotation = new Quaternion();
 
   /**
-   * Gets the current view rotation quaternion.
-   * 
-   * @return The current view rotation quaternion.
-   */
-  public Quaternion rotation() {
-    return this.viewingRotation;
-  }
-
-  /**
    * This method is intentionally unimplemented.
    * 
    * @param mouse
@@ -136,6 +127,15 @@ public class RotationController implements MouseListener, MouseMotionListener {
     if (mouse.getButton() == MouseEvent.BUTTON1) {
       this.rotateWorld = false;
     }
+  }
+
+  /**
+   * Gets the current view rotation quaternion.
+   * 
+   * @return The current view rotation quaternion.
+   */
+  public Quaternion rotation() {
+    return this.viewingRotation;
   }
 
 }

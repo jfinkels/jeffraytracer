@@ -1,5 +1,5 @@
 /**
- * 
+ * KeyboardController.java - the controller for keyboard interactions
  */
 package edu.bu.cs.cs480;
 
@@ -9,9 +9,17 @@ import java.awt.event.KeyListener;
 import com.sun.opengl.util.Animator;
 
 /**
- * @author Jeffrey Finkelstein <jeffreyf>
+ * The controller for keyboard interactions.
+ * 
+ * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
+ * @since Spring 2011
  */
 public class KeyboardController implements KeyListener {
+
+  /** The object which animates the scene. */
+  private Animator animator = null;
+  /** The controller for view rotations. */
+  private RotationController rotationController = null;
 
   /**
    * This method is intentionally unimplemented.
@@ -70,15 +78,24 @@ public class KeyboardController implements KeyListener {
     }
   }
 
-  private RotationController rotationController = null;
-
-  public void setRotationController(final RotationController rotationController) {
-    this.rotationController = rotationController;
-  }
-
-  private Animator animator = null;
-
+  /**
+   * Sets the object which animates the scene.
+   * 
+   * @param animator
+   *          The object which animates the scene.
+   */
   public void setAnimator(final Animator animator) {
     this.animator = animator;
+  }
+
+  /**
+   * Sets the controller for view rotations, so that the display can be updated
+   * based on the rotation requested by the user.
+   * 
+   * @param rotationController
+   *          The controller for view rotations.
+   */
+  public void setRotationController(final RotationController rotationController) {
+    this.rotationController = rotationController;
   }
 }

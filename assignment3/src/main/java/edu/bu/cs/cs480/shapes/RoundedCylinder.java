@@ -15,25 +15,12 @@ import edu.bu.cs.cs480.drawing.Displayable;
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
-public class RoundedCylinder extends Circular implements Displayable {
-  /**
-   * The default number of slices to use when drawing the cylinder and the
-   * sphere.
-   */
-  public static final int DEFAULT_SLICES = 36;
-  /**
-   * The default number of stacks to use when drawing the cylinder and the
-   * sphere.
-   */
-  public static final int DEFAULT_STACKS = 28;
-
+public class RoundedCylinder extends Cylindrical implements Displayable {
   /**
    * The OpenGL handle to the display list which contains all the components
    * which comprise this cylinder.
    */
   private int callListHandle;
-  /** The height of this cylinder. */
-  private final double height;
 
   /**
    * Instantiates this object with the specified radius and height of the
@@ -50,8 +37,7 @@ public class RoundedCylinder extends Circular implements Displayable {
    */
   public RoundedCylinder(final double radius, final double height,
       final GLUT glut) {
-    super(radius, glut);
-    this.height = height;
+    super(radius, height, glut);
   }
 
   /**
@@ -79,12 +65,13 @@ public class RoundedCylinder extends Circular implements Displayable {
 
     gl.glNewList(this.callListHandle, GL.GL_COMPILE);
 
-    this.glut().glutSolidCylinder(this.radius(), this.height, DEFAULT_SLICES,
-        DEFAULT_STACKS);
+    this.glut().glutSolidCylinder(this.radius(), this.height(),
+        Circular.DEFAULT_SLICES, Circular.DEFAULT_STACKS);
 
     gl.glPushMatrix();
-    gl.glTranslated(0, 0, this.height);
-    this.glut().glutSolidSphere(this.radius(), DEFAULT_SLICES, DEFAULT_STACKS);
+    gl.glTranslated(0, 0, this.height());
+    this.glut().glutSolidSphere(this.radius(), Circular.DEFAULT_SLICES,
+        Circular.DEFAULT_STACKS);
     gl.glPopMatrix();
 
     gl.glEndList();

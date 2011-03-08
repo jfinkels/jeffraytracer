@@ -12,6 +12,16 @@ import com.sun.opengl.util.GLUT;
  * @since Spring 2011
  */
 public class Circular {
+  /**
+   * The default number of slices to use when drawing the cylinder and the
+   * sphere.
+   */
+  public static final int DEFAULT_SLICES = 36;
+  /**
+   * The default number of stacks to use when drawing the cylinder and the
+   * sphere.
+   */
+  public static final int DEFAULT_STACKS = 28;
   /** The OpenGL utility toolkit object to use to draw this object. */
   private final GLUT glut;
   /** The radius of this object. */

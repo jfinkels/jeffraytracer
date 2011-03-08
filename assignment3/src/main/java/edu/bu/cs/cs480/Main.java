@@ -1,21 +1,6 @@
-// ****************************************************************************
-// Example Main Program for CS480 Programming Assignment 3
-// ****************************************************************************
-// Description: This is a simple example program that demonstrates a teapot
-// spinning in a tank.
-//
-// The following keys control the program:
-//
-// Q,q, <escape>: quit
-// R: reset viewing angle
-//
-// Left mouse click + drag motion: rotate the tank
-//
-//
-// ****************************************************************************
-// History :
-// 3 Mar 2008 Created by Tai-Peng Tian based on the C code by Stan Sclaroff
-//
+/**
+ * Main.java - the driver program for the vivarium simulation
+ */
 package edu.bu.cs.cs480;
 
 import javax.media.opengl.GLCanvas;
@@ -24,13 +9,20 @@ import javax.swing.JFrame;
 
 import com.sun.opengl.util.FPSAnimator;
 
+/**
+ * The driver class which contains the main method for the vivarium simulation.
+ * 
+ * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
+ * @since Spring 2011
+ */
 public class Main {
   /** The default width of the created window. */
   public static final int DEFAULT_WINDOW_HEIGHT = 512;
   /** The default height of the created window. */
   public static final int DEFAULT_WINDOW_WIDTH = 512;
+
   /**
-   * Runs the hand simulation in a single JFrame.
+   * Runs the vivarium simulation in a single JFrame.
    * 
    * @param args
    *          This parameter is ignored.
@@ -76,7 +68,7 @@ public class Main {
 
     // start the animation
     animator.start();
-    
+
     // display the window
     window.setVisible(true);
   }

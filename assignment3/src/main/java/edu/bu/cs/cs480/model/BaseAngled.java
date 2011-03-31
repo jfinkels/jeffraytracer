@@ -46,6 +46,7 @@ public class BaseAngled implements Angled {
    * 
    * @return {@inheritDoc}
    */
+  @Override
   public double xAngle() {
     return this.xAngle;
   }
@@ -55,6 +56,7 @@ public class BaseAngled implements Angled {
    * 
    * @return {@inheritDoc}
    */
+  @Override
   public double yAngle() {
     return this.yAngle;
   }
@@ -64,6 +66,7 @@ public class BaseAngled implements Angled {
    * 
    * @return {@inheritDoc}
    */
+  @Override
   public double zAngle() {
     return this.zAngle;
   }
@@ -74,6 +77,7 @@ public class BaseAngled implements Angled {
    * @param xAngle
    *          {@inheritDoc}
    */
+  @Override
   public void setXAngle(final double xAngle) {
     this.xAngle = xAngle;
   }
@@ -84,6 +88,7 @@ public class BaseAngled implements Angled {
    * @param yAngle
    *          {@inheritDoc}
    */
+  @Override
   public void setYAngle(final double yAngle) {
     this.yAngle = yAngle;
   }
@@ -94,6 +99,7 @@ public class BaseAngled implements Angled {
    * @param zAngle
    *          {@inheritDoc}
    */
+  @Override
   public void setZAngle(final double zAngle) {
     this.zAngle = zAngle;
   }

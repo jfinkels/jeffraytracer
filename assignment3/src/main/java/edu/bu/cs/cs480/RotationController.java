@@ -31,6 +31,7 @@ public class RotationController implements MouseListener, MouseMotionListener {
    * @param mouse
    *          This parameter is ignored.
    */
+  @Override
   public void mouseClicked(MouseEvent mouse) {
     // intentionally unimplemented
   }
@@ -41,6 +42,7 @@ public class RotationController implements MouseListener, MouseMotionListener {
    * @param mouse
    *          The mouse drag event object.
    */
+  @Override
   public void mouseDragged(final MouseEvent mouse) {
     if (this.rotateWorld) {
       // get the current position of the mouse
@@ -79,6 +81,7 @@ public class RotationController implements MouseListener, MouseMotionListener {
    * @param mouse
    *          This parameter is ignored.
    */
+  @Override
   public void mouseEntered(MouseEvent mouse) {
     // intentionally unimplemented
   }
@@ -89,6 +92,7 @@ public class RotationController implements MouseListener, MouseMotionListener {
    * @param mouse
    *          This parameter is ignored.
    */
+  @Override
   public void mouseExited(MouseEvent mouse) {
     // intentionally unimplemented
   }
@@ -99,6 +103,7 @@ public class RotationController implements MouseListener, MouseMotionListener {
    * @param mouse
    *          This parameter is ignored.
    */
+  @Override
   public void mouseMoved(MouseEvent mouse) {
     // intentionally unimplemented
   }
@@ -109,6 +114,7 @@ public class RotationController implements MouseListener, MouseMotionListener {
    * @param mouse
    *          The mouse press event object.
    */
+  @Override
   public void mousePressed(final MouseEvent mouse) {
     if (mouse.getButton() == MouseEvent.BUTTON1) {
       this.lastX = mouse.getX();
@@ -123,6 +129,7 @@ public class RotationController implements MouseListener, MouseMotionListener {
    * @param mouse
    *          The mouse release event object.
    */
+  @Override
   public void mouseReleased(final MouseEvent mouse) {
     if (mouse.getButton() == MouseEvent.BUTTON1) {
       this.rotateWorld = false;

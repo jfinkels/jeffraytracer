@@ -29,6 +29,7 @@ public class BaseRotatable extends BaseAngled implements Rotatable {
    * @param newXBackwardExtent
    *          {@inheritDoc}
    */
+  @Override
   public void setXBackwardExtent(final double newXBackwardExtent) {
     this.xBackwardExtent = newXBackwardExtent;
   }
@@ -39,6 +40,7 @@ public class BaseRotatable extends BaseAngled implements Rotatable {
    * @param newXForwardExtent
    *          {@inheritDoc}
    */
+  @Override
   public void setXForwardExtent(final double newXForwardExtent) {
     this.xForwardExtent = newXForwardExtent;
   }
@@ -49,6 +51,7 @@ public class BaseRotatable extends BaseAngled implements Rotatable {
    * @param newYBackwardExtent
    *          {@inheritDoc}
    */
+  @Override
   public void setYBackwardExtent(final double newYBackwardExtent) {
     this.yBackwardExtent = newYBackwardExtent;
   }
@@ -59,6 +62,7 @@ public class BaseRotatable extends BaseAngled implements Rotatable {
    * @param newYForwardExtent
    *          {@inheritDoc}
    */
+  @Override
   public void setYForwardExtent(final double newYForwardExtent) {
     this.yForwardExtent = newYForwardExtent;
   }
@@ -69,6 +73,7 @@ public class BaseRotatable extends BaseAngled implements Rotatable {
    * @param newZBackwardExtent
    *          {@inheritDoc}
    */
+  @Override
   public void setZBackwardExtent(final double newZBackwardExtent) {
     this.zBackwardExtent = newZBackwardExtent;
   }
@@ -79,6 +84,7 @@ public class BaseRotatable extends BaseAngled implements Rotatable {
    * @param newZForwardExtent
    *          {@inheritDoc}
    */
+  @Override
   public void setZForwardExtent(final double newZForwardExtent) {
     this.zForwardExtent = newZForwardExtent;
   }
@@ -91,6 +97,7 @@ public class BaseRotatable extends BaseAngled implements Rotatable {
    * @param angleDeltan
    *          {@inheritDoc}
    */
+  @Override
   public void rotate(final Axis axis, final double angleDelta) {
     double newAngle;
     switch (axis) {

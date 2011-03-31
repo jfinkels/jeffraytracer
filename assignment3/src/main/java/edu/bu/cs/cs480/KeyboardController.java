@@ -17,7 +17,7 @@ import com.sun.opengl.util.Animator;
 public class KeyboardController implements KeyListener {
 
   /** The object which animates the scene. */
-  private Animator animator = null;
+  Animator animator = null;
   /** The controller for view rotations. */
   private RotationController rotationController = null;
 
@@ -27,6 +27,7 @@ public class KeyboardController implements KeyListener {
    * @param key
    *          This parameter is ignored.
    */
+  @Override
   public void keyPressed(final KeyEvent key) {
     // intentionally unimplemented
   }
@@ -37,6 +38,7 @@ public class KeyboardController implements KeyListener {
    * @param key
    *          This parameter is ignored.
    */
+  @Override
   public void keyReleased(final KeyEvent key) {
     // intentionally unimplemented
   }
@@ -51,6 +53,7 @@ public class KeyboardController implements KeyListener {
    * @param key
    *          {@inheritDoc}
    */
+  @Override
   public void keyTyped(final KeyEvent key) {
     switch (key.getKeyChar()) {
 

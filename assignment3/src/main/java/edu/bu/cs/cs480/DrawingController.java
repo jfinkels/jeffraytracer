@@ -47,6 +47,7 @@ public class DrawingController implements GLEventListener {
    * @param drawable
    *          The OpenGL drawable object with which to create OpenGL models.
    */
+  @Override
   public void display(final GLAutoDrawable drawable) {
     final GL gl = drawable.getGL();
 
@@ -82,6 +83,7 @@ public class DrawingController implements GLEventListener {
    * @param deviceChanged
    *          This parameter is ignored.
    */
+  @Override
   public void displayChanged(GLAutoDrawable drawable, boolean modeChanged,
       boolean deviceChanged) {
     // intentionally unimplemented
@@ -93,6 +95,7 @@ public class DrawingController implements GLEventListener {
    * @param drawable
    *          {@inheritDoc}
    */
+  @Override
   public void init(final GLAutoDrawable drawable) {
     final GL gl = drawable.getGL();
 
@@ -140,6 +143,7 @@ public class DrawingController implements GLEventListener {
    * @param height
    *          {@inheritDoc}
    */
+  @Override
   public void reshape(final GLAutoDrawable drawable, final int x, final int y,
       final int width, final int height) {
     final GL gl = drawable.getGL();

@@ -13,7 +13,7 @@ import edu.bu.cs.cs480.drawing.Displayable;
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
-class ScaledCone extends Cylindrical implements Displayable {
+public class ScaledCone extends Cylindrical implements Displayable {
   private final double xScale;
   private final double yScale;
   private final double zScale;

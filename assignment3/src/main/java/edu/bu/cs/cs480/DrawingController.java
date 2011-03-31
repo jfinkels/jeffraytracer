@@ -11,6 +11,7 @@ import javax.media.opengl.glu.GLU;
 import edu.bu.cs.cs480.model.Component;
 import edu.bu.cs.cs480.model.FloatColor;
 import edu.bu.cs.cs480.model.Point3D;
+import edu.bu.cs.cs480.shapes.Tank;
 
 /**
  * The controller for drawing on the OpenGL canvas.
@@ -40,6 +41,16 @@ public class DrawingController implements GLEventListener {
    */
   private final Component topLevelComponent = new Component(INITIAL_POSITION,
       "top level");
+
+  /**
+   * Instantiates this object by adding all the necessary components to the
+   * scene.
+   */
+  public DrawingController() {
+    final Component tank = new Component(Point3D.ORIGIN, new Tank(4, 4, 4),
+        "tank");
+    this.topLevelComponent.addChild(tank);
+  }
 
   /**
    * Redisplays the scene containing the model.

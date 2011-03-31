@@ -17,9 +17,9 @@ import com.sun.opengl.util.FPSAnimator;
  */
 public class Main {
   /** The default width of the created window. */
-  public static final int DEFAULT_WINDOW_HEIGHT = 512;
+  public static final int DEFAULT_WINDOW_HEIGHT = 640;
   /** The default height of the created window. */
-  public static final int DEFAULT_WINDOW_WIDTH = 512;
+  public static final int DEFAULT_WINDOW_WIDTH = 800;
 
   /**
    * Runs the vivarium simulation in a single JFrame.

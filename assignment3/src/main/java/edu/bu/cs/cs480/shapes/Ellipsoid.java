@@ -15,9 +15,9 @@ import edu.bu.cs.cs480.drawing.Displayable;
  */
 public class Ellipsoid extends Circular implements Displayable {
 
-  private final double xScale = 0.9;
+  private final double xScale = 1;
   private final double yScale = 0.8;
-  private final double zScale = 1;
+  private final double zScale = 0.8;
 
   /**
    * @param radius

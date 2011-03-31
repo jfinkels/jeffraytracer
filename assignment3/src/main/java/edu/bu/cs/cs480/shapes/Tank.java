@@ -3,7 +3,7 @@
 // This class draws a checkered ground and the bounding box of the tank.
 // ************************************************************************
 //
-package edu.bu.cs.cs480.model;
+package edu.bu.cs.cs480.shapes;
 
 import java.nio.ByteBuffer;
 
@@ -11,7 +11,9 @@ import javax.media.opengl.GL;
 
 import com.sun.opengl.util.BufferUtil;
 
-public class Tank {
+import edu.bu.cs.cs480.drawing.Displayable;
+
+public class Tank implements Displayable {
   private static final int CHECK_IMAGE_WIDTH = 64;
   private static final int CHECK_IMAGE_HEIGHT = 64;
 
@@ -58,7 +60,8 @@ public class Tank {
     gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_DECAL);
   }
 
-  public void init(GL gl) {
+  @Override
+  public void initialize(GL gl) {
     // Create the display list for the Tank.
     initTexture(gl);
     this.tank_object = gl.glGenLists(1);
@@ -99,10 +102,7 @@ public class Tank {
     gl.glEndList();
   }
 
-  public void update(GL gl) {
-    // Do nothing.
-  }
-
+  @Override
   public void draw(GL gl) {
     // draw the tank
     gl.glPushAttrib(GL.GL_CURRENT_BIT);

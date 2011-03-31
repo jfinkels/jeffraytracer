@@ -8,9 +8,12 @@ import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.glu.GLU;
 
+import com.sun.opengl.util.GLUT;
+
 import edu.bu.cs.cs480.model.Component;
 import edu.bu.cs.cs480.model.FloatColor;
 import edu.bu.cs.cs480.model.Point3D;
+import edu.bu.cs.cs480.model.creatures.Bird;
 import edu.bu.cs.cs480.shapes.Tank;
 
 /**
@@ -30,7 +33,8 @@ public class DrawingController implements GLEventListener {
   /** The OpenGL utility object. */
   private final GLU glu = new GLU();
   /** The OpenGL utility toolkit object. */
-  // private final GLUT glut = new GLUT();
+  // TODO should this be a static member?
+  private final GLUT glut = new GLUT();
   /** The controller for view rotations. */
   private RotationController rotationController = null;
   /** Whether the state of the model has been changed. */
@@ -50,6 +54,9 @@ public class DrawingController implements GLEventListener {
     final Component tank = new Component(Point3D.ORIGIN, new Tank(4, 4, 4),
         "tank");
     this.topLevelComponent.addChild(tank);
+    
+    final Component bird = new Bird(new Point3D(0, 0, 0), this.glut, "bird");
+    this.topLevelComponent.addChild(bird);
   }
 
   /**
@@ -75,10 +82,7 @@ public class DrawingController implements GLEventListener {
     gl.glMultMatrixf(this.rotationController.rotation().toMatrix(), 0);
 
     // update the position of the components which need to be updated
-    if (this.stateChanged) {
       this.topLevelComponent.update(gl);
-      this.stateChanged = false;
-    }
 
     // redraw the components
     this.topLevelComponent.draw(gl);

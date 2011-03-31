@@ -23,11 +23,6 @@ import edu.bu.cs.cs480.shapes.ScaledCone;
  */
 public class Bird extends Component {
 
-  public static final double BODY_RADIUS = 0.8;
-  public static final double HEAD_RADIUS = 0.5;
-  public static final double BEAK_RADIUS = 0.2;
-  public static final double BEAK_HEIGHT = 0.5;
-
   private class Body extends Component {
 
     /**
@@ -40,7 +35,6 @@ public class Bird extends Component {
     }
 
   }
-
   private class Head extends Component {
 
     /**
@@ -59,10 +53,6 @@ public class Bird extends Component {
     }
 
   }
-
-  public static final double WING_RADIUS = 0.4;
-  public static final double WING_HEIGHT = 1;
-
   private class Wing extends Component {
 
     /**
@@ -90,6 +80,19 @@ public class Bird extends Component {
       }
     }
   }
+  public static final double BEAK_HEIGHT = 0.05;
+  public static final double BEAK_RADIUS = 0.02;
+  public static final double BODY_RADIUS = 0.08;
+  public static final double HEAD_RADIUS = 0.05;
+  public static final double INCREMENT = 0.3;
+  public static final double MAX_WING_ANGLE = 45;
+  public static final double TWO_PI = 2 * Math.PI;
+  public static final double WING_HEIGHT = .1;
+  public static final double WING_RADIUS = 0.04;
+
+  private double counter = 0;
+  private final Wing leftWing;
+  private final Wing rightWing;
 
   /**
    * @param position
@@ -104,21 +107,13 @@ public class Bird extends Component {
         + " - left wing");
     this.rightWing = new Wing(new Point3D(0, 0, 0.8 * BODY_RADIUS), glut, name
         + " - right wing");
-    final Component head = new Head(new Point3D(BODY_RADIUS, 0.5 * BODY_RADIUS, 0), glut, name
-        + " - head");
+    final Component head = new Head(new Point3D(BODY_RADIUS,
+        0.5 * BODY_RADIUS, 0), glut, name + " - head");
 
     this.leftWing.rotate(Axis.Y, 180);
 
     this.addChildren(body, this.leftWing, this.rightWing, head);
   }
-
-  private final Wing leftWing;
-  private final Wing rightWing;
-  public static final double TWO_PI = 2 * Math.PI;
-  public static final double INCREMENT = 0.1;
-  private double counter = 0;
-  
-  public static final double MAX_WING_ANGLE = 45;
 
   @Override
   public void update(final GL gl) {
@@ -126,6 +121,7 @@ public class Bird extends Component {
     final double wingAngle = Math.sin(this.counter) * MAX_WING_ANGLE;
     this.leftWing.rotateTo(Axis.X, wingAngle);
     this.rightWing.rotateTo(Axis.X, -wingAngle);
+
     super.update(gl);
   }
 }

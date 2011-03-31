@@ -23,10 +23,6 @@ import edu.bu.cs.cs480.shapes.Tank;
  * @since Spring 2011
  */
 public class DrawingController implements GLEventListener {
-  /** The color for components which are selected for rotation. */
-  public static final FloatColor ACTIVE_COLOR = FloatColor.RED;
-  /** The color for components which are not selected for rotation. */
-  public static final FloatColor INACTIVE_COLOR = FloatColor.ORANGE;
   /** The initial position of the top level component in the scene. */
   public static final Point3D INITIAL_POSITION = new Point3D(0, 0, 0);
 
@@ -51,10 +47,10 @@ public class DrawingController implements GLEventListener {
    * scene.
    */
   public DrawingController() {
-    final Component tank = new Component(Point3D.ORIGIN, new Tank(4, 4, 4),
+    final Component tank = new Component(Point3D.ORIGIN, new Tank(6, 6, 6),
         "tank");
     this.topLevelComponent.addChild(tank);
-    
+
     final Component bird = new Bird(new Point3D(0, 0, 0), this.glut, "bird");
     this.topLevelComponent.addChild(bird);
   }
@@ -81,8 +77,8 @@ public class DrawingController implements GLEventListener {
     // rotate the world by the appropriate rotation quaternion
     gl.glMultMatrixf(this.rotationController.rotation().toMatrix(), 0);
 
-    // update the position of the components which need to be updated
-      this.topLevelComponent.update(gl);
+    // update the position of the componen512ts which need to be updated
+    this.topLevelComponent.update(gl);
 
     // redraw the components
     this.topLevelComponent.draw(gl);
@@ -180,7 +176,7 @@ public class DrawingController implements GLEventListener {
     this.glu.gluPerspective(25, ratio, 0.1, 100);
 
     // camera positioned at (0,0,6), look at point (0,0,0), up vector (0,1,0)
-    this.glu.gluLookAt(0, 0, 12, 0, 0, 0, 0, 1, 0);
+    this.glu.gluLookAt(0, 0, 18, 0, 0, 0, 0, 1, 0);
 
     // switch back to model coordinate system
     gl.glMatrixMode(GL.GL_MODELVIEW);

@@ -54,6 +54,16 @@ public class Point3D {
     this.z = z;
   }
 
+  @Override
+  public boolean equals(final Object other) {
+    if (!(other instanceof Point3D)) {
+      return false;
+    }
+
+    final Point3D o = (Point3D) other;
+    return this.x == o.x && this.y == o.y && this.z == o.z;
+  }
+
   /**
    * Returns a new Point3D object which is the component-wise sum of this point
    * with the specified other point.
@@ -105,6 +115,30 @@ public class Point3D {
   }
 
   /**
+   * Returns a vector representing the difference between this vector and the
+   * specified other vector.
+   * 
+   * @param that
+   *          The vector to subtract from this one.
+   * @return A new vector whose values are the component-wise difference between
+   *         this and the specified other vector.
+   */
+  public Point3D difference(final Point3D that) {
+    return new Point3D(this.x - that.x, this.y - that.y, this.z - that.z);
+  }
+
+  /**
+   * Computes the distance from this vector to the specified other vector.
+   * 
+   * @param that
+   *          The vector to which distance will be computed.
+   * @return The distance from this vector to the specified other vector.
+   */
+  public double distanceTo(final Point3D that) {
+    return this.difference(that).norm();
+  }
+
+  /**
    * Computes the norm of this vector.
    * 
    * @return The norm of this vector.
@@ -114,8 +148,8 @@ public class Point3D {
   }
 
   /**
-   * Computes the cross product of this with the specified other vector (in
-   * that order).
+   * Computes the cross product of this with the specified other vector (in that
+   * order).
    * 
    * @param that
    *          The other vector with which to compute the cross product.

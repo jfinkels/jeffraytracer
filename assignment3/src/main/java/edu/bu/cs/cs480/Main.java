@@ -46,7 +46,7 @@ public class Main {
     canvas.setAutoSwapBufferMode(true);
 
     // refresh the scene at 60 frames per second
-    final FPSAnimator animator = new FPSAnimator(canvas, 60);
+    final FPSAnimator animator = new FPSAnimator(canvas, 45);
 
     // make the drawing controller aware of the rotation controller, so that it
     // can draw the scene correctly rotated

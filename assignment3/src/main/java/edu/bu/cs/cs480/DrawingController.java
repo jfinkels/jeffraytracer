@@ -3,6 +3,8 @@
  */
 package edu.bu.cs.cs480;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import javax.media.opengl.GL;
@@ -15,6 +17,8 @@ import com.sun.opengl.util.GLUT;
 import edu.bu.cs.cs480.model.Component;
 import edu.bu.cs.cs480.model.Point3D;
 import edu.bu.cs.cs480.model.creatures.Bird;
+import edu.bu.cs.cs480.model.creatures.Creature;
+import edu.bu.cs.cs480.model.creatures.Fish;
 import edu.bu.cs.cs480.shapes.Tank;
 
 /**
@@ -44,27 +48,58 @@ public class DrawingController implements GLEventListener {
       "top level");
 
   /** The total number of birds to place in the scene. */
-  public static final int NUM_BIRDS = 10;
-  /** The length of one side of the cube-shaped tank in which the creatures live. */
+  public static final int NUM_BIRDS = 1;
+  /** The total number of fish to place in the scene. */
+  public static final int NUM_FISH = 1;
+  /**
+   * The length of one side of the cube-shaped tank in which the creatures live.
+   */
   public static final int TANK_SIZE = 6;
+  /** A random number generator. */
   private static final Random prg = new Random();
+
   /**
    * Instantiates this object by adding all the necessary components to the
    * scene.
    */
   public DrawingController() {
-    final Component tank = new Component(Point3D.ORIGIN, new Tank(TANK_SIZE, TANK_SIZE, TANK_SIZE),
-        "tank");
+    final Component tank = new Component(Point3D.ORIGIN, new Tank(TANK_SIZE,
+        TANK_SIZE, TANK_SIZE), "tank");
     this.topLevelComponent.addChild(tank);
 
     for (int i = 0; i < NUM_BIRDS; i++) {
       final double x = (prg.nextDouble() * TANK_SIZE) - (TANK_SIZE / 2);
       final double y = (prg.nextDouble() * TANK_SIZE) - (TANK_SIZE / 2);
       final double z = (prg.nextDouble() * TANK_SIZE) - (TANK_SIZE / 2);
-    final Component bird = new Bird(new Point3D(x, y, z), this.glut, "bird " + i);
-    
-    this.topLevelComponent.addChild(bird);
+      final Creature bird = new Bird(new Point3D(x, y, z), this.glut, "bird "
+          + i);
+
+      this.predators.add(bird);
+      this.topLevelComponent.addChild(bird);
     }
+
+    for (int i = 0; i < NUM_FISH; i++) {
+      final double x = (prg.nextDouble() * TANK_SIZE) - (TANK_SIZE / 2);
+      final double y = (prg.nextDouble() * TANK_SIZE) - (TANK_SIZE / 2);
+      final double z = (prg.nextDouble() * TANK_SIZE) - (TANK_SIZE / 2);
+      final Creature fish = new Fish(new Point3D(x, y, z), this.glut, "fish "
+          + i);
+
+      this.prey.add(fish);
+      this.topLevelComponent.addChild(fish);
+    }
+
+    // add two creatures which will definitely collide
+    final Creature bird = new Bird(new Point3D(-1, 0, 0), this.glut,
+        "colliding bird");
+    bird.setVelocity(new Point3D(0.01, 0, 0));
+    final Creature fish = new Fish(new Point3D(0, -1, 0), this.glut,
+        "colliding fish");
+    fish.setVelocity(new Point3D(0, 0.01, 0));
+
+    this.predators.add(bird);
+    this.prey.add(fish);
+    this.topLevelComponent.addChildren(bird, fish);
   }
 
   /**
@@ -89,12 +124,34 @@ public class DrawingController implements GLEventListener {
     // rotate the world by the appropriate rotation quaternion
     gl.glMultMatrixf(this.rotationController.rotation().toMatrix(), 0);
 
-    // update the position of the componen512ts which need to be updated
+    // check if any predator is touching a prey creature
+    // pre-condition: the set of predators and the set of prey are disjoint
+    final List<Creature> toRemove = new ArrayList<Creature>();
+    for (final Creature predator : this.predators) {
+      for (final Creature prey : this.prey) {
+        if (predator.isTouching(prey)) {
+          // we add the creature to remove to a list for later removal so that
+          // we do not modify the list while iterating through it
+          toRemove.add(prey);
+        }
+      }
+    }
+
+    // iterate over the list of creatures to remove
+    for (final Creature creature : toRemove) {
+      this.prey.remove(creature);
+      this.topLevelComponent.removeChild(creature);
+    }
+
+    // update the position of the components which need to be updated
     this.topLevelComponent.update(gl);
 
     // redraw the components
     this.topLevelComponent.draw(gl);
   }
+
+  private final List<Creature> predators = new ArrayList<Creature>();
+  private final List<Creature> prey = new ArrayList<Creature>();
 
   /**
    * This method is intentionally unimplemented.

@@ -48,7 +48,7 @@ public class Bird extends Component {
       final Component beak = new Component(
           new Point3D(0.8 * HEAD_RADIUS, 0, 0), new Cone(BEAK_RADIUS,
               BEAK_HEIGHT, glut), name + " - beak");
-      beak.rotate(Axis.Y, 90);
+      beak.rotate(new Point3D(0, 1, 0), 90);
       this.addChild(beak);
     }
 
@@ -63,23 +63,8 @@ public class Bird extends Component {
       super(position,
           new ScaledCone(WING_RADIUS, WING_HEIGHT, 1, 0.5, 1, glut), name);
     }
-
-    public void rotateTo(final Axis axis, final double angle) {
-      switch (axis) {
-      case X:
-        this.rotate(axis, angle - this.xAngle());
-        break;
-      case Y:
-        this.rotate(axis, angle - this.yAngle());
-        break;
-      case Z:
-        this.rotate(axis, angle - this.zAngle());
-        break;
-      default:
-        break;
-      }
-    }
   }
+  
   public static final double BEAK_HEIGHT = 0.05;
   public static final double BEAK_RADIUS = 0.02;
   public static final double BODY_RADIUS = 0.08;
@@ -110,7 +95,7 @@ public class Bird extends Component {
     final Component head = new Head(new Point3D(BODY_RADIUS,
         0.5 * BODY_RADIUS, 0), glut, name + " - head");
 
-    this.leftWing.rotate(Axis.Y, 180);
+    this.leftWing.rotate(new Point3D(1, 0, 0), 180);
 
     this.addChildren(body, this.leftWing, this.rightWing, head);
   }
@@ -119,8 +104,8 @@ public class Bird extends Component {
   public void update(final GL gl) {
     this.counter = (this.counter + INCREMENT) % TWO_PI;
     final double wingAngle = Math.sin(this.counter) * MAX_WING_ANGLE;
-    this.leftWing.rotateTo(Axis.X, wingAngle);
-    this.rightWing.rotateTo(Axis.X, -wingAngle);
+    this.leftWing.rotateTo(new Point3D(1, 0, 0), wingAngle);
+    this.rightWing.rotateTo(new Point3D(1, 0, 0), -wingAngle);
 
     super.update(gl);
   }

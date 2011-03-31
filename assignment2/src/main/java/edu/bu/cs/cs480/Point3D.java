@@ -37,7 +37,7 @@ public class Point3D {
   private final double y;
   /** The z component of this point. */
   private final double z;
-  
+
   /**
    * Instantiates this point with the three specified components.
    * 

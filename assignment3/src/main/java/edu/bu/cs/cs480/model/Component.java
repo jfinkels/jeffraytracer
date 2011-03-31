@@ -11,7 +11,6 @@ import javax.media.opengl.GL;
 import edu.bu.cs.cs480.drawing.Displayable;
 import edu.bu.cs.cs480.drawing.UpdatingDisplayable;
 
-
 /**
  * An object which can draw itself.
  * 
@@ -34,22 +33,11 @@ public class Component extends BaseRotatable implements Colorable, Nameable,
   /** The human-readable name of this component. */
   private final String name;
   /** The position of this component. */
-  private final Point3D position;
-  
-  /**
-   * Instantiates this component with the specified position, but with nothing
-   * to display.
-   * 
-   * @param position
-   *          The position of this component.
-   */
-  public Component(final Point3D position, final String name) {
-    this(position, null, name);
-  }
+  private Point3D position;
 
   /**
-   * Instantiates this component with the specified position and the displayable
-   * which this component represents.
+   * Instantiates this component with the specified position and the
+   * displayable which this component represents.
    * 
    * If the specified displayable object is {@code null}, this component will
    * only provide a positioning and rotation.
@@ -66,6 +54,16 @@ public class Component extends BaseRotatable implements Colorable, Nameable,
     this.name = name;
   }
 
+  /**
+   * Instantiates this component with the specified position, but with nothing
+   * to display.
+   * 
+   * @param position
+   *          The position of this component.
+   */
+  public Component(final Point3D position, final String name) {
+    this(position, null, name);
+  }
 
   /**
    * Adds the specified child to the set of children of this component.
@@ -106,8 +104,8 @@ public class Component extends BaseRotatable implements Colorable, Nameable,
   }
 
   /**
-   * Initializes the call list which this component uses for drawing, then calls
-   * the corresponding method on the children of this component.
+   * Initializes the call list which this component uses for drawing, then
+   * calls the corresponding method on the children of this component.
    * 
    * @param gl
    *          The OpenGL object with which to perform the drawing.
@@ -133,6 +131,26 @@ public class Component extends BaseRotatable implements Colorable, Nameable,
   /**
    * {@inheritDoc}
    * 
+   * @return {@inheritDoc}
+   * @see edu.bu.cs.cs480.model.Nameable#name()
+   */
+  @Override
+  public String name() {
+    return this.name;
+  }
+
+  /**
+   * Gets the position of this component.
+   * 
+   * @return The position of this component.
+   */
+  protected Point3D position() {
+    return this.position;
+  }
+
+  /**
+   * {@inheritDoc}
+   * 
    * @param color
    *          {@inheritDoc}
    * 
@@ -141,6 +159,16 @@ public class Component extends BaseRotatable implements Colorable, Nameable,
   @Override
   public void setColor(final FloatColor color) {
     this.color = color;
+  }
+
+  /**
+   * Sets the position of this component.
+   * 
+   * @param position
+   *          The position of this component.
+   */
+  protected void setPosition(final Point3D position) {
+    this.position = position;
   }
 
   /**
@@ -172,9 +200,10 @@ public class Component extends BaseRotatable implements Colorable, Nameable,
     gl.glTranslated(this.position.x(), this.position.y(), this.position.z());
 
     // first, rotate this component around each of the three axes
-    gl.glRotated(this.xAngle(), 1, 0, 0);
-    gl.glRotated(this.yAngle(), 0, 1, 0);
-    gl.glRotated(this.zAngle(), 0, 0, 1);
+    //gl.glRotated(this.xAngle(), 1, 0, 0);
+    //gl.glRotated(this.yAngle(), 0, 1, 0);
+    //gl.glRotated(this.zAngle(), 0, 0, 1);
+    gl.glMultMatrixf(this.rotation().toMatrix(), 0);
 
     // draw the displayable which this component represents in its color
     if (this.displayable != null) {
@@ -191,16 +220,5 @@ public class Component extends BaseRotatable implements Colorable, Nameable,
 
     gl.glPopMatrix();
     gl.glEndList();
-  }
-
-  /**
-   * {@inheritDoc}
-   * 
-   * @return {@inheritDoc}
-   * @see edu.bu.cs.cs480.model.Nameable#name()
-   */
-  @Override
-  public String name() {
-    return this.name;
   }
 }

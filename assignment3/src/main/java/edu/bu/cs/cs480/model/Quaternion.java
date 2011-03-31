@@ -61,8 +61,20 @@ public class Quaternion {
   }
 
   /**
-   * Returns a new quaternion representing the product of this and the specified
-   * other quaternion.
+   * @param axis
+   * @param angle
+   *          The angle in degrees.
+   */
+  public Quaternion(final Point3D axis, final double angle) {
+    final double halfRadianAngle = angle * (Math.PI / 360);
+    final double sinHalfRadianAngle = Math.sin(halfRadianAngle);
+    this.set(Math.cos(halfRadianAngle), sinHalfRadianAngle * axis.x(),
+        sinHalfRadianAngle * axis.y(), sinHalfRadianAngle * axis.z());
+  }
+
+  /**
+   * Returns a new quaternion representing the product of this and the
+   * specified other quaternion.
    * 
    * @param that
    *          The other quaternion with which to multiply this one.
@@ -98,7 +110,8 @@ public class Quaternion {
   /**
    * Normalizes this quaternion so that it is truly unit.
    * 
-   * It may be necessary to call this method after accumulating round-off error.
+   * It may be necessary to call this method after accumulating round-off
+   * error.
    */
   public void normalize() {
     final float mag = this.norm();
@@ -135,6 +148,10 @@ public class Quaternion {
     this.v[0] = v0;
     this.v[1] = v1;
     this.v[2] = v2;
+  }
+
+  private void set(double s, double v0, double v1, double v2) {
+    this.set((float) s, (float) v0, (float) v1, (float) v2);
   }
 
   /**

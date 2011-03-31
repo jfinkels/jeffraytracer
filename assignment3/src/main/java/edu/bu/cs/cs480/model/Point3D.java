@@ -37,7 +37,7 @@ public class Point3D {
   private final double y;
   /** The z component of this point. */
   private final double z;
-  
+
   /**
    * Instantiates this point with the three specified components.
    * 
@@ -52,6 +52,19 @@ public class Point3D {
     this.x = x;
     this.y = y;
     this.z = z;
+  }
+
+  /**
+   * Returns a new Point3D object which is the component-wise sum of this point
+   * with the specified other point.
+   * 
+   * @param that
+   *          The point with which to sum this one.
+   * @return The Point3D object which is the sum of this point and the other
+   *         point.
+   */
+  public Point3D sumWith(final Point3D that) {
+    return new Point3D(this.x + that.x, this.y + that.y, this.z + that.z);
   }
 
   /**
@@ -90,4 +103,38 @@ public class Point3D {
   public double z() {
     return this.z;
   }
+
+  /**
+   * Computes the norm of this vector.
+   * 
+   * @return The norm of this vector.
+   */
+  public double norm() {
+    return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+  }
+
+  /**
+   * Computes the cross product of this with the specified other vector (in
+   * that order).
+   * 
+   * @param that
+   *          The other vector with which to compute the cross product.
+   */
+  public Point3D crossProduct(final Point3D that) {
+    return new Point3D(this.y * that.z - this.z * that.y, this.z * that.x
+        - this.x * that.z, this.x * that.y - this.y * that.x);
+  }
+
+  public double dotProduct(final Point3D that) {
+    return this.x * that.x + this.y * that.y + this.z * that.z;
+  }
+
+  /**
+   * 
+   */
+  public Point3D normalized() {
+    final double norm = this.norm();
+    return new Point3D(this.x / norm, this.y / norm, this.z / norm);
+  }
+
 }

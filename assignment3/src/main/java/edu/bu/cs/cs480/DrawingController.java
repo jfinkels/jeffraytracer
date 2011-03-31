@@ -3,6 +3,8 @@
  */
 package edu.bu.cs.cs480;
 
+import java.util.Random;
+
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
@@ -11,7 +13,6 @@ import javax.media.opengl.glu.GLU;
 import com.sun.opengl.util.GLUT;
 
 import edu.bu.cs.cs480.model.Component;
-import edu.bu.cs.cs480.model.FloatColor;
 import edu.bu.cs.cs480.model.Point3D;
 import edu.bu.cs.cs480.model.creatures.Bird;
 import edu.bu.cs.cs480.shapes.Tank;
@@ -42,17 +43,28 @@ public class DrawingController implements GLEventListener {
   private final Component topLevelComponent = new Component(INITIAL_POSITION,
       "top level");
 
+  /** The total number of birds to place in the scene. */
+  public static final int NUM_BIRDS = 10;
+  /** The length of one side of the cube-shaped tank in which the creatures live. */
+  public static final int TANK_SIZE = 6;
+  private static final Random prg = new Random();
   /**
    * Instantiates this object by adding all the necessary components to the
    * scene.
    */
   public DrawingController() {
-    final Component tank = new Component(Point3D.ORIGIN, new Tank(6, 6, 6),
+    final Component tank = new Component(Point3D.ORIGIN, new Tank(TANK_SIZE, TANK_SIZE, TANK_SIZE),
         "tank");
     this.topLevelComponent.addChild(tank);
 
-    final Component bird = new Bird(new Point3D(0, 0, 0), this.glut, "bird");
+    for (int i = 0; i < NUM_BIRDS; i++) {
+      final double x = (prg.nextDouble() * TANK_SIZE) - (TANK_SIZE / 2);
+      final double y = (prg.nextDouble() * TANK_SIZE) - (TANK_SIZE / 2);
+      final double z = (prg.nextDouble() * TANK_SIZE) - (TANK_SIZE / 2);
+    final Component bird = new Bird(new Point3D(x, y, z), this.glut, "bird " + i);
+    
     this.topLevelComponent.addChild(bird);
+    }
   }
 
   /**

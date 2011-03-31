@@ -16,7 +16,7 @@ public class Cone extends ScaledCone {
    * @param glut
    */
   public Cone(double radius, double height, GLUT glut) {
-    super(radius, height, 0, 0, 0, glut);
+    super(radius, height, 1, 1, 1, glut);
   }
 
 }

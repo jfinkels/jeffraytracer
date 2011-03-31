@@ -36,14 +36,14 @@ public class Creature extends Component {
     final double thisNorm = this.velocity.norm();
     final double thatNorm = velocity.norm();
     final double dotProduct = this.velocity.dotProduct(velocity);
-    final Point3D crossProduct = this.velocity.crossProduct(velocity);
+    final Point3D crossProduct = this.velocity.crossProduct(velocity).normalize();
     this.velocity = velocity;
 
     // compute angle between current velocity and new velocity
     final double angle = Math.acos(dotProduct / (thisNorm * thatNorm))
         * (180 / Math.PI);
     
-    //this.rotateBy(crossProduct, angle);
+    this.rotate(crossProduct, angle);
   }
 
   @Override

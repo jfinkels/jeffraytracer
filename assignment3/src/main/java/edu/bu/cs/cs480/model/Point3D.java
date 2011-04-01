@@ -21,6 +21,7 @@
  */
 package edu.bu.cs.cs480.model;
 
+
 /**
  * A three-dimensional point with double values.
  * 
@@ -161,6 +162,20 @@ public class Point3D {
 
   public double dotProduct(final Point3D that) {
     return this.x * that.x + this.y * that.y + this.z * that.z;
+  }
+  
+
+  /**
+   * Returns a new vector which is the result of scaling this vector by the
+   * specified scalar.
+   * 
+   * @param scale
+   *          The amount by which to scale this vector.
+   * @return A new vector which is the result of scaling this vector by the
+   *         specified scalar.
+   */
+  public Point3D scaledBy(final double scale) {
+    return new Point3D(scale * this.x, scale * this.y, scale * this.z);
   }
 
   /**

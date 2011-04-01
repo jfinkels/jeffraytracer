@@ -3,6 +3,8 @@
  */
 package edu.bu.cs.cs480.model.creatures;
 
+import java.util.List;
+
 import javax.media.opengl.GL;
 
 import com.sun.opengl.util.GLUT;
@@ -58,6 +60,7 @@ public class Fish extends Creature {
     }
 
   }
+
   /** The radius of the body. */
   public static final double BODY_RADIUS = 0.08;
   /** The amount by which to increment the angle of the wing on each update. */
@@ -75,13 +78,15 @@ public class Fish extends Creature {
   private double counter = 0;
 
   private final Tail tail;
+
   /**
    * @param position
    * @param displayable
    * @param name
    */
-  public Fish(Point3D position, final GLUT glut, String name) {
-    super(position, null, name);
+  public Fish(Point3D position, final GLUT glut, final String name,
+      final List<Creature> flock) {
+    super(position, null, name, flock);
 
     this.setVelocity(new Point3D(0.01, 0, 0));
 
@@ -108,7 +113,9 @@ public class Fish extends Creature {
     super.update(gl);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see edu.bu.cs.cs480.model.creatures.Creature#boundingRadius()
    */
   @Override

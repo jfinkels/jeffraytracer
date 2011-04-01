@@ -3,6 +3,8 @@
  */
 package edu.bu.cs.cs480.model.creatures;
 
+import java.util.List;
+
 import javax.media.opengl.GL;
 
 import com.sun.opengl.util.GLUT;
@@ -128,9 +130,13 @@ public class Bird extends Creature {
    *          objects.
    * @param name
    *          The name of this component.
+   * @param flock
+   *          The flock to which this creature belongs which helps guide its
+   *          movement.
    */
-  public Bird(final Point3D position, final GLUT glut, String name) {
-    super(position, null, name);
+  public Bird(final Point3D position, final GLUT glut, String name,
+      final List<Creature> flock) {
+    super(position, null, name, flock);
 
     this.setVelocity(new Point3D(0.01, 0, 0));
 
@@ -139,8 +145,8 @@ public class Bird extends Creature {
         + " - left wing");
     this.rightWing = new Wing(new Point3D(0, 0, 0.8 * BODY_RADIUS), glut, name
         + " - right wing");
-    final Component head = new Head(new Point3D(BODY_RADIUS, 0.5 * BODY_RADIUS,
-        0), glut, name + " - head");
+    final Component head = new Head(new Point3D(BODY_RADIUS,
+        0.5 * BODY_RADIUS, 0), glut, name + " - head");
 
     this.addChildren(body, this.leftWing, this.rightWing, head);
   }
@@ -161,7 +167,9 @@ public class Bird extends Creature {
     super.update(gl);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see edu.bu.cs.cs480.model.creatures.Creature#boundingRadius()
    */
   @Override

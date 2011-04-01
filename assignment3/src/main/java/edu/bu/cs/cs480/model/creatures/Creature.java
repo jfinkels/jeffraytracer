@@ -172,12 +172,8 @@ public abstract class Creature extends Component {
   public static final double CENTER_WEIGHT = 0.01;
   public static final double REPULSION_DISTANCE = 0.2;
 
-  @Override
-  public void update(final GL gl) {
+  private void flockVelocityUpdate() {
 
-    /**
-     * Here we perform some swarm based changes to velocity.
-     */
     // first compute the velocity towards the center of the flock
     final Point3D velocityTowardsCenter = this.velocityTowardsCenter();
 
@@ -194,6 +190,14 @@ public abstract class Creature extends Component {
         
     // update the new velocity of the creature
     this.setVelocity(newVelocity);
+    
+  }
+  
+  @Override
+  public void update(final GL gl) {
+
+    // update the velocity based on the known flock
+    this.flockVelocityUpdate();
     
     // move the creature
     this.move();

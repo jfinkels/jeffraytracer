@@ -48,9 +48,9 @@ public class DrawingController implements GLEventListener {
       "top level");
 
   /** The total number of birds to place in the scene. */
-  public static final int NUM_BIRDS = 1;
+  public static final int NUM_BIRDS = 20;
   /** The total number of fish to place in the scene. */
-  public static final int NUM_FISH = 1;
+  public static final int NUM_FISH = 10;
   /**
    * The length of one side of the cube-shaped tank in which the creatures live.
    */
@@ -72,7 +72,7 @@ public class DrawingController implements GLEventListener {
       final double y = (prg.nextDouble() * TANK_SIZE) - (TANK_SIZE / 2);
       final double z = (prg.nextDouble() * TANK_SIZE) - (TANK_SIZE / 2);
       final Creature bird = new Bird(new Point3D(x, y, z), this.glut, "bird "
-          + i);
+          + i, this.predators);
 
       this.predators.add(bird);
       this.topLevelComponent.addChild(bird);
@@ -83,7 +83,7 @@ public class DrawingController implements GLEventListener {
       final double y = (prg.nextDouble() * TANK_SIZE) - (TANK_SIZE / 2);
       final double z = (prg.nextDouble() * TANK_SIZE) - (TANK_SIZE / 2);
       final Creature fish = new Fish(new Point3D(x, y, z), this.glut, "fish "
-          + i);
+          + i, this.prey);
 
       this.prey.add(fish);
       this.topLevelComponent.addChild(fish);
@@ -91,10 +91,10 @@ public class DrawingController implements GLEventListener {
 
     // add two creatures which will definitely collide
     final Creature bird = new Bird(new Point3D(-1, 0, 0), this.glut,
-        "colliding bird");
+        "colliding bird", this.predators);
     bird.setVelocity(new Point3D(0.01, 0, 0));
     final Creature fish = new Fish(new Point3D(0, -1, 0), this.glut,
-        "colliding fish");
+        "colliding fish", this.prey);
     fish.setVelocity(new Point3D(0, 0.01, 0));
 
     this.predators.add(bird);

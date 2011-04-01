@@ -10,7 +10,6 @@ import javax.media.opengl.GL;
 
 import edu.bu.cs.cs480.drawing.Displayable;
 import edu.bu.cs.cs480.drawing.UpdatingDisplayable;
-import edu.bu.cs.cs480.model.creatures.Creature;
 
 /**
  * An object which can draw itself.

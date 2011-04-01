@@ -55,6 +55,46 @@ public class Point3D {
     this.z = z;
   }
 
+  /**
+   * Computes the cross product of this with the specified other vector (in that
+   * order).
+   * 
+   * @param that
+   *          The other vector with which to compute the cross product.
+   */
+  public Point3D crossProduct(final Point3D that) {
+    return new Point3D(this.y * that.z - this.z * that.y, this.z * that.x
+        - this.x * that.z, this.x * that.y - this.y * that.x);
+  }
+
+  /**
+   * Returns a vector representing the difference between this vector and the
+   * specified other vector.
+   * 
+   * @param that
+   *          The vector to subtract from this one.
+   * @return A new vector whose values are the component-wise difference between
+   *         this and the specified other vector.
+   */
+  public Point3D difference(final Point3D that) {
+    return new Point3D(this.x - that.x, this.y - that.y, this.z - that.z);
+  }
+
+  /**
+   * Computes the distance from this vector to the specified other vector.
+   * 
+   * @param that
+   *          The vector to which distance will be computed.
+   * @return The distance from this vector to the specified other vector.
+   */
+  public double distanceTo(final Point3D that) {
+    return this.difference(that).norm();
+  }
+
+  public double dotProduct(final Point3D that) {
+    return this.x * that.x + this.y * that.y + this.z * that.z;
+  }
+
   @Override
   public boolean equals(final Object other) {
     if (!(other instanceof Point3D)) {
@@ -63,6 +103,36 @@ public class Point3D {
 
     final Point3D o = (Point3D) other;
     return this.x == o.x && this.y == o.y && this.z == o.z;
+  }
+
+  /**
+   * Computes the norm of this vector.
+   * 
+   * @return The norm of this vector.
+   */
+  public double norm() {
+    return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+  }
+
+  /**
+   * 
+   */
+  public Point3D normalized() {
+    final double norm = this.norm();
+    return new Point3D(this.x / norm, this.y / norm, this.z / norm);
+  }
+
+  /**
+   * Returns a new vector which is the result of scaling this vector by the
+   * specified scalar.
+   * 
+   * @param scale
+   *          The amount by which to scale this vector.
+   * @return A new vector which is the result of scaling this vector by the
+   *         specified scalar.
+   */
+  public Point3D scaledBy(final double scale) {
+    return new Point3D(scale * this.x, scale * this.y, scale * this.z);
   }
 
   /**
@@ -96,6 +166,7 @@ public class Point3D {
   public double x() {
     return this.x;
   }
+  
 
   /**
    * Gets the y component of this point.
@@ -113,77 +184,6 @@ public class Point3D {
    */
   public double z() {
     return this.z;
-  }
-
-  /**
-   * Returns a vector representing the difference between this vector and the
-   * specified other vector.
-   * 
-   * @param that
-   *          The vector to subtract from this one.
-   * @return A new vector whose values are the component-wise difference between
-   *         this and the specified other vector.
-   */
-  public Point3D difference(final Point3D that) {
-    return new Point3D(this.x - that.x, this.y - that.y, this.z - that.z);
-  }
-
-  /**
-   * Computes the distance from this vector to the specified other vector.
-   * 
-   * @param that
-   *          The vector to which distance will be computed.
-   * @return The distance from this vector to the specified other vector.
-   */
-  public double distanceTo(final Point3D that) {
-    return this.difference(that).norm();
-  }
-
-  /**
-   * Computes the norm of this vector.
-   * 
-   * @return The norm of this vector.
-   */
-  public double norm() {
-    return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
-  }
-
-  /**
-   * Computes the cross product of this with the specified other vector (in that
-   * order).
-   * 
-   * @param that
-   *          The other vector with which to compute the cross product.
-   */
-  public Point3D crossProduct(final Point3D that) {
-    return new Point3D(this.y * that.z - this.z * that.y, this.z * that.x
-        - this.x * that.z, this.x * that.y - this.y * that.x);
-  }
-
-  public double dotProduct(final Point3D that) {
-    return this.x * that.x + this.y * that.y + this.z * that.z;
-  }
-  
-
-  /**
-   * Returns a new vector which is the result of scaling this vector by the
-   * specified scalar.
-   * 
-   * @param scale
-   *          The amount by which to scale this vector.
-   * @return A new vector which is the result of scaling this vector by the
-   *         specified scalar.
-   */
-  public Point3D scaledBy(final double scale) {
-    return new Point3D(scale * this.x, scale * this.y, scale * this.z);
-  }
-
-  /**
-   * 
-   */
-  public Point3D normalized() {
-    final double norm = this.norm();
-    return new Point3D(this.x / norm, this.y / norm, this.z / norm);
   }
 
 }

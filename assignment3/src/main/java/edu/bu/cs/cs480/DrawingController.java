@@ -31,32 +31,36 @@ public class DrawingController implements GLEventListener {
   /** The initial position of the top level component in the scene. */
   public static final Point3D INITIAL_POSITION = new Point3D(0, 0, 0);
 
+  /** The total number of birds to place in the scene. */
+  public static final int NUM_BIRDS = 20;
+  /** The total number of fish to place in the scene. */
+  public static final int NUM_FISH = 10;
+  /** A random number generator. */
+  private static final Random prg = new Random();
+  /**
+   * The length of one side of the cube-shaped tank in which the creatures live.
+   */
+  public static final int TANK_SIZE = 6;
   /** The OpenGL utility object. */
   private final GLU glu = new GLU();
+
   /** The OpenGL utility toolkit object. */
   // TODO should this be a static member?
   private final GLUT glut = new GLUT();
+  private final List<Creature> predators = new ArrayList<Creature>();
+  private final List<Creature> prey = new ArrayList<Creature>();
   /** The controller for view rotations. */
   private RotationController rotationController = null;
+
   /** Whether the state of the model has been changed. */
   private boolean stateChanged = true;
+
   /**
    * The top level component in the scene which controls the positioning and
    * rotation of everything in the scene.
    */
   private final Component topLevelComponent = new Component(INITIAL_POSITION,
       "top level");
-
-  /** The total number of birds to place in the scene. */
-  public static final int NUM_BIRDS = 20;
-  /** The total number of fish to place in the scene. */
-  public static final int NUM_FISH = 10;
-  /**
-   * The length of one side of the cube-shaped tank in which the creatures live.
-   */
-  public static final int TANK_SIZE = 6;
-  /** A random number generator. */
-  private static final Random prg = new Random();
 
   /**
    * Instantiates this object by adding all the necessary components to the
@@ -101,7 +105,6 @@ public class DrawingController implements GLEventListener {
     this.prey.add(fish);
     this.topLevelComponent.addChildren(bird, fish);
   }
-
   /**
    * Redisplays the scene containing the model.
    * 
@@ -149,9 +152,6 @@ public class DrawingController implements GLEventListener {
     // redraw the components
     this.topLevelComponent.draw(gl);
   }
-
-  private final List<Creature> predators = new ArrayList<Creature>();
-  private final List<Creature> prey = new ArrayList<Creature>();
 
   /**
    * This method is intentionally unimplemented.

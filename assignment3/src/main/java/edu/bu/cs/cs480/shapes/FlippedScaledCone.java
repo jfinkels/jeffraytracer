@@ -14,8 +14,10 @@ import edu.bu.cs.cs480.drawing.Displayable;
  * @since Spring 2011
  */
 public class FlippedScaledCone extends Cylindrical implements Displayable {
+  private int callListHandle;
   private final double xScale;
   private final double yScale;
+
   private final double zScale;
 
   /**
@@ -41,8 +43,6 @@ public class FlippedScaledCone extends Cylindrical implements Displayable {
   public void draw(GL gl) {
     gl.glCallList(this.callListHandle);
   }
-
-  private int callListHandle;
 
   /*
    * (non-Javadoc)

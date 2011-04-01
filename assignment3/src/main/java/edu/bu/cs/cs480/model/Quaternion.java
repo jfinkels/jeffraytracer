@@ -131,6 +131,10 @@ public class Quaternion {
     this.set(1f, 0f, 0f, 0f);
   }
 
+  private void set(double s, double v0, double v1, double v2) {
+    this.set((float) s, (float) v0, (float) v1, (float) v2);
+  }
+
   /**
    * Sets the components of this quaternion to the specified values.
    * 
@@ -148,10 +152,6 @@ public class Quaternion {
     this.v[0] = v0;
     this.v[1] = v1;
     this.v[2] = v2;
-  }
-
-  private void set(double s, double v0, double v1, double v2) {
-    this.set((float) s, (float) v0, (float) v1, (float) v2);
   }
 
   /**

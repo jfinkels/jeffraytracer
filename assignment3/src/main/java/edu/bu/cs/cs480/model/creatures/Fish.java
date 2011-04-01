@@ -97,6 +97,16 @@ public class Fish extends Creature {
     this.addChildren(body, tail);
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see edu.bu.cs.cs480.model.creatures.Creature#boundingRadius()
+   */
+  @Override
+  public double boundingRadius() {
+    return BODY_RADIUS;
+  }
+
   /**
    * Updates the angle of the fin on each call.
    * 
@@ -111,16 +121,6 @@ public class Fish extends Creature {
     this.tail.rotate(new Point3D(0, 0, 1), 90);
 
     super.update(gl);
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see edu.bu.cs.cs480.model.creatures.Creature#boundingRadius()
-   */
-  @Override
-  public double boundingRadius() {
-    return BODY_RADIUS;
   }
 
 }

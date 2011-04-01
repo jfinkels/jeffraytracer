@@ -151,6 +151,16 @@ public class Bird extends Creature {
     this.addChildren(body, this.leftWing, this.rightWing, head);
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see edu.bu.cs.cs480.model.creatures.Creature#boundingRadius()
+   */
+  @Override
+  public double boundingRadius() {
+    return BODY_RADIUS;
+  }
+
   /**
    * Updates the angle of the wings on each call.
    * 
@@ -165,15 +175,5 @@ public class Bird extends Creature {
     this.rightWing.rotateTo(new Point3D(1, 0, 0), -wingAngle);
 
     super.update(gl);
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see edu.bu.cs.cs480.model.creatures.Creature#boundingRadius()
-   */
-  @Override
-  public double boundingRadius() {
-    return BODY_RADIUS;
   }
 }

@@ -150,6 +150,13 @@ public class Component extends BaseRotatable implements Colorable, Nameable,
   }
 
   /**
+   * @param prey
+   */
+  public boolean removeChild(final Component child) {
+    return this.children.remove(child);
+  }
+
+  /**
    * {@inheritDoc}
    * 
    * @param color
@@ -170,6 +177,11 @@ public class Component extends BaseRotatable implements Colorable, Nameable,
    */
   protected void setPosition(final Point3D position) {
     this.position = position;
+  }
+  
+  @Override
+  public String toString() {
+    return this.name;    
   }
 
   /**
@@ -221,17 +233,5 @@ public class Component extends BaseRotatable implements Colorable, Nameable,
 
     gl.glPopMatrix();
     gl.glEndList();
-  }
-  
-  @Override
-  public String toString() {
-    return this.name;    
-  }
-
-  /**
-   * @param prey
-   */
-  public boolean removeChild(final Component child) {
-    return this.children.remove(child);
   }
 }

@@ -22,6 +22,8 @@
  */
 package edu.bu.cs.cs480.model;
 
+import java.util.Arrays;
+
 /**
  * A quaternion with float values.
  * 
@@ -35,6 +37,10 @@ public class Quaternion {
   private float s;
   /** The vector components of this quaternion. */
   private final float[] v = new float[3];
+
+  public boolean equals(final Quaternion that) {
+    return this.s == that.s && Arrays.equals(this.v, that.v);
+  }
 
   /**
    * Instantiates this quaternion with an initial value of (1, 0, 0, 0).
@@ -196,4 +202,9 @@ public class Quaternion {
     return M;
   }
 
+  @Override
+  public String toString() {
+    return "(" + this.s + ", " + this.v[0] + ", " + this.v[1] + ", "
+        + this.v[2] + ")";
+  }
 }

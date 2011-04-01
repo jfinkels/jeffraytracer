@@ -17,7 +17,7 @@ public class BaseRotatable implements Rotatable {
    * 
    * @param axis
    *          {@inheritDoc}
-   * @param angleDelta
+   * @param angle
    *          {@inheritDoc}
    */
   @Override

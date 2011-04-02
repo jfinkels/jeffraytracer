@@ -1,5 +1,5 @@
 /**
- * 
+ * Fish.java - a drawable model of a fish with a body and tail that flaps
  */
 package edu.bu.cs.cs480.model.creatures;
 
@@ -15,7 +15,10 @@ import edu.bu.cs.cs480.shapes.Ellipsoid;
 import edu.bu.cs.cs480.shapes.FlippedScaledCone;
 
 /**
+ * A drawable model of a fish with a body and a tail that moves left to right.
+ * 
  * @author Jeffrey Finkelstein <jeffrey.finkelstein>
+ * @since Spring 2011
  */
 public class Fish extends Creature {
   /** A body for the fish. */
@@ -67,22 +70,33 @@ public class Fish extends Creature {
   public static final double INCREMENT = 0.3;
   /** The maximum angle for the tail to achieve in either direction. */
   public static final double MAX_TAIL_ANGLE = 45;
+  /** The height of the tail. */
   public static final double TAIL_HEIGHT = .1;
-
+  /** The radius of the tail. */
   public static final double TAIL_RADIUS = BODY_RADIUS;
-
   /** Two times pi. */
   public static final double TWO_PI = 2 * Math.PI;
-
   /** The counter to use for incrementing the wing angle along the sine curve. */
   private double counter = 0;
-
+  /** The tail of this fish. */
   private final Tail tail;
 
   /**
+   * Creates a fish which has a body and a tail.
+   * 
    * @param position
-   * @param displayable
+   *          The position of the component.
+   * @param glut
+   *          The OpenGL utility toolkit object, used for drawing circular
+   *          objects.
    * @param name
+   *          The name of this component.
+   * @param flock
+   *          The flock to which this creature belongs which helps guide its
+   *          movement.
+   * @param food
+   *          The list of food visible to this creature which helps guide its
+   *          movement.
    */
   public Fish(Point3D position, final GLUT glut, final String name,
       final List<Creature> flock, final List<Food> food) {
@@ -97,9 +111,10 @@ public class Fish extends Creature {
     this.addChildren(body, this.tail);
   }
 
-  /*
-   * (non-Javadoc)
+  /**
+   * {@inheritDoc}
    * 
+   * @return {@inheritDoc}
    * @see edu.bu.cs.cs480.model.creatures.Creature#boundingRadius()
    */
   @Override

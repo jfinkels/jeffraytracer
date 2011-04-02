@@ -1,8 +1,6 @@
-// ************************************************************************
-// Tank Class.
-// This class draws a checkered ground and the bounding box of the tank.
-// ************************************************************************
-//
+/**
+ * Tank.java - displayable bounding box with a checkered pattern on the bottom
+ */
 package edu.bu.cs.cs480.shapes;
 
 import java.nio.ByteBuffer;
@@ -45,35 +43,35 @@ public class Tank implements Displayable {
 
     gl.glNewList(this.tank_object, GL.GL_COMPILE);
     gl.glBegin(GL.GL_LINE_STRIP);
-    gl.glVertex3f(w / 2, h / 2, d / 2);
-    gl.glVertex3f(-w / 2, h / 2, d / 2);
-    gl.glVertex3f(-w / 2, -h / 2, d / 2);
-    gl.glVertex3f(w / 2, -h / 2, d / 2);
-    gl.glVertex3f(w / 2, h / 2, d / 2);
-    gl.glVertex3f(w / 2, h / 2, -d / 2);
-    gl.glVertex3f(-w / 2, h / 2, -d / 2);
-    gl.glVertex3f(-w / 2, -h / 2, -d / 2);
-    gl.glVertex3f(w / 2, -h / 2, -d / 2);
-    gl.glVertex3f(w / 2, h / 2, -d / 2);
+    gl.glVertex3f(this.w / 2, this.h / 2, this.d / 2);
+    gl.glVertex3f(-this.w / 2, this.h / 2, this.d / 2);
+    gl.glVertex3f(-this.w / 2, -this.h / 2, this.d / 2);
+    gl.glVertex3f(this.w / 2, -this.h / 2, this.d / 2);
+    gl.glVertex3f(this.w / 2, this.h / 2, this.d / 2);
+    gl.glVertex3f(this.w / 2, this.h / 2, -this.d / 2);
+    gl.glVertex3f(-this.w / 2, this.h / 2, -this.d / 2);
+    gl.glVertex3f(-this.w / 2, -this.h / 2, -this.d / 2);
+    gl.glVertex3f(this.w / 2, -this.h / 2, -this.d / 2);
+    gl.glVertex3f(this.w / 2, this.h / 2, -this.d / 2);
     gl.glEnd();
     gl.glBegin(GL.GL_LINES);
-    gl.glVertex3f(-w / 2, -h / 2, d / 2);
-    gl.glVertex3f(-w / 2, -h / 2, -d / 2);
-    gl.glVertex3f(-w / 2, h / 2, d / 2);
-    gl.glVertex3f(-w / 2, h / 2, -d / 2);
-    gl.glVertex3f(w / 2, -h / 2, d / 2);
-    gl.glVertex3f(w / 2, -h / 2, -d / 2);
+    gl.glVertex3f(-this.w / 2, -this.h / 2, this.d / 2);
+    gl.glVertex3f(-this.w / 2, -this.h / 2, -this.d / 2);
+    gl.glVertex3f(-this.w / 2, this.h / 2, this.d / 2);
+    gl.glVertex3f(-this.w / 2, this.h / 2, -this.d / 2);
+    gl.glVertex3f(this.w / 2, -this.h / 2, this.d / 2);
+    gl.glVertex3f(this.w / 2, -this.h / 2, -this.d / 2);
     gl.glEnd();
     gl.glEnable(GL.GL_TEXTURE_2D);
     gl.glBegin(GL.GL_QUADS);
     gl.glTexCoord2f(1.0f, 1.0f);
-    gl.glVertex3f(w / 2, -h / 2, d / 2);
+    gl.glVertex3f(this.w / 2, -this.h / 2, this.d / 2);
     gl.glTexCoord2f(1.0f, 0.0f);
-    gl.glVertex3f(w / 2, -h / 2, -d / 2);
+    gl.glVertex3f(this.w / 2, -this.h / 2, -this.d / 2);
     gl.glTexCoord2f(0.0f, 0.0f);
-    gl.glVertex3f(-w / 2, -h / 2, -d / 2);
+    gl.glVertex3f(-this.w / 2, -this.h / 2, -this.d / 2);
     gl.glTexCoord2f(0.0f, 1.0f);
-    gl.glVertex3f(-w / 2, -h / 2, d / 2);
+    gl.glVertex3f(-this.w / 2, -this.h / 2, this.d / 2);
     gl.glEnd();
     gl.glDisable(GL.GL_TEXTURE_2D);
     gl.glEndList();
@@ -84,7 +82,8 @@ public class Tank implements Displayable {
 
     gl.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1);
     gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, 3, CHECK_IMAGE_WIDTH,
-        CHECK_IMAGE_HEIGHT, 0, GL.GL_RGB, GL.GL_UNSIGNED_BYTE, this.checkImageBuf);
+        CHECK_IMAGE_HEIGHT, 0, GL.GL_RGB, GL.GL_UNSIGNED_BYTE,
+        this.checkImageBuf);
     gl.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S, GL.GL_CLAMP);
     gl.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, GL.GL_CLAMP);
     gl.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER,

@@ -17,8 +17,8 @@ import edu.bu.cs.cs480.drawing.UpdatingDisplayable;
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
-public class Component extends BaseRotatable implements Colorable,
-    Nameable, UpdatingDisplayable {
+public class Component extends BaseRotatable implements Colorable, Nameable,
+    UpdatingDisplayable {
   /** The handle to the OpenGL call list to use to draw this component. */
   private int callListHandle;
   /**
@@ -46,6 +46,8 @@ public class Component extends BaseRotatable implements Colorable,
    *          The position of this component.
    * @param displayable
    *          The object which this component represents.
+   * @param name
+   *          The human-readable name of this component.
    */
   public Component(final Point3D position, final Displayable displayable,
       final String name) {
@@ -149,7 +151,13 @@ public class Component extends BaseRotatable implements Colorable,
   }
 
   /**
-   * @param prey
+   * Removes the specified child component from the set of children of this
+   * component (if it exists).
+   * 
+   * @param child
+   *          The component to remove.
+   * @return {@code true} if and only if the set of children contained the
+   *         specified component.
    */
   public boolean removeChild(final Component child) {
     return this.children.remove(child);
@@ -178,6 +186,11 @@ public class Component extends BaseRotatable implements Colorable,
     this.position = position;
   }
 
+  /**
+   * Returns the String representation of this component.
+   * 
+   * @return The String representation of this component.
+   */
   @Override
   public String toString() {
     return this.name;

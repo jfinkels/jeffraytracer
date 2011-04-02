@@ -1,5 +1,5 @@
 /**
- * Creature.java
+ * Creature.java - a drawable creature which has velocity and goals
  */
 package edu.bu.cs.cs480.model.creatures;
 
@@ -12,41 +12,68 @@ import edu.bu.cs.cs480.model.Point3D;
 import edu.bu.cs.cs480.model.SizedComponent;
 
 /**
- * A creature which has a velocity, can move, and has a bounding sphere.
+ * A creature which has a velocity, can move, has a bounding sphere, exhibits
+ * flock behavior, and is attracted to food.
+ * 
+ * Flocking behavior code adapted from pseudocode at:
+ * http://www.vergenet.net/~conrad/boids/pseudocode.html
  * 
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
 public abstract class Creature extends SizedComponent {
-
+  /**
+   * The relative importance of the attraction of this creature to the
+   * perceived center of its flock.
+   */
   public static final double CENTER_WEIGHT = 0.01;
-
+  /** The maximum speed of the creature. */
   public static final double MAX_SPEED = 0.2;
-  public static final double MAX_X = 3;
-  public static final double MAX_Y = 3;
-  public static final double MAX_Z = 3;
-  public static final double MIN_X = -3;
-  public static final double MIN_Y = -3;
-
-  public static final double MIN_Z = -3;
-
+  /**
+   * The maximum corner of the rectangle which bounds the possible positions of
+   * this creature.
+   */
+  public static final Point3D MAX_POSITION = new Point3D(3, 3, 3);
+  /**
+   * The minimum corner of the rectangle which bounds the possible positions of
+   * this creature.
+   */
+  public static final Point3D MIN_POSITION = new Point3D(-3, -3, -3);
+  /**
+   * The distance at which other creatures exert a repelling force on this
+   * creature.
+   */
   public static final double REPULSION_DISTANCE = 0.2;
+  /**
+   * The relative importance of the attraction of this creature to the nearest
+   * piece of food.
+   */
   public static final double FOOD_WEIGHT = 0.2;
+  /**
+   * The relative importance of the attraction of this creature to the
+   * perceived average velocity of its flock.
+   */
   public static final double VELOCITY_WEIGHT = 0.125;
-
+  /** The flock of which this creature is a part. */
   private final List<Creature> flock;
-
+  /** The initial velocity of the creature. */
   public static final Point3D INITIAL_VELOCITY = new Point3D(0.01, 0, 0);
-
   /** The current velocity of this creature. */
   private Point3D velocity = INITIAL_VELOCITY;
 
   /**
+   * Instantiates this class by stashing all the provided parameters.
+   * 
    * @param position
+   *          The position of this component.
    * @param displayable
+   *          The object which this component represents.
    * @param name
+   *          The human-readable name of this component.
    * @param flock
    *          The flock to which this creature belongs.
+   * @param food
+   *          The food to which this creature is attracted.
    */
   public Creature(Point3D position, Displayable displayable, String name,
       final List<Creature> flock, final List<Food> food) {
@@ -55,18 +82,31 @@ public abstract class Creature extends SizedComponent {
     this.food = food;
   }
 
+  /** The food to which this creature is attracted. */
   private final List<Food> food;
 
+  /**
+   * Checks that the current position of this creature is within the bounds
+   * specified by the bounding rectangle given by {@value #MAX_POSITION} and
+   * {@value #MIN_POSITION}.
+   * 
+   * If the position is beyond those bounds, it is reset to be inside the
+   * bounding rectangle.
+   */
   private void checkBounds() {
     double x = this.position().x();
     double y = this.position().y();
     double z = this.position().z();
-    x = Math.max(Math.min(x, MAX_X), MIN_X);
-    y = Math.max(Math.min(y, MAX_Y), MIN_Y);
-    z = Math.max(Math.min(z, MAX_Z), MIN_Z);
+    x = Math.max(Math.min(x, MAX_POSITION.x()), MIN_POSITION.x());
+    y = Math.max(Math.min(y, MAX_POSITION.y()), MIN_POSITION.y());
+    z = Math.max(Math.min(z, MAX_POSITION.z()), MIN_POSITION.z());
     this.setPosition(new Point3D(x, y, z));
   }
 
+  /**
+   * Updates the velocity of this creature by adding the attraction to the
+   * nearest piece of food in {@link #food}.
+   */
   private void foodVelocityUpdate() {
     if (this.food != null && !this.food.isEmpty()) {
       Food nearestFood = null;
@@ -87,6 +127,10 @@ public abstract class Creature extends SizedComponent {
     }
   }
 
+  /**
+   * Updates the velocity of this creature by adding the attraction and
+   * repulsion due to the positions and velocities of the rest of the flock.
+   */
   private void flockVelocityUpdate() {
 
     // first compute the velocity towards the center of the flock
@@ -108,6 +152,10 @@ public abstract class Creature extends SizedComponent {
 
   }
 
+  /**
+   * Checks that the velocity is not beyond the maximum velocity for a
+   * creature, and scales it back if it is.
+   */
   private void limitVelocity() {
     if (this.velocity.norm() > MAX_SPEED) {
       this.velocity = this.velocity.normalized().scaledBy(MAX_SPEED);
@@ -120,6 +168,16 @@ public abstract class Creature extends SizedComponent {
     this.checkBounds();
   }
 
+  /**
+   * Returns the perceived average velocity of the other creatures in the
+   * flock.
+   * 
+   * Pre-condition: flock is not null, and flock contains more than just this
+   * creature.
+   * 
+   * @return The perceived average velocity of the other creatures in the
+   *         flock.
+   */
   private Point3D perceivedFlockVelocity() {
     double xSum = 0;
     double ySum = 0;
@@ -142,6 +200,13 @@ public abstract class Creature extends SizedComponent {
 
   }
 
+  /**
+   * Returns the repulsion of this creature due to other creatures in the flock
+   * at too close a distance.
+   * 
+   * @return The repulsion of this creature due to other creatures in the flock
+   *         at too close a distance.
+   */
   private Point3D repulsionVelocity() {
     Point3D result = Point3D.ORIGIN;
 
@@ -183,6 +248,14 @@ public abstract class Creature extends SizedComponent {
     this.limitVelocity();
   }
 
+  /**
+   * Updates the velocity of this creature due to flocking behavior and food
+   * proximity, moves this creature based on the updated velocity, and updates
+   * the OpenGL call list which draws the model of this creature.
+   * 
+   * @param gl
+   *          {@inheritDoc}
+   */
   @Override
   public void update(final GL gl) {
 
@@ -199,8 +272,16 @@ public abstract class Creature extends SizedComponent {
     super.update(gl);
   }
 
-  // code from: http://www.vergenet.net/~conrad/boids/pseudocode.html
-  // pre-condition: flock is not null and includes creatures besides this one
+  /**
+   * Returns the velocity due to attraction of this creature towards the
+   * perceived center of the other creatures in the flock.
+   * 
+   * Pre-condition: flock is not null, and flock contains more than just this
+   * creature.
+   * 
+   * @return The velocity due to attraction of this creature towards the
+   *         perceived center of the other creatures in the flock.
+   */
   private Point3D velocityTowardsCenter() {
     double xSum = 0;
     double ySum = 0;

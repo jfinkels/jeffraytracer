@@ -32,6 +32,9 @@ public class Circular {
    * 
    * @param radius
    *          The radius of this object.
+   * @param glut
+   *          The OpenGL utility toolkit object used to draw this circular
+   *          object.
    */
   public Circular(final double radius, final GLUT glut) {
     this.radius = radius;

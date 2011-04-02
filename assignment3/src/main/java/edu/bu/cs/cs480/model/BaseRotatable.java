@@ -25,11 +25,27 @@ public class BaseRotatable implements Rotatable {
     this.rotation = this.rotation.multiply(new Quaternion(axis, angle));
     this.rotation.normalize();
   }
-  
+
+  /**
+   * {@inheritDoc}
+   * 
+   * @param axis
+   *          {@inheritDoc}
+   * @param angle
+   *          {@inheritDoc}
+   */
+  @Override
   public void rotateTo(final Point3D axis, final double angle) {
     this.rotation = new Quaternion(axis, angle);
   }
-  
+
+  /**
+   * Returns the quaternion which represents the current rotation of this
+   * object.
+   * 
+   * @return The quaternion which represents the current rotation of this
+   *         object.
+   */
   public Quaternion rotation() {
     return this.rotation;
   }

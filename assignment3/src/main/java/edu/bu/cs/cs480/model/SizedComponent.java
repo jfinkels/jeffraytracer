@@ -1,35 +1,45 @@
 /**
- * 
+ * SizedComponent.java - a component which has a bounding sphere
  */
 package edu.bu.cs.cs480.model;
 
 import edu.bu.cs.cs480.drawing.Displayable;
-import edu.bu.cs.cs480.model.creatures.Creature;
 
 /**
- * @author jeff
+ * A Component which has a bounding sphere.
  * 
+ * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
+ * @since Spring 2011
  */
 public abstract class SizedComponent extends Component {
 
   /**
+   * Instantiates this class by calling the corresponding constructor of the
+   * superclass.
+   * 
    * @param position
+   *          The position of this component.
    * @param displayable
+   *          The object which this component represents.
    * @param name
+   *          The human-readable name of this component.
    */
-  public SizedComponent(Point3D position, Displayable displayable, String name) {
+  public SizedComponent(final Point3D position, final Displayable displayable,
+      final String name) {
     super(position, displayable, name);
-    // TODO Auto-generated constructor stub
   }
 
   /**
+   * Instantiates this class by calling the corresponding constructor of the
+   * superclass.
+   * 
    * @param position
-   * @param displayable
+   *          The position of this component.
    * @param name
+   *          The human-readable name of this component.
    */
-  public SizedComponent(Point3D position, String name) {
+  public SizedComponent(final Point3D position, final String name) {
     super(position, name);
-    // TODO Auto-generated constructor stub
   }
 
   /**

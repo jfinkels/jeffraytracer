@@ -112,7 +112,6 @@ public class Bird extends Creature {
   public static final double WING_HEIGHT = .1;
   /** The radius of a wing. */
   public static final double WING_RADIUS = 0.04;
-
   /** The counter to use for incrementing the wing angle along the sine curve. */
   private double counter = 0;
   /** The left wing object. */
@@ -152,9 +151,10 @@ public class Bird extends Creature {
     this.addChildren(body, this.leftWing, this.rightWing, head);
   }
 
-  /*
-   * (non-Javadoc)
+  /**
+   * {@inheritDoc}
    * 
+   * @return {@inheritDoc}
    * @see edu.bu.cs.cs480.model.creatures.Creature#boundingRadius()
    */
   @Override

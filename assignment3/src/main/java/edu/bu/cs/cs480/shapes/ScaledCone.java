@@ -1,5 +1,5 @@
 /**
- * 
+ * ScaledCone.java - a cone scaled in at most three directions
  */
 package edu.bu.cs.cs480.shapes;
 
@@ -10,20 +10,37 @@ import com.sun.opengl.util.GLUT;
 import edu.bu.cs.cs480.drawing.Displayable;
 
 /**
+ * A cone scaled in at most three directions.
+ * 
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
 public class ScaledCone extends Cylindrical implements Displayable {
+  /** The handle to the OpenGL call list to use to draw this cone. */
   private int callListHandle;
+  /** The amount between 0 and 1 to scale this cone in the x direction. */
   private final double xScale;
+  /** The amount between 0 and 1 to scale this cone in the y direction. */
   private final double yScale;
-
+  /** The amount between 0 and 1 to scale this cone in the z direction. */
   private final double zScale;
 
   /**
+   * Instantiates this object with the specified height and radius.
+   * 
    * @param radius
+   *          The radius of this cylinder.
    * @param height
+   *          The height of this cylinder.
+   * @param xScale
+   *          The amount between 0 and 1 to scale this cone in the x direction.
+   * @param yScale
+   *          The amount between 0 and 1 to scale this cone in the y direction.
+   * @param zScale
+   *          The amount between 0 and 1 to scale this cone in the z direction.
    * @param glut
+   *          The OpenGL utility toolkit object used to draw this circular
+   *          object.
    */
   public ScaledCone(final double radius, final double height,
       final double xScale, final double yScale, final double zScale,
@@ -34,9 +51,11 @@ public class ScaledCone extends Cylindrical implements Displayable {
     this.zScale = zScale;
   }
 
-  /*
-   * (non-Javadoc)
+  /**
+   * {@inheritDoc}
    * 
+   * @param gl
+   *          {@inheritDoc}
    * @see edu.bu.cs.cs480.drawing.Displayable#draw(javax.media.opengl.GL)
    */
   @Override
@@ -44,9 +63,11 @@ public class ScaledCone extends Cylindrical implements Displayable {
     gl.glCallList(this.callListHandle);
   }
 
-  /*
-   * (non-Javadoc)
+  /**
+   * Generates and defines the call list used to draw this cone.
    * 
+   * @param gl
+   *          {@inheritDoc}
    * @see edu.bu.cs.cs480.drawing.Displayable#initialize(javax.media.opengl.GL)
    */
   @Override

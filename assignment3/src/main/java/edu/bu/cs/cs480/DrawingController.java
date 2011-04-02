@@ -99,6 +99,12 @@ public class DrawingController implements GLEventListener {
     this.topLevelComponent.addChildren(bird, fish);
   }
 
+  /**
+   * Returns a random point within the bounds of the tank, as specified by
+   * {@value #TANK_SIZE}.
+   * 
+   * @return A random point within the bounds of the tank.
+   */
   private static Point3D randomPoint() {
     final double x = (prg.nextDouble() * TANK_SIZE) - (TANK_SIZE / 2);
     final double y = (prg.nextDouble() * TANK_SIZE) - (TANK_SIZE / 2);
@@ -106,14 +112,28 @@ public class DrawingController implements GLEventListener {
     return new Point3D(x, y, z);
   }
 
+  /**
+   * Queues a single piece of food to be added to the tank at a random
+   * position.
+   * 
+   * Even if this method is called multiple times before
+   * {@link #display(GLAutoDrawable)} is called, only one new piece of food
+   * will be added.
+   */
   public void generateFood() {
     this.foodToAdd = new Food(randomPoint(), this.glut, "food "
         + this.foodCounter);
     this.foodCounter++;
   }
 
+  /** The number of times {@link #generateFood()} has been called. */
   private int foodCounter = 0;
+  /** The list of food currently in the tank. */
   private final List<Food> food = new ArrayList<Food>();
+  /**
+   * The piece of food to add on the next call to
+   * {@link #display(GLAutoDrawable)}.
+   */
   private Food foodToAdd = null;
 
   /**

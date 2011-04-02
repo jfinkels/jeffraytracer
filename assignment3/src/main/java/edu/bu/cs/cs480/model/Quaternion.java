@@ -38,6 +38,15 @@ public class Quaternion {
   /** The vector components of this quaternion. */
   private final float[] v = new float[3];
 
+  /**
+   * Returns {@code true} if and only the components of this quaternion exactly
+   * equal the components of the specified other quaternion.
+   * 
+   * @param that
+   *          The other quaternion.
+   * @return {@code true} if and only the components of this quaternion exactly
+   *         equal the components of the specified other quaternion.
+   */
   public boolean equals(final Quaternion that) {
     return this.s == that.s && Arrays.equals(this.v, that.v);
   }
@@ -67,7 +76,11 @@ public class Quaternion {
   }
 
   /**
+   * Instantiates this quaternion as a representation of the rotation by the
+   * specified angle around the specified axis.
+   * 
    * @param axis
+   *          The axis around which to rotate.
    * @param angle
    *          The angle in degrees.
    */
@@ -79,13 +92,22 @@ public class Quaternion {
   }
 
   /**
-   * @param d
-   * @param e
-   * @param f
-   * @param g
+   * Instantiates this quaternion with the specified component values.
+   * 
+   * Note: the component values will be cast to float values, so some loss of
+   * precision may occur.
+   * 
+   * @param s
+   *          The scalar component of this quaternion.
+   * @param v0
+   *          The first vector component of this quaternion.
+   * @param v1
+   *          The second vector component of this quaternion.
+   * @param v2
+   *          The third vector component of this quaternion.
    */
-  public Quaternion(double d, double e, double f, double g) {
-    this((float) d, (float) e, (float) f, (float) g);
+  public Quaternion(double s, double v0, double v1, double v2) {
+    this((float) s, (float) v0, (float) v1, (float) v2);
   }
 
   /**
@@ -147,6 +169,21 @@ public class Quaternion {
     this.set(1f, 0f, 0f, 0f);
   }
 
+  /**
+   * Sets the components of this quaternion to the specified values.
+   * 
+   * Note: the component values will be cast to float values, so some loss of
+   * precision may occur.
+   * 
+   * @param s
+   *          The scalar component of this quaternion.
+   * @param v0
+   *          The first vector component of this quaternion.
+   * @param v1
+   *          The second vector component of this quaternion.
+   * @param v2
+   *          The third vector component of this quaternion.
+   */
   private void set(double s, double v0, double v1, double v2) {
     this.set((float) s, (float) v0, (float) v1, (float) v2);
   }
@@ -212,6 +249,11 @@ public class Quaternion {
     return M;
   }
 
+  /**
+   * Returns the String representation of this quaternion.
+   * 
+   * @return The String representation of this quaternion.
+   */
   @Override
   public String toString() {
     return "(" + this.s + ", " + this.v[0] + ", " + this.v[1] + ", "

@@ -50,6 +50,8 @@ public class KeyboardController implements KeyListener {
    * 
    * R : resets the view to the initial rotation
    * 
+   * F : adds a single piece of food to the tank
+   * 
    * Q, Esc : exits the program
    * 
    * @param key

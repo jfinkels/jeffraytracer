@@ -35,7 +35,7 @@ public class CreatureTest {
      * @param flock
      */
     public TestCreature(Point3D position, List<Creature> flock) {
-      super(position, null, null, flock);
+      super(position, null, null, flock, null);
     }
 
     /*

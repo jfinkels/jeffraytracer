@@ -1,12 +1,15 @@
 /**
- * 
+ * Cone.java - a displayable cone
  */
 package edu.bu.cs.cs480.shapes;
 
 import com.sun.opengl.util.GLUT;
 
 /**
- * @author Jeffrey Finkelstein <jeffreyf>
+ * A displayable cone.
+ * 
+ * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
+ * @since Spring 2011
  */
 public class Cone extends ScaledCone {
 

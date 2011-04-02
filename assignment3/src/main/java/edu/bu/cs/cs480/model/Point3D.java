@@ -90,18 +90,28 @@ public class Point3D {
     return this.difference(that).norm();
   }
 
+  /**
+   * Returns the dot product of this vector and the specified other vector.
+   * 
+   * @param that
+   *          The other vector.
+   * @return The dot product of this vector and the specified other vector.
+   */
   public double dotProduct(final Point3D that) {
     return this.x * that.x + this.y * that.y + this.z * that.z;
   }
 
-  @Override
-  public boolean equals(final Object other) {
-    if (!(other instanceof Point3D)) {
-      return false;
-    }
-
-    final Point3D o = (Point3D) other;
-    return this.x == o.x && this.y == o.y && this.z == o.z;
+  /**
+   * Returns {@code true} if and only if the components of this vector are
+   * exactly equal to the components of the specified other vector.
+   * 
+   * @param that
+   *          The vector to compare for equality.
+   * @return {@code true} if and only if the components of this vector are
+   *         exactly equal to the components of the specified other vector.
+   */
+  public boolean equals(final Point3D that) {
+    return this.x == that.x && this.y == that.y && this.z == that.z;
   }
 
   /**
@@ -135,7 +145,11 @@ public class Point3D {
   }
 
   /**
+   * Returns a new unit vector whose direction is the same as the direction of
+   * this vector.
    * 
+   * @return A new unit vector whose direction is the same as the direction of
+   *         this vector.
    */
   public Point3D normalized() {
     final double norm = this.norm();
@@ -222,8 +236,16 @@ public class Point3D {
   }
 
   /**
+   * Returns {@code true} if and only if this vector is parallel to and in the
+   * opposite direction from the specified other vector.
+   * 
+   * Pre-condition: the specified other vector is parallel to this one. If not,
+   * the result is undefined.
+   * 
    * @param that
-   * @return
+   *          The other vector which is parallel to this one.
+   * @return {@code true} if and only if the specified other vector is in the
+   *         opposite direction from this one.
    */
   public boolean oppositeDirectionFrom(final Point3D that) {
     return Math.signum(this.x) != Math.signum(that.x)
@@ -232,14 +254,17 @@ public class Point3D {
   }
 
   /**
-   * @param newVelocity
-   * @return
+   * Returns the angle in degrees between this vector and the specified other
+   * vector.
+   * 
+   * @param that
+   *          The other vector.
+   * @return The angle in degrees between this vector and the specified other
+   *         vector.
    */
   public double angleBetween(final Point3D that) {
-    final double thisNorm = this.norm();
-    final double thatNorm = that.norm();
-    final double dotProduct = this.dotProduct(that);
-    return Math.acos(dotProduct / (thisNorm * thatNorm)) * (180 / Math.PI);
+    return Math.acos(this.dotProduct(that) / (this.norm() * that.norm()))
+        * (180 / Math.PI);
   }
 
 }

@@ -85,8 +85,8 @@ public class Fish extends Creature {
    * @param name
    */
   public Fish(Point3D position, final GLUT glut, final String name,
-      final List<Creature> flock) {
-    super(position, null, name, flock);
+      final List<Creature> flock, final List<Food> food) {
+    super(position, null, name, flock, food);
 
     this.setVelocity(new Point3D(0.01, 0, 0));
 

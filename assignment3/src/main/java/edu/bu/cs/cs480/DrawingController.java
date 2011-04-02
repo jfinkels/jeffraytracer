@@ -80,7 +80,7 @@ public class DrawingController implements GLEventListener {
 
     for (int i = 0; i < NUM_FISH; i++) {
       final Creature fish = new Fish(randomPoint(), this.glut, "fish " + i,
-          this.prey);
+          this.prey, this.food);
 
       this.prey.add(fish);
       this.topLevelComponent.addChild(fish);
@@ -91,7 +91,7 @@ public class DrawingController implements GLEventListener {
         "colliding bird", this.predators);
     bird.setVelocity(new Point3D(0.01, 0, 0));
     final Creature fish = new Fish(new Point3D(0, -1, 0), this.glut,
-        "colliding fish", this.prey);
+        "colliding fish", this.prey, this.food);
     fish.setVelocity(new Point3D(0, 0.01, 0));
 
     this.predators.add(bird);

@@ -137,7 +137,7 @@ public class Bird extends Creature {
    */
   public Bird(final Point3D position, final GLUT glut, String name,
       final List<Creature> flock) {
-    super(position, null, name, flock);
+    super(position, null, name, flock, null);
 
     this.setVelocity(new Point3D(0.01, 0, 0));
 

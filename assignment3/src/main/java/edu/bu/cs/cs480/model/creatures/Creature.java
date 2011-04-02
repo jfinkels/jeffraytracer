@@ -31,7 +31,7 @@ public abstract class Creature extends SizedComponent {
   public static final double MIN_Z = -3;
 
   public static final double REPULSION_DISTANCE = 0.2;
-
+  public static final double FOOD_WEIGHT = 0.2;
   public static final double VELOCITY_WEIGHT = 0.125;
 
   private final List<Creature> flock;
@@ -49,10 +49,13 @@ public abstract class Creature extends SizedComponent {
    *          The flock to which this creature belongs.
    */
   public Creature(Point3D position, Displayable displayable, String name,
-      final List<Creature> flock) {
+      final List<Creature> flock, final List<Food> food) {
     super(position, displayable, name);
     this.flock = flock;
+    this.food = food;
   }
+
+  private final List<Food> food;
 
   private void checkBounds() {
     double x = this.position().x();
@@ -62,6 +65,26 @@ public abstract class Creature extends SizedComponent {
     y = Math.max(Math.min(y, MAX_Y), MIN_Y);
     z = Math.max(Math.min(z, MAX_Z), MIN_Z);
     this.setPosition(new Point3D(x, y, z));
+  }
+
+  private void foodVelocityUpdate() {
+    if (this.food != null && !this.food.isEmpty()) {
+      Food nearestFood = null;
+      double nearestFoodDistance = Double.MAX_VALUE;
+
+      for (final Food food : this.food) {
+        double distance = this.position().distanceTo(food.position());
+        if (distance < nearestFoodDistance) {
+          nearestFood = food;
+          nearestFoodDistance = distance;
+        }
+      }
+
+      final Point3D result = nearestFood.position()
+          .difference(this.position()).scaledBy(FOOD_WEIGHT);
+
+      this.setVelocity(this.velocity.sumWith(result));
+    }
   }
 
   private void flockVelocityUpdate() {
@@ -165,6 +188,9 @@ public abstract class Creature extends SizedComponent {
 
     // update the velocity based on the known flock
     this.flockVelocityUpdate();
+
+    // update the velocity based on the known food locations
+    this.foodVelocityUpdate();
 
     // move the creature
     this.move();

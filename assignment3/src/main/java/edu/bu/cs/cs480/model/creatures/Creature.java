@@ -8,8 +8,8 @@ import java.util.List;
 import javax.media.opengl.GL;
 
 import edu.bu.cs.cs480.drawing.Displayable;
-import edu.bu.cs.cs480.model.Component;
 import edu.bu.cs.cs480.model.Point3D;
+import edu.bu.cs.cs480.model.SizedComponent;
 
 /**
  * A creature which has a velocity, can move, and has a bounding sphere.
@@ -17,7 +17,7 @@ import edu.bu.cs.cs480.model.Point3D;
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
-public abstract class Creature extends Component {
+public abstract class Creature extends SizedComponent {
 
   public static final double CENTER_WEIGHT = 0.01;
 
@@ -54,8 +54,6 @@ public abstract class Creature extends Component {
     this.flock = flock;
   }
 
-  public abstract double boundingRadius();
-
   private void checkBounds() {
     double x = this.position().x();
     double y = this.position().y();
@@ -85,24 +83,6 @@ public abstract class Creature extends Component {
     // update the new velocity of the creature
     this.setVelocity(newVelocity);
 
-  }
-
-  /**
-   * Returns true if and only if this creature is touching the specified other
-   * creature.
-   * 
-   * Algorithm: check if the distance between the two centers (that is, the
-   * positions of the components) is greater than the sum of the radii of the
-   * two bounding spheres.
-   * 
-   * @param that
-   *          The creature to check for collision with this one.
-   * @return {@code true} if and only if this creature is touching the
-   *         specified other creature.
-   */
-  public boolean isTouching(final Creature that) {
-    return this.position().distanceTo(that.position()) < this.boundingRadius()
-        + that.boundingRadius();
   }
 
   private void limitVelocity() {
@@ -171,15 +151,13 @@ public abstract class Creature extends Component {
       angleOfRotation = 180;
     }
     // otherwise compute the angle and axis if they are not parallel
-    else if (!this.velocity.parallelTo(newVelocity)){
+    else if (!this.velocity.parallelTo(newVelocity)) {
       axisOfRotation = this.velocity.crossProduct(newVelocity);
       angleOfRotation = this.velocity.angleBetween(newVelocity);
     }
     this.velocity = newVelocity;
-    System.out.println("new velocity: " + this.velocity);
     this.rotate(axisOfRotation, angleOfRotation);
     this.limitVelocity();
-    System.out.println("(after limit): " + this.velocity);
   }
 
   @Override

@@ -94,7 +94,7 @@ public class Fish extends Creature {
     this.tail = new Tail(new Point3D(-0.8 * BODY_RADIUS, 0, 0), glut, name
         + " - tail");
 
-    this.addChildren(body, tail);
+    this.addChildren(body, this.tail);
   }
 
   /*

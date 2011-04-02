@@ -19,6 +19,7 @@ import edu.bu.cs.cs480.model.Point3D;
 import edu.bu.cs.cs480.model.creatures.Bird;
 import edu.bu.cs.cs480.model.creatures.Creature;
 import edu.bu.cs.cs480.model.creatures.Fish;
+import edu.bu.cs.cs480.model.creatures.Food;
 import edu.bu.cs.cs480.shapes.Tank;
 
 /**
@@ -38,7 +39,8 @@ public class DrawingController implements GLEventListener {
   /** A random number generator. */
   private static final Random prg = new Random();
   /**
-   * The length of one side of the cube-shaped tank in which the creatures live.
+   * The length of one side of the cube-shaped tank in which the creatures
+   * live.
    */
   public static final int TANK_SIZE = 6;
   /** The OpenGL utility object. */
@@ -51,9 +53,6 @@ public class DrawingController implements GLEventListener {
   private final List<Creature> prey = new ArrayList<Creature>();
   /** The controller for view rotations. */
   private RotationController rotationController = null;
-
-  /** Whether the state of the model has been changed. */
-  private boolean stateChanged = true;
 
   /**
    * The top level component in the scene which controls the positioning and
@@ -72,22 +71,16 @@ public class DrawingController implements GLEventListener {
     this.topLevelComponent.addChild(tank);
 
     for (int i = 0; i < NUM_BIRDS; i++) {
-      final double x = (prg.nextDouble() * TANK_SIZE) - (TANK_SIZE / 2);
-      final double y = (prg.nextDouble() * TANK_SIZE) - (TANK_SIZE / 2);
-      final double z = (prg.nextDouble() * TANK_SIZE) - (TANK_SIZE / 2);
-      final Creature bird = new Bird(new Point3D(x, y, z), this.glut, "bird "
-          + i, this.predators);
+      final Creature bird = new Bird(randomPoint(), this.glut, "bird " + i,
+          this.predators);
 
       this.predators.add(bird);
       this.topLevelComponent.addChild(bird);
     }
 
     for (int i = 0; i < NUM_FISH; i++) {
-      final double x = (prg.nextDouble() * TANK_SIZE) - (TANK_SIZE / 2);
-      final double y = (prg.nextDouble() * TANK_SIZE) - (TANK_SIZE / 2);
-      final double z = (prg.nextDouble() * TANK_SIZE) - (TANK_SIZE / 2);
-      final Creature fish = new Fish(new Point3D(x, y, z), this.glut, "fish "
-          + i, this.prey);
+      final Creature fish = new Fish(randomPoint(), this.glut, "fish " + i,
+          this.prey);
 
       this.prey.add(fish);
       this.topLevelComponent.addChild(fish);
@@ -105,6 +98,24 @@ public class DrawingController implements GLEventListener {
     this.prey.add(fish);
     this.topLevelComponent.addChildren(bird, fish);
   }
+
+  private static Point3D randomPoint() {
+    final double x = (prg.nextDouble() * TANK_SIZE) - (TANK_SIZE / 2);
+    final double y = (prg.nextDouble() * TANK_SIZE) - (TANK_SIZE / 2);
+    final double z = (prg.nextDouble() * TANK_SIZE) - (TANK_SIZE / 2);
+    return new Point3D(x, y, z);
+  }
+
+  public void generateFood() {
+    this.foodToAdd = new Food(randomPoint(), this.glut, "food "
+        + this.foodCounter);
+    this.foodCounter++;
+  }
+
+  private int foodCounter = 0;
+  private final List<Food> food = new ArrayList<Food>();
+  private Food foodToAdd = null;
+
   /**
    * Redisplays the scene containing the model.
    * 
@@ -140,10 +151,35 @@ public class DrawingController implements GLEventListener {
       }
     }
 
+    // check if any prey is touching any food
+    final List<Food> foodToRemove = new ArrayList<Food>();
+    for (final Creature prey : this.prey) {
+      for (final Food food : this.food) {
+        if (prey.isTouching(food)) {
+          // we add the creature to remove to a list for later removal so that
+          // we do not modify the list while iterating through it
+          foodToRemove.add(food);
+        }
+      }
+    }
+
     // iterate over the list of creatures to remove
     for (final Creature creature : toRemove) {
       this.prey.remove(creature);
       this.topLevelComponent.removeChild(creature);
+    }
+
+    // iterate over the list of food to remove
+    for (final Food food : foodToRemove) {
+      this.food.remove(food);
+      this.topLevelComponent.removeChild(food);
+    }
+
+    // add food if food has been added by the user
+    if (this.foodToAdd != null) {
+      this.food.add(this.foodToAdd);
+      this.topLevelComponent.addChild(this.foodToAdd);
+      this.foodToAdd = null;
     }
 
     // update the position of the components which need to be updated

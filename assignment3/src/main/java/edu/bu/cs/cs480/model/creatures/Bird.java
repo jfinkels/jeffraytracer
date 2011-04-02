@@ -91,6 +91,7 @@ public class Bird extends Creature {
       super(position,
           new ScaledCone(WING_RADIUS, WING_HEIGHT, 1, 0.5, 1, glut), name);
     }
+
   }
 
   /** The height of the beak. */

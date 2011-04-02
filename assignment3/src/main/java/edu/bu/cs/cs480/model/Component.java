@@ -17,8 +17,8 @@ import edu.bu.cs.cs480.drawing.UpdatingDisplayable;
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
-public class Component extends BaseRotatable implements Colorable, Nameable,
-    UpdatingDisplayable {
+public class Component extends BaseRotatable implements Colorable,
+    Nameable, UpdatingDisplayable {
   /** The handle to the OpenGL call list to use to draw this component. */
   private int callListHandle;
   /**
@@ -177,10 +177,10 @@ public class Component extends BaseRotatable implements Colorable, Nameable,
   protected void setPosition(final Point3D position) {
     this.position = position;
   }
-  
+
   @Override
   public String toString() {
-    return this.name;    
+    return this.name;
   }
 
   /**
@@ -212,9 +212,9 @@ public class Component extends BaseRotatable implements Colorable, Nameable,
     gl.glTranslated(this.position.x(), this.position.y(), this.position.z());
 
     // first, rotate this component around each of the three axes
-    //gl.glRotated(this.xAngle(), 1, 0, 0);
-    //gl.glRotated(this.yAngle(), 0, 1, 0);
-    //gl.glRotated(this.zAngle(), 0, 0, 1);
+    // gl.glRotated(this.xAngle(), 1, 0, 0);
+    // gl.glRotated(this.yAngle(), 0, 1, 0);
+    // gl.glRotated(this.zAngle(), 0, 0, 1);
     gl.glMultMatrixf(this.rotation().toMatrix(), 0);
 
     // draw the displayable which this component represents in its color

@@ -20,6 +20,8 @@ public class KeyboardController implements KeyListener {
   Animator animator = null;
   /** The controller for view rotations. */
   private RotationController rotationController = null;
+  /** The controller for drawing to the screen. */
+  private DrawingController drawingController = null;
 
   /**
    * This method is intentionally unimplemented.
@@ -76,6 +78,12 @@ public class KeyboardController implements KeyListener {
       this.rotationController.rotation().reset();
       break;
 
+    // add food to the tank
+    case 'F':
+    case 'f':
+      this.drawingController.generateFood();
+      break;
+
     default:
       break;
     }
@@ -100,5 +108,16 @@ public class KeyboardController implements KeyListener {
    */
   public void setRotationController(final RotationController rotationController) {
     this.rotationController = rotationController;
+  }
+
+  /**
+   * Sets the drawing controller, so that the display can be updated when food
+   * is added.
+   * 
+   * @param drawingController
+   *          The controller for drawing to the screen.
+   */
+  public void setDrawingController(final DrawingController drawingController) {
+    this.drawingController = drawingController;
   }
 }

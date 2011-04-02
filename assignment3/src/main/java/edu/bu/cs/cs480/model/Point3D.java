@@ -21,7 +21,6 @@
  */
 package edu.bu.cs.cs480.model;
 
-
 /**
  * A three-dimensional point with double values.
  * 
@@ -56,8 +55,8 @@ public class Point3D {
   }
 
   /**
-   * Computes the cross product of this with the specified other vector (in that
-   * order).
+   * Computes the cross product of this with the specified other vector (in
+   * that order).
    * 
    * @param that
    *          The other vector with which to compute the cross product.
@@ -73,8 +72,8 @@ public class Point3D {
    * 
    * @param that
    *          The vector to subtract from this one.
-   * @return A new vector whose values are the component-wise difference between
-   *         this and the specified other vector.
+   * @return A new vector whose values are the component-wise difference
+   *         between this and the specified other vector.
    */
   public Point3D difference(final Point3D that) {
     return new Point3D(this.x - that.x, this.y - that.y, this.z - that.z);
@@ -103,6 +102,27 @@ public class Point3D {
 
     final Point3D o = (Point3D) other;
     return this.x == o.x && this.y == o.y && this.z == o.z;
+  }
+
+  /**
+   * Determines whether this line is parallel to the specified other line.
+   * 
+   * This method is symmetric, so if {@code v1} and {@code v2} are two
+   * {@code Line} objects, then {@code v1.parallelTo(v2)} if and only if
+   * {@code v2.parallelTo(v1)}.
+   * 
+   * Algorithm: since two vectors are parallel if they have the same direction,
+   * all we need to check is whether this vector is a dilation of the other
+   * vector. Therefore we need only check that the ratios of each of the
+   * corresponding components in both vectors are the same. We actually do this
+   * by cross-multiplying so that we don't have possible divide by zero errors.
+   * 
+   * @param that
+   *          The other line to compare with.
+   * @return Whether this line is parallel to the specified other line.
+   */
+  public boolean parallelTo(final Point3D that) {
+    return this.crossProduct(that).equals(ORIGIN);
   }
 
   /**
@@ -166,7 +186,6 @@ public class Point3D {
   public double x() {
     return this.x;
   }
-  
 
   /**
    * Gets the y component of this point.
@@ -184,6 +203,43 @@ public class Point3D {
    */
   public double z() {
     return this.z;
+  }
+
+  public boolean orthogonalTo(final Point3D that) {
+    return this.dotProduct(that) == 0;
+  }
+
+  /**
+   * Returns a new unit vector which is orthogonal to this one.
+   * 
+   * @return A new unit vector which is orthogonal to this one.
+   */
+  public Point3D orthogonal() {
+    if (this.parallelTo(new Point3D(1, 0, 0))) {
+      return new Point3D(0, 1, 0);
+    }
+    return this.crossProduct(new Point3D(1, 0, 0)).normalized();
+  }
+
+  /**
+   * @param that
+   * @return
+   */
+  public boolean oppositeDirectionFrom(final Point3D that) {
+    return Math.signum(this.x) != Math.signum(that.x)
+        && Math.signum(this.y) != Math.signum(that.y)
+        && Math.signum(this.z) != Math.signum(that.z);
+  }
+
+  /**
+   * @param newVelocity
+   * @return
+   */
+  public double angleBetween(final Point3D that) {
+    final double thisNorm = this.norm();
+    final double thatNorm = that.norm();
+    final double dotProduct = this.dotProduct(that);
+    return Math.acos(dotProduct / (thisNorm * thatNorm)) * (180 / Math.PI);
   }
 
 }

@@ -79,6 +79,16 @@ public class Quaternion {
   }
 
   /**
+   * @param d
+   * @param e
+   * @param f
+   * @param g
+   */
+  public Quaternion(double d, double e, double f, double g) {
+    this((float) d, (float) e, (float) f, (float) g);
+  }
+
+  /**
    * Returns a new quaternion representing the product of this and the
    * specified other quaternion.
    * 

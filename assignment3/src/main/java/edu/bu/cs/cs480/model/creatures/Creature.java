@@ -36,9 +36,11 @@ public abstract class Creature extends Component {
 
   private final List<Creature> flock;
 
+  public static final Point3D INITIAL_VELOCITY = new Point3D(0.01, 0, 0);
+
   /** The current velocity of this creature. */
-  private Point3D velocity = new Point3D(0.01, 0, 0);
-  
+  private Point3D velocity = INITIAL_VELOCITY;
+
   /**
    * @param position
    * @param displayable
@@ -53,7 +55,7 @@ public abstract class Creature extends Component {
   }
 
   public abstract double boundingRadius();
-  
+
   private void checkBounds() {
     double x = this.position().x();
     double y = this.position().y();
@@ -74,15 +76,15 @@ public abstract class Creature extends Component {
 
     // third compute the perceived velocity of the flock
     final Point3D perceivedFlockVelocity = this.perceivedFlockVelocity();
-    
+
     // add the computed flock velocity offsets to the current velocity
     Point3D newVelocity = this.velocity.sumWith(velocityTowardsCenter);
     newVelocity = this.velocity.sumWith(repulsionVelocity);
     newVelocity = this.velocity.sumWith(perceivedFlockVelocity);
-        
+
     // update the new velocity of the creature
     this.setVelocity(newVelocity);
-    
+
   }
 
   /**
@@ -108,7 +110,7 @@ public abstract class Creature extends Component {
       this.velocity = this.velocity.normalized().scaledBy(MAX_SPEED);
     }
   }
-  
+
   /** Updates the position of this component using the velocity. */
   protected void move() {
     this.setPosition(this.position().sumWith(this.velocity));
@@ -132,9 +134,11 @@ public abstract class Creature extends Component {
     final Point3D perceivedVelocity = new Point3D(xSum / numCreatures, ySum
         / numCreatures, zSum / numCreatures);
 
-    return perceivedVelocity.difference(this.velocity).scaledBy(VELOCITY_WEIGHT);
-    
+    return perceivedVelocity.difference(this.velocity).scaledBy(
+        VELOCITY_WEIGHT);
+
   }
+
   private Point3D repulsionVelocity() {
     Point3D result = Point3D.ORIGIN;
 
@@ -146,29 +150,36 @@ public abstract class Creature extends Component {
         }
       }
     }
-    
+
     return result;
   }
-  public void setVelocity(final Point3D velocity) {
-    final double thisNorm = this.velocity.norm();
-    final double thatNorm = velocity.norm();
-    final double dotProduct = this.velocity.dotProduct(velocity);
-    final Point3D crossProduct = this.velocity.crossProduct(velocity);
-    if (crossProduct.x() == 0 && crossProduct.y() == 0
-        && crossProduct.z() == 0) {
-      // TODO need to check if they are collinear
-      return;
+
+  /**
+   * Sets the velocity of this creature and rotates it so that it is facing the
+   * direction of its velocity vector.
+   * 
+   * @param velocity
+   *          The new velocity vector for this creature.
+   */
+  public void setVelocity(final Point3D newVelocity) {
+    Point3D axisOfRotation = this.velocity;
+    double angleOfRotation = 0;
+    // if they are parallel and in opposite directions, rotate by 180
+    if (this.velocity.parallelTo(newVelocity)
+        && this.velocity.oppositeDirectionFrom(newVelocity)) {
+      axisOfRotation = this.velocity.orthogonal();
+      angleOfRotation = 180;
     }
-    this.velocity = velocity;
-
-    // compute angle between current velocity and new velocity
-    final double angle = Math.acos(dotProduct / (thisNorm * thatNorm))
-        * (180 / Math.PI);
-
-    this.rotate(crossProduct.normalized(), angle);
-    
-    // limit magnitude of velocity
+    // otherwise compute the angle and axis if they are not parallel
+    else if (!this.velocity.parallelTo(newVelocity)){
+      axisOfRotation = this.velocity.crossProduct(newVelocity);
+      angleOfRotation = this.velocity.angleBetween(newVelocity);
+    }
+    this.velocity = newVelocity;
+    System.out.println("new velocity: " + this.velocity);
+    this.rotate(axisOfRotation, angleOfRotation);
     this.limitVelocity();
+    System.out.println("(after limit): " + this.velocity);
   }
 
   @Override
@@ -176,14 +187,14 @@ public abstract class Creature extends Component {
 
     // update the velocity based on the known flock
     this.flockVelocityUpdate();
-    
+
     // move the creature
     this.move();
 
     // update the OpenGL call list
     super.update(gl);
   }
-  
+
   // code from: http://www.vergenet.net/~conrad/boids/pseudocode.html
   // pre-condition: flock is not null and includes creatures besides this one
   private Point3D velocityTowardsCenter() {

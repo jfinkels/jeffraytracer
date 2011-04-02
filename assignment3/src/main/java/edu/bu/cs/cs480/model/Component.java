@@ -144,7 +144,7 @@ public class Component extends BaseRotatable implements Colorable, Nameable,
    * 
    * @return The position of this component.
    */
-  protected Point3D position() {
+  public Point3D position() {
     return this.position;
   }
 

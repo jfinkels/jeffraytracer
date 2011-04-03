@@ -225,9 +225,6 @@ public class Component extends BaseRotatable implements Colorable, Nameable,
     gl.glTranslated(this.position.x(), this.position.y(), this.position.z());
 
     // first, rotate this component around each of the three axes
-    // gl.glRotated(this.xAngle(), 1, 0, 0);
-    // gl.glRotated(this.yAngle(), 0, 1, 0);
-    // gl.glRotated(this.zAngle(), 0, 0, 1);
     gl.glMultMatrixf(this.rotation().toMatrix(), 0);
 
     // draw the displayable which this component represents in its color

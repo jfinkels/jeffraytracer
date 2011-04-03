@@ -31,6 +31,19 @@ package edu.bu.cs.cs480.model;
 public class Point3D {
   /** The origin, (0, 0, 0). */
   public static final Point3D ORIGIN = new Point3D(0, 0, 0);
+
+  /**
+   * If d is greater than one, this method returns 1.0; if d is less than
+   * negative one, this method returns -1.0; otherwise this method returns d.
+   * 
+   * @param d
+   *          The number to bound
+   * @return The maximum of -1 and the minimum of d and 1.
+   */
+  private static double bounded(final double d) {
+    return Math.max(-1, Math.min(d, 1));
+  }
+
   /** The x component of this point. */
   private final double x;
   /** The y component of this point. */
@@ -64,7 +77,10 @@ public class Point3D {
    *         vector.
    */
   public double angleBetween(final Point3D that) {
-    return Math.acos(this.dotProduct(that) / (this.norm() * that.norm()))
+    // need to floating point mathematics causes slight rounding error, so we
+    // need to check that the input to Math.acos is in the interval [-1, 1]
+    return Math.acos(bounded(this.dotProduct(that)
+        / (this.norm() * that.norm())))
         * (180 / Math.PI);
   }
 

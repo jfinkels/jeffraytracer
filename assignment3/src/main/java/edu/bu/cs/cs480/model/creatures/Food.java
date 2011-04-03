@@ -18,9 +18,9 @@ import edu.bu.cs.cs480.shapes.RoundedCylinder;
 public class Food extends SizedComponent {
 
   /** The height of the food. */
-  public static final double HEIGHT = 0.02;
+  public static final double HEIGHT = 0.05;
   /** The radius of the food. */
-  public static final double RADIUS = 0.05;
+  public static final double RADIUS = 0.1;
 
   /**
    * Creates a piece of food which looks like a pellet.

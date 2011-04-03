@@ -55,6 +55,9 @@ public class Main {
     // make the keyboard controller aware of the rotation controller, so that
     // keyboard events can update the rotation
     keyboardController.setRotationController(rotationController);
+    // make the keyboard controller aware of the drawing controller, so that
+    // keyboard events can change the displayed scene
+    keyboardController.setDrawingController(drawingController);
     // make the keyboard controller aware of the animator so that it can stop
     // the animation on an exit key event
     keyboardController.setAnimator(animator);

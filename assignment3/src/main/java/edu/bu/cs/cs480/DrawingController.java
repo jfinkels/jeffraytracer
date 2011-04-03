@@ -1,4 +1,5 @@
 /**
+
  * DrawingController.java - controller for drawing on an OpenGL canvas
  */
 package edu.bu.cs.cs480;
@@ -31,18 +32,28 @@ import edu.bu.cs.cs480.shapes.Tank;
 public class DrawingController implements GLEventListener {
   /** The initial position of the top level component in the scene. */
   public static final Point3D INITIAL_POSITION = new Point3D(0, 0, 0);
-
   /** The total number of birds to place in the scene. */
-  public static final int NUM_BIRDS = 20;
+  public static final int NUM_BIRDS = 2;
   /** The total number of fish to place in the scene. */
-  public static final int NUM_FISH = 10;
+  public static final int NUM_FISH = 0;
   /** A random number generator. */
-  private static final Random prg = new Random();
+  private static final Random RANDOM = new Random();
   /**
    * The length of one side of the cube-shaped tank in which the creatures live.
    */
   public static final int TANK_SIZE = 6;
 
+  /** Returns a random velocity.
+   * 
+   * @return 
+   */
+  private static Point3D randomVelocity() {
+    final double x = RANDOM.nextDouble() - .5;
+    final double y = RANDOM.nextDouble() - .5;
+    final double z = RANDOM.nextDouble() - .5;
+    return new Point3D(x, y, z);
+  }
+  
   /**
    * Returns a random point within the bounds of the tank, as specified by
    * {@value #TANK_SIZE}.
@@ -50,9 +61,9 @@ public class DrawingController implements GLEventListener {
    * @return A random point within the bounds of the tank.
    */
   private static Point3D randomPoint() {
-    final double x = (prg.nextDouble() * TANK_SIZE) - (TANK_SIZE / 2);
-    final double y = (prg.nextDouble() * TANK_SIZE) - (TANK_SIZE / 2);
-    final double z = (prg.nextDouble() * TANK_SIZE) - (TANK_SIZE / 2);
+    final double x = (RANDOM.nextDouble() * TANK_SIZE) - (TANK_SIZE / 2);
+    final double y = (RANDOM.nextDouble() * TANK_SIZE) - (TANK_SIZE / 2);
+    final double z = (RANDOM.nextDouble() * TANK_SIZE) - (TANK_SIZE / 2);
     return new Point3D(x, y, z);
   }
 
@@ -71,9 +82,9 @@ public class DrawingController implements GLEventListener {
   /** The OpenGL utility toolkit object. */
   // TODO should this be a static member?
   private final GLUT glut = new GLUT();
-
+  /** The creatures which are predators. */
   private final List<Creature> predators = new ArrayList<Creature>();
-
+  /** The creatures which are prey. */
   private final List<Creature> prey = new ArrayList<Creature>();
 
   /** The controller for view rotations. */
@@ -98,7 +109,7 @@ public class DrawingController implements GLEventListener {
     for (int i = 0; i < NUM_BIRDS; i++) {
       final Creature bird = new Bird(randomPoint(), this.glut, "bird " + i,
           this.predators);
-
+      bird.setVelocity(randomVelocity());
       this.predators.add(bird);
       this.topLevelComponent.addChild(bird);
     }
@@ -106,22 +117,10 @@ public class DrawingController implements GLEventListener {
     for (int i = 0; i < NUM_FISH; i++) {
       final Creature fish = new Fish(randomPoint(), this.glut, "fish " + i,
           this.prey, this.food);
-
+      fish.setVelocity(randomVelocity());
       this.prey.add(fish);
       this.topLevelComponent.addChild(fish);
     }
-
-    // add two creatures which will definitely collide
-    final Creature bird = new Bird(new Point3D(-1, 0, 0), this.glut,
-        "colliding bird", this.predators);
-    bird.setVelocity(new Point3D(0.01, 0, 0));
-    final Creature fish = new Fish(new Point3D(0, -1, 0), this.glut,
-        "colliding fish", this.prey, this.food);
-    fish.setVelocity(new Point3D(0, 0.01, 0));
-
-    this.predators.add(bird);
-    this.prey.add(fish);
-    this.topLevelComponent.addChildren(bird, fish);
   }
 
   /**
@@ -185,6 +184,7 @@ public class DrawingController implements GLEventListener {
 
     // add food if food has been added by the user
     if (this.foodToAdd != null) {
+      this.foodToAdd.initialize(gl);
       this.food.add(this.foodToAdd);
       this.topLevelComponent.addChild(this.foodToAdd);
       this.foodToAdd = null;

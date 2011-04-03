@@ -26,7 +26,7 @@ public abstract class Creature extends SizedComponent {
    * The relative importance of the attraction of this creature to the perceived
    * center of its flock.
    */
-  public static final double CENTER_WEIGHT = 0.01;
+  public static final double CENTER_WEIGHT = 0.1;
   /**
    * The relative importance of the attraction of this creature to the nearest
    * piece of food.
@@ -38,14 +38,14 @@ public abstract class Creature extends SizedComponent {
    * The maximum corner of the rectangle which bounds the possible positions of
    * this creature.
    */
-  public static final Point3D MAX_POSITION = new Point3D(3, 3, 3);
+  public static final Point3D MAX_POSITION = new Point3D(2.9, 2.9, 2.9);
   /** The maximum speed of the creature. */
-  public static final double MAX_SPEED = 0.2;
+  public static final double MAX_SPEED = 0.06;
   /**
    * The minimum corner of the rectangle which bounds the possible positions of
    * this creature.
    */
-  public static final Point3D MIN_POSITION = new Point3D(-3, -3, -3);
+  public static final Point3D MIN_POSITION = new Point3D(-2.9, -2.9, -2.9);
   /**
    * The distance at which other creatures exert a repelling force on this
    * creature.
@@ -55,7 +55,7 @@ public abstract class Creature extends SizedComponent {
    * The relative importance of the attraction of this creature to the perceived
    * average velocity of its flock.
    */
-  public static final double VELOCITY_WEIGHT = 0.125;
+  public static final double VELOCITY_WEIGHT = 0.3;
   /** The flock of which this creature is a part. */
   private final List<Creature> flock;
   /** The food to which this creature is attracted. */
@@ -257,7 +257,6 @@ public abstract class Creature extends SizedComponent {
    */
   @Override
   public void update(final GL gl) {
-
     // update the velocity based on the known flock
     this.flockVelocityUpdate();
 

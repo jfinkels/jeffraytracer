@@ -41,9 +41,12 @@ public class CreatureTest {
      *          The initial position of this creature.
      * @param flock
      *          The flock to which this creature belongs.
+     * @param food
+     *          The food which is visible to this creature.
      */
-    public TestCreature(Point3D position, List<Creature> flock) {
-      super(position, null, null, flock, null);
+    public TestCreature(final Point3D position, final List<Creature> flock,
+        final List<Food> food) {
+      super(position, null, null, flock, food);
     }
 
     /**
@@ -67,17 +70,24 @@ public class CreatureTest {
   private Creature creature2;
   /** The flock to which the test creature belongs. */
   private List<Creature> flock;
+  /** The food to use for testing. */
+  private List<Food> food;
 
   /** Creates the test creatures and flock. */
   @Before
   public void setUp() {
     this.flock = new ArrayList<Creature>();
-    this.creature = new TestCreature(Point3D.ORIGIN, this.flock);
-    this.flock.add(this.creature);
-    this.flock.add(new TestCreature(new Point3D(2, 0, 0), this.flock));
-    this.flock.add(new TestCreature(new Point3D(-2, 0, 0), this.flock));
 
-    this.creature2 = new TestCreature(new Point3D(1, 0, 0), null);
+    final Food f = new Food(new Point3D(1, 0, 0), null, "food");
+    this.food = new ArrayList<Food>();
+    this.food.add(f);
+
+    this.creature = new TestCreature(Point3D.ORIGIN, this.flock, food);
+    this.flock.add(new TestCreature(new Point3D(2, 0, 0), this.flock, null));
+    this.flock.add(new TestCreature(new Point3D(-2, 0, 0), this.flock, null));
+    this.flock.add(this.creature);
+
+    this.creature2 = new TestCreature(new Point3D(1, 0, 0), null, null);
   }
 
   /**
@@ -162,6 +172,19 @@ public class CreatureTest {
     assertEquals(0, this.creature.position().y(), 0);
     assertEquals(0.2, this.creature.position().z(), 0);
 
+    // test for limitVelocity()
+    this.creature.setVelocity(new Point3D(Creature.MAX_SPEED + 1, 0, 0));
+    assertEquals(Creature.MAX_SPEED, this.creature.velocity().x(), 0);
+    assertEquals(0, this.creature.velocity().y(), 0);
+    assertEquals(0, this.creature.velocity().z(), 0);
+
+    this.creature.setVelocity(new Point3D(Creature.MAX_SPEED,
+        Creature.MAX_SPEED, 0));
+    assertEquals(Creature.MAX_SPEED / Math.sqrt(2), this.creature.velocity()
+        .x(), 0);
+    assertEquals(Creature.MAX_SPEED / Math.sqrt(2), this.creature.velocity()
+        .y(), 0);
+    assertEquals(0, this.creature.velocity().z(), 0);
   }
 
   /**
@@ -171,6 +194,92 @@ public class CreatureTest {
    */
   @Test
   public void testUpdate() {
+    fail("Not yet implemented");
+  }
+
+  /**
+   * Test method for
+   * {@link edu.bu.cs.cs480.model.creatures.Creature#checkBounds()}.
+   */
+  @Test
+  public void testCheckBounds() {
+    this.creature = new TestCreature(Creature.MAX_POSITION.sumWith(new Point3D(
+        1, 1, 1)), null, null);
+    this.creature.checkBounds();
+    assertEquals(Creature.MAX_POSITION.x(), this.creature.position().x(), 0);
+    assertEquals(Creature.MAX_POSITION.y(), this.creature.position().y(), 0);
+    assertEquals(Creature.MAX_POSITION.z(), this.creature.position().z(), 0);
+    this.creature = new TestCreature(Creature.MIN_POSITION.sumWith(new Point3D(
+        -1, -1, -1)), null, null);
+    this.creature.checkBounds();
+    assertEquals(Creature.MIN_POSITION.x(), this.creature.position().x(), 0);
+    assertEquals(Creature.MIN_POSITION.y(), this.creature.position().y(), 0);
+    assertEquals(Creature.MIN_POSITION.z(), this.creature.position().z(), 0);
+  }
+
+  /**
+   * Test method for
+   * {@link edu.bu.cs.cs480.model.creatures.Creature#flockVelocityUpdate()}.
+   */
+  @Test
+  public void testFlockVelocityUpdate() {
+    fail("Not yet implemented");
+  }
+
+  /**
+   * Test method for
+   * {@link edu.bu.cs.cs480.model.creatures.Creature#foodVelocityUpdate()}.
+   */
+  @Test
+  public void testFoodVelocityUpdate() {
+    this.creature.foodVelocityUpdate();
+    assertEquals(Creature.FOOD_WEIGHT, this.creature.velocity().x(), 0);
+    assertEquals(0, this.creature.velocity().y(), 0);
+    assertEquals(0, this.creature.velocity().z(), 0);
+
+    this.food.clear();
+    this.food.add(new Food(new Point3D(0, 0, .5), null, "food"));
+    this.creature.setVelocity(new Point3D(0, 0, 0));
+    this.creature.foodVelocityUpdate();
+    assertEquals(0, this.creature.velocity().x(), 0);
+    assertEquals(0, this.creature.velocity().y(), 0);
+    assertEquals(Creature.FOOD_WEIGHT / 2, this.creature.velocity().z(), 0);
+  }
+
+  /**
+   * Test method for
+   * {@link edu.bu.cs.cs480.model.creatures.Creature#perceivedFlockVelocity()}.
+   */
+  @Test
+  public void testPerceivedFlockVelocity() {
+    Point3D v = this.creature.perceivedFlockVelocity();
+    assertEquals(0, v.x(), 0);
+    assertEquals(0, v.y(), 0);
+    assertEquals(0, v.z(), 0);
+
+    this.flock.get(0).setVelocity(new Point3D(-0.02, 0, 0));
+    this.flock.get(1).setVelocity(new Point3D(-0.02, 0, 0));
+    v = this.creature.perceivedFlockVelocity();
+    assertEquals(Creature.VELOCITY_WEIGHT * -.03, v.x(), 0);
+    assertEquals(0, v.y(), 0);
+    assertEquals(0, v.z(), 0);
+  }
+
+  /**
+   * Test method for
+   * {@link edu.bu.cs.cs480.model.creatures.Creature#repulsionVelocity()}.
+   */
+  @Test
+  public void testRepulsionVelocity() {
+    fail("Not yet implemented");
+  }
+
+  /**
+   * Test method for
+   * {@link edu.bu.cs.cs480.model.creatures.Creature#velocityTowardsCenter()}.
+   */
+  @Test
+  public void testVelocityTowardsCenter() {
     fail("Not yet implemented");
   }
 

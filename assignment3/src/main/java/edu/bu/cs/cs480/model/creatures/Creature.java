@@ -93,7 +93,7 @@ public abstract class Creature extends SizedComponent {
    * If the position is beyond those bounds, it is reset to be inside the
    * bounding rectangle.
    */
-  private void checkBounds() {
+  protected void checkBounds() {
     double x = this.position().x();
     double y = this.position().y();
     double z = this.position().z();
@@ -107,7 +107,7 @@ public abstract class Creature extends SizedComponent {
    * Updates the velocity of this creature by adding the attraction and
    * repulsion due to the positions and velocities of the rest of the flock.
    */
-  private void flockVelocityUpdate() {
+  protected void flockVelocityUpdate() {
 
     // first compute the velocity towards the center of the flock
     final Point3D velocityTowardsCenter = this.velocityTowardsCenter();
@@ -132,7 +132,7 @@ public abstract class Creature extends SizedComponent {
    * Updates the velocity of this creature by adding the attraction to the
    * nearest piece of food in {@link #food}.
    */
-  private void foodVelocityUpdate() {
+  protected void foodVelocityUpdate() {
     if (this.food != null && !this.food.isEmpty()) {
       Food nearestFood = null;
       double nearestFoodDistance = Double.MAX_VALUE;
@@ -156,7 +156,7 @@ public abstract class Creature extends SizedComponent {
    * Checks that the velocity is not beyond the maximum velocity for a creature,
    * and scales it back if it is.
    */
-  private void limitVelocity() {
+  protected void limitVelocity() {
     if (this.velocity.norm() > MAX_SPEED) {
       this.velocity = this.velocity.normalized().scaledBy(MAX_SPEED);
     }
@@ -169,14 +169,16 @@ public abstract class Creature extends SizedComponent {
   }
 
   /**
-   * Returns the perceived average velocity of the other creatures in the flock.
+   * Returns the force due to perceived average velocity of the other creatures
+   * in the flock.
    * 
-   * Pre-condition: flock is not null, and flock contains more than just this
-   * creature.
+   * Pre-condition: {@link #flock} is not null, and {@code #flock} contains more
+   * than just this creature.
    * 
-   * @return The perceived average velocity of the other creatures in the flock.
+   * @return The force due to the perceived average velocity of the other
+   *         creatures in the flock.
    */
-  private Point3D perceivedFlockVelocity() {
+  protected Point3D perceivedFlockVelocity() {
     double xSum = 0;
     double ySum = 0;
     double zSum = 0;
@@ -192,7 +194,6 @@ public abstract class Creature extends SizedComponent {
     final int numCreatures = this.flock.size() - 1;
     final Point3D perceivedVelocity = new Point3D(xSum / numCreatures, ySum
         / numCreatures, zSum / numCreatures);
-
     return perceivedVelocity.difference(this.velocity)
         .scaledBy(VELOCITY_WEIGHT);
 
@@ -205,7 +206,7 @@ public abstract class Creature extends SizedComponent {
    * @return The repulsion of this creature due to other creatures in the flock
    *         at too close a distance.
    */
-  private Point3D repulsionVelocity() {
+  protected Point3D repulsionVelocity() {
     Point3D result = Point3D.ORIGIN;
 
     for (final Creature creature : this.flock) {
@@ -280,7 +281,7 @@ public abstract class Creature extends SizedComponent {
    * @return The velocity due to attraction of this creature towards the
    *         perceived center of the other creatures in the flock.
    */
-  private Point3D velocityTowardsCenter() {
+  protected Point3D velocityTowardsCenter() {
     double xSum = 0;
     double ySum = 0;
     double zSum = 0;
@@ -298,5 +299,16 @@ public abstract class Creature extends SizedComponent {
         ySum / numCreatures, zSum / numCreatures);
 
     return center.difference(this.position()).scaledBy(CENTER_WEIGHT);
+  }
+
+  /**
+   * Returns the velocity of this creature.
+   * 
+   * Used only for testing purposes.
+   * 
+   * @return The velocity of this creature.
+   */
+  protected Point3D velocity() {
+    return this.velocity;
   }
 }

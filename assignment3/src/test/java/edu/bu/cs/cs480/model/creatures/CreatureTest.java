@@ -17,6 +17,7 @@ import org.junit.Test;
 
 import edu.bu.cs.cs480.model.Point3D;
 import edu.bu.cs.cs480.model.Quaternion;
+import edu.bu.cs.cs480.model.SizedComponent;
 
 /**
  * Test for the Creature class.
@@ -45,8 +46,8 @@ public class CreatureTest {
      *          The food which is visible to this creature.
      */
     public TestCreature(final Point3D position, final List<Creature> flock,
-        final List<Food> food) {
-      super(position, null, null, flock, food);
+        final List<SizedComponent> food) {
+      super(position, null, null, flock, food, null);
     }
 
     /**
@@ -71,7 +72,7 @@ public class CreatureTest {
   /** The flock to which the test creature belongs. */
   private List<Creature> flock;
   /** The food to use for testing. */
-  private List<Food> food;
+  private List<SizedComponent> food;
 
   /** Creates the test creatures and flock. */
   @Before
@@ -79,7 +80,7 @@ public class CreatureTest {
     this.flock = new ArrayList<Creature>();
 
     final Food f = new Food(new Point3D(1, 0, 0), null, "food");
-    this.food = new ArrayList<Food>();
+    this.food = new ArrayList<SizedComponent>();
     this.food.add(f);
 
     this.creature = new TestCreature(Point3D.ORIGIN, this.flock, food);

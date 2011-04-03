@@ -11,6 +11,7 @@ import com.sun.opengl.util.GLUT;
 
 import edu.bu.cs.cs480.model.Component;
 import edu.bu.cs.cs480.model.Point3D;
+import edu.bu.cs.cs480.model.SizedComponent;
 import edu.bu.cs.cs480.shapes.Ellipsoid;
 import edu.bu.cs.cs480.shapes.FlippedScaledCone;
 
@@ -99,8 +100,9 @@ public class Fish extends Creature {
    *          movement.
    */
   public Fish(Point3D position, final GLUT glut, final String name,
-      final List<Creature> flock, final List<Food> food) {
-    super(position, null, name, flock, food);
+      final List<Creature> flock, final List<SizedComponent> food,
+      final List<Creature> fleeFrom) {
+    super(position, null, name, flock, food, fleeFrom);
 
     this.setVelocity(new Point3D(0.01, 0, 0));
 

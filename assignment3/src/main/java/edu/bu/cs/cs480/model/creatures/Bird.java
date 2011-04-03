@@ -11,6 +11,7 @@ import com.sun.opengl.util.GLUT;
 
 import edu.bu.cs.cs480.model.Component;
 import edu.bu.cs.cs480.model.Point3D;
+import edu.bu.cs.cs480.model.SizedComponent;
 import edu.bu.cs.cs480.shapes.Cone;
 import edu.bu.cs.cs480.shapes.Ellipsoid;
 import edu.bu.cs.cs480.shapes.ScaledCone;
@@ -135,8 +136,8 @@ public class Bird extends Creature {
    *          movement.
    */
   public Bird(final Point3D position, final GLUT glut, String name,
-      final List<Creature> flock) {
-    super(position, null, name, flock, null);
+      final List<Creature> flock, final List<SizedComponent> food) {
+    super(position, null, name, flock, food, null);
 
     this.setVelocity(new Point3D(0.01, 0, 0));
 

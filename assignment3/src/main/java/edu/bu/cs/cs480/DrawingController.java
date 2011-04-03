@@ -1,5 +1,5 @@
 /**
-
+ * 
  * DrawingController.java - controller for drawing on an OpenGL canvas
  */
 package edu.bu.cs.cs480;
@@ -17,6 +17,7 @@ import com.sun.opengl.util.GLUT;
 
 import edu.bu.cs.cs480.model.Component;
 import edu.bu.cs.cs480.model.Point3D;
+import edu.bu.cs.cs480.model.SizedComponent;
 import edu.bu.cs.cs480.model.creatures.Bird;
 import edu.bu.cs.cs480.model.creatures.Creature;
 import edu.bu.cs.cs480.model.creatures.Fish;
@@ -43,9 +44,10 @@ public class DrawingController implements GLEventListener {
    */
   public static final int TANK_SIZE = 6;
 
-  /** Returns a random velocity.
+  /**
+   * Returns a random velocity.
    * 
-   * @return 
+   * @return
    */
   private static Point3D randomVelocity() {
     final double x = RANDOM.nextDouble() - .5;
@@ -53,7 +55,7 @@ public class DrawingController implements GLEventListener {
     final double z = RANDOM.nextDouble() - .5;
     return new Point3D(x, y, z);
   }
-  
+
   /**
    * Returns a random point within the bounds of the tank, as specified by
    * {@value #TANK_SIZE}.
@@ -68,7 +70,7 @@ public class DrawingController implements GLEventListener {
   }
 
   /** The list of food currently in the tank. */
-  private final List<Food> food = new ArrayList<Food>();
+  private final List<SizedComponent> food = new ArrayList<SizedComponent>();
   /** The number of times {@link #generateFood()} has been called. */
   private int foodCounter = 0;
   /**
@@ -106,20 +108,21 @@ public class DrawingController implements GLEventListener {
         TANK_SIZE, TANK_SIZE), "tank");
     this.topLevelComponent.addChild(tank);
 
-    for (int i = 0; i < NUM_BIRDS; i++) {
-      final Creature bird = new Bird(randomPoint(), this.glut, "bird " + i,
-          this.predators);
-      bird.setVelocity(randomVelocity());
-      this.predators.add(bird);
-      this.topLevelComponent.addChild(bird);
-    }
-
     for (int i = 0; i < NUM_FISH; i++) {
       final Creature fish = new Fish(randomPoint(), this.glut, "fish " + i,
-          this.prey, this.food);
+          this.prey, this.food, this.predators);
       fish.setVelocity(randomVelocity());
       this.prey.add(fish);
       this.topLevelComponent.addChild(fish);
+    }
+
+    final List<SizedComponent> eat = new ArrayList<SizedComponent>(this.prey);
+    for (int i = 0; i < NUM_BIRDS; i++) {
+      final Creature bird = new Bird(randomPoint(), this.glut, "bird " + i,
+          this.predators, eat);
+      bird.setVelocity(randomVelocity());
+      this.predators.add(bird);
+      this.topLevelComponent.addChild(bird);
     }
   }
 
@@ -159,9 +162,9 @@ public class DrawingController implements GLEventListener {
     }
 
     // check if any prey is touching any food
-    final List<Food> foodToRemove = new ArrayList<Food>();
+    final List<Component> foodToRemove = new ArrayList<Component>();
     for (final Creature prey : this.prey) {
-      for (final Food food : this.food) {
+      for (final SizedComponent food : this.food) {
         if (prey.isTouching(food)) {
           // we add the creature to remove to a list for later removal so that
           // we do not modify the list while iterating through it
@@ -177,7 +180,7 @@ public class DrawingController implements GLEventListener {
     }
 
     // iterate over the list of food to remove
-    for (final Food food : foodToRemove) {
+    for (final Component food : foodToRemove) {
       this.food.remove(food);
       this.topLevelComponent.removeChild(food);
     }

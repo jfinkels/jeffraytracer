@@ -8,6 +8,7 @@ import java.util.List;
 import javax.media.opengl.GL;
 
 import edu.bu.cs.cs480.drawing.Displayable;
+import edu.bu.cs.cs480.model.Component;
 import edu.bu.cs.cs480.model.Point3D;
 import edu.bu.cs.cs480.model.SizedComponent;
 
@@ -26,7 +27,7 @@ public abstract class Creature extends SizedComponent {
    * The relative importance of the attraction of this creature to the perceived
    * center of its flock.
    */
-  public static final double CENTER_WEIGHT = 0.01;
+  public static final double CENTER_WEIGHT = 0.001;
   /**
    * The relative importance of the attraction of this creature to the nearest
    * piece of food.
@@ -55,11 +56,11 @@ public abstract class Creature extends SizedComponent {
    * The relative importance of the attraction of this creature to the perceived
    * average velocity of its flock.
    */
-  public static final double VELOCITY_WEIGHT = 0.0125;
+  public static final double VELOCITY_WEIGHT = 0.008;
   /** The flock of which this creature is a part. */
   private final List<Creature> flock;
   /** The food to which this creature is attracted. */
-  private final List<Food> food;
+  private final List<SizedComponent> food;
 
   /** The current velocity of this creature. */
   private Point3D velocity = INITIAL_VELOCITY;
@@ -78,11 +79,13 @@ public abstract class Creature extends SizedComponent {
    * @param food
    *          The food to which this creature is attracted.
    */
-  public Creature(Point3D position, Displayable displayable, String name,
-      final List<Creature> flock, final List<Food> food) {
+  public Creature(final Point3D position, final Displayable displayable,
+      final String name, final List<Creature> flock,
+      final List<SizedComponent> food, final List<Creature> fleeFrom) {
     super(position, displayable, name);
     this.flock = flock;
     this.food = food;
+    this.fleeFrom = fleeFrom;
   }
 
   /**
@@ -109,7 +112,7 @@ public abstract class Creature extends SizedComponent {
    */
   protected void flockVelocityUpdate() {
     Point3D newVelocity = this.velocity;
-    
+
     // first compute the velocity towards the center of the flock
     final Point3D velocityTowardsCenter = this.velocityTowardsCenter();
 
@@ -135,10 +138,10 @@ public abstract class Creature extends SizedComponent {
    */
   protected void foodVelocityUpdate() {
     if (this.food != null && !this.food.isEmpty()) {
-      Food nearestFood = null;
+      Component nearestFood = null;
       double nearestFoodDistance = Double.MAX_VALUE;
 
-      for (final Food food : this.food) {
+      for (final Component food : this.food) {
         double distance = this.position().distanceTo(food.position());
         if (distance < nearestFoodDistance) {
           nearestFood = food;
@@ -146,10 +149,13 @@ public abstract class Creature extends SizedComponent {
         }
       }
 
-      final Point3D result = nearestFood.position().difference(this.position())
-          .scaledBy(FOOD_WEIGHT);
+      // HACK some of my pointers get set to null sometimes for some reason...
+      if (nearestFood != null && nearestFood.position() != null) {
+        final Point3D result = nearestFood.position()
+            .difference(this.position()).scaledBy(FOOD_WEIGHT);
 
-      this.setVelocity(this.velocity.sumWith(result));
+        this.setVelocity(this.velocity.sumWith(result));
+      }
     }
   }
 
@@ -299,6 +305,27 @@ public abstract class Creature extends SizedComponent {
         ySum / numCreatures, zSum / numCreatures);
 
     return center.difference(this.position()).scaledBy(CENTER_WEIGHT);
+  }
+
+  /**
+   * The distance at which this creature flees from other components in the
+   * fleeFrom list.
+   */
+  public static final double FLEE_DISTANCE = 1;
+  private final List<Creature> fleeFrom;
+
+  protected void fleeVelocityUpdate() {
+    if (this.fleeFrom != null) {
+      Point3D result = Point3D.ORIGIN;
+
+      for (final Creature c : this.fleeFrom) {
+        if (this.position().distanceTo(c.position()) < FLEE_DISTANCE) {
+          result = result.difference(c.position().difference(this.position()));
+        }
+      }
+
+      this.setVelocity(this.velocity.sumWith(result));
+    }
   }
 
   /**

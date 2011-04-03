@@ -33,9 +33,9 @@ public class DrawingController implements GLEventListener {
   /** The initial position of the top level component in the scene. */
   public static final Point3D INITIAL_POSITION = new Point3D(0, 0, 0);
   /** The total number of birds to place in the scene. */
-  public static final int NUM_BIRDS = 2;
+  public static final int NUM_BIRDS = 10;
   /** The total number of fish to place in the scene. */
-  public static final int NUM_FISH = 0;
+  public static final int NUM_FISH = 10;
   /** A random number generator. */
   private static final Random RANDOM = new Random();
   /**

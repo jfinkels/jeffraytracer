@@ -91,10 +91,12 @@ public class Quaternion {
    *          The angle in degrees.
    */
   public Quaternion(final Point3D axis, final double angle) {
+    final Point3D normalized = axis.normalized();
     final double halfRadianAngle = angle * (Math.PI / 360);
     final double sinHalfRadianAngle = Math.sin(halfRadianAngle);
-    this.set(Math.cos(halfRadianAngle), sinHalfRadianAngle * axis.x(),
-        sinHalfRadianAngle * axis.y(), sinHalfRadianAngle * axis.z());
+    this.set(Math.cos(halfRadianAngle), sinHalfRadianAngle * normalized.x(),
+        sinHalfRadianAngle * normalized.y(),
+        sinHalfRadianAngle * normalized.z());
   }
 
   /**

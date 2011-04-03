@@ -1,5 +1,5 @@
 /**
- * AllTest.java
+ * AllTest.java - runs all tests in this package
  */
 package edu.bu.cs.cs480.model.creatures;
 

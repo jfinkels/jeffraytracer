@@ -1,5 +1,5 @@
 /**
- * 
+ * BaseRotatableTest.java - test for the BaseRotatable class
  */
 package edu.bu.cs.cs480.model;
 
@@ -8,8 +8,10 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
- * @author Jeffrey Finkelstein
+ * Test for the BaseRotatable class.
  * 
+ * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
+ * @since Spring 2011
  */
 public class BaseRotatableTest {
 

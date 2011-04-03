@@ -1,5 +1,5 @@
 /**
- * 
+ * CreatureTest.java - test for the Creature class
  */
 package edu.bu.cs.cs480.model.creatures;
 
@@ -19,28 +19,37 @@ import edu.bu.cs.cs480.model.Point3D;
 import edu.bu.cs.cs480.model.Quaternion;
 
 /**
+ * Test for the Creature class.
+ * 
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
+ * @since Spring 2011
  */
 public class CreatureTest {
-  private Creature creature;
-  private Creature creature2;
-  private List<Creature> flock;
-
+  /**
+   * A simple creature for use in this test class only.
+   * 
+   * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
+   * @since Spring 2011
+   */
   private class TestCreature extends Creature {
 
     /**
+     * Creates this creature at the specified position and belonging to the
+     * specified flock.
+     * 
      * @param position
-     * @param displayable
-     * @param name
+     *          The initial position of this creature.
      * @param flock
+     *          The flock to which this creature belongs.
      */
     public TestCreature(Point3D position, List<Creature> flock) {
       super(position, null, null, flock, null);
     }
 
-    /*
-     * (non-Javadoc)
+    /**
+     * {@inheritDoc}
      * 
+     * @return {@inheritDoc}
      * @see edu.bu.cs.cs480.model.creatures.Creature#boundingRadius()
      */
     @Override
@@ -50,8 +59,16 @@ public class CreatureTest {
 
   }
 
+  /** The radius of the bounding sphere of the test creature. */
   public static final double RADIUS = 1;
+  /** Test creature. */
+  private Creature creature;
+  /** Another test creature. */
+  private Creature creature2;
+  /** The flock to which the test creature belongs. */
+  private List<Creature> flock;
 
+  /** Creates the test creatures and flock. */
   @Before
   public void setUp() {
     this.flock = new ArrayList<Creature>();
@@ -65,12 +82,13 @@ public class CreatureTest {
 
   /**
    * Test method for
-   * {@link edu.bu.cs.cs480.model.creatures.Creature#update(javax.media.opengl.GL)}
-   * .
+   * {@link edu.bu.cs.cs480.model.creatures.Creature#boundingRadius()}.
    */
   @Test
-  public void testUpdate() {
-    fail("Not yet implemented");
+  public void testBoundingRadius() {
+    for (final Creature creature : this.flock) {
+      assertEquals(RADIUS, creature.boundingRadius(), 0);
+    }
   }
 
   /**
@@ -84,17 +102,6 @@ public class CreatureTest {
     assertEquals(0, this.creature.position().y(), 0);
     assertEquals(0, this.creature.position().z(), 0);
     assertNull(this.creature.name());
-  }
-
-  /**
-   * Test method for
-   * {@link edu.bu.cs.cs480.model.creatures.Creature#boundingRadius()}.
-   */
-  @Test
-  public void testBoundingRadius() {
-    for (final Creature creature : this.flock) {
-      assertEquals(RADIUS, creature.boundingRadius(), 0);
-    }
   }
 
   /**
@@ -155,6 +162,16 @@ public class CreatureTest {
     assertEquals(0, this.creature.position().y(), 0);
     assertEquals(0.2, this.creature.position().z(), 0);
 
+  }
+
+  /**
+   * Test method for
+   * {@link edu.bu.cs.cs480.model.creatures.Creature#update(javax.media.opengl.GL)}
+   * .
+   */
+  @Test
+  public void testUpdate() {
+    fail("Not yet implemented");
   }
 
 }

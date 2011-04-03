@@ -23,17 +23,24 @@ import edu.bu.cs.cs480.model.SizedComponent;
  */
 public abstract class Creature extends SizedComponent {
   /**
-   * The relative importance of the attraction of this creature to the
-   * perceived center of its flock.
+   * The relative importance of the attraction of this creature to the perceived
+   * center of its flock.
    */
   public static final double CENTER_WEIGHT = 0.01;
-  /** The maximum speed of the creature. */
-  public static final double MAX_SPEED = 0.2;
+  /**
+   * The relative importance of the attraction of this creature to the nearest
+   * piece of food.
+   */
+  public static final double FOOD_WEIGHT = 0.2;
+  /** The initial velocity of the creature. */
+  public static final Point3D INITIAL_VELOCITY = new Point3D(0.01, 0, 0);
   /**
    * The maximum corner of the rectangle which bounds the possible positions of
    * this creature.
    */
   public static final Point3D MAX_POSITION = new Point3D(3, 3, 3);
+  /** The maximum speed of the creature. */
+  public static final double MAX_SPEED = 0.2;
   /**
    * The minimum corner of the rectangle which bounds the possible positions of
    * this creature.
@@ -45,19 +52,15 @@ public abstract class Creature extends SizedComponent {
    */
   public static final double REPULSION_DISTANCE = 0.2;
   /**
-   * The relative importance of the attraction of this creature to the nearest
-   * piece of food.
-   */
-  public static final double FOOD_WEIGHT = 0.2;
-  /**
-   * The relative importance of the attraction of this creature to the
-   * perceived average velocity of its flock.
+   * The relative importance of the attraction of this creature to the perceived
+   * average velocity of its flock.
    */
   public static final double VELOCITY_WEIGHT = 0.125;
   /** The flock of which this creature is a part. */
   private final List<Creature> flock;
-  /** The initial velocity of the creature. */
-  public static final Point3D INITIAL_VELOCITY = new Point3D(0.01, 0, 0);
+  /** The food to which this creature is attracted. */
+  private final List<Food> food;
+
   /** The current velocity of this creature. */
   private Point3D velocity = INITIAL_VELOCITY;
 
@@ -82,9 +85,6 @@ public abstract class Creature extends SizedComponent {
     this.food = food;
   }
 
-  /** The food to which this creature is attracted. */
-  private final List<Food> food;
-
   /**
    * Checks that the current position of this creature is within the bounds
    * specified by the bounding rectangle given by {@value #MAX_POSITION} and
@@ -101,30 +101,6 @@ public abstract class Creature extends SizedComponent {
     y = Math.max(Math.min(y, MAX_POSITION.y()), MIN_POSITION.y());
     z = Math.max(Math.min(z, MAX_POSITION.z()), MIN_POSITION.z());
     this.setPosition(new Point3D(x, y, z));
-  }
-
-  /**
-   * Updates the velocity of this creature by adding the attraction to the
-   * nearest piece of food in {@link #food}.
-   */
-  private void foodVelocityUpdate() {
-    if (this.food != null && !this.food.isEmpty()) {
-      Food nearestFood = null;
-      double nearestFoodDistance = Double.MAX_VALUE;
-
-      for (final Food food : this.food) {
-        double distance = this.position().distanceTo(food.position());
-        if (distance < nearestFoodDistance) {
-          nearestFood = food;
-          nearestFoodDistance = distance;
-        }
-      }
-
-      final Point3D result = nearestFood.position()
-          .difference(this.position()).scaledBy(FOOD_WEIGHT);
-
-      this.setVelocity(this.velocity.sumWith(result));
-    }
   }
 
   /**
@@ -153,8 +129,32 @@ public abstract class Creature extends SizedComponent {
   }
 
   /**
-   * Checks that the velocity is not beyond the maximum velocity for a
-   * creature, and scales it back if it is.
+   * Updates the velocity of this creature by adding the attraction to the
+   * nearest piece of food in {@link #food}.
+   */
+  private void foodVelocityUpdate() {
+    if (this.food != null && !this.food.isEmpty()) {
+      Food nearestFood = null;
+      double nearestFoodDistance = Double.MAX_VALUE;
+
+      for (final Food food : this.food) {
+        double distance = this.position().distanceTo(food.position());
+        if (distance < nearestFoodDistance) {
+          nearestFood = food;
+          nearestFoodDistance = distance;
+        }
+      }
+
+      final Point3D result = nearestFood.position().difference(this.position())
+          .scaledBy(FOOD_WEIGHT);
+
+      this.setVelocity(this.velocity.sumWith(result));
+    }
+  }
+
+  /**
+   * Checks that the velocity is not beyond the maximum velocity for a creature,
+   * and scales it back if it is.
    */
   private void limitVelocity() {
     if (this.velocity.norm() > MAX_SPEED) {
@@ -169,14 +169,12 @@ public abstract class Creature extends SizedComponent {
   }
 
   /**
-   * Returns the perceived average velocity of the other creatures in the
-   * flock.
+   * Returns the perceived average velocity of the other creatures in the flock.
    * 
    * Pre-condition: flock is not null, and flock contains more than just this
    * creature.
    * 
-   * @return The perceived average velocity of the other creatures in the
-   *         flock.
+   * @return The perceived average velocity of the other creatures in the flock.
    */
   private Point3D perceivedFlockVelocity() {
     double xSum = 0;
@@ -195,8 +193,8 @@ public abstract class Creature extends SizedComponent {
     final Point3D perceivedVelocity = new Point3D(xSum / numCreatures, ySum
         / numCreatures, zSum / numCreatures);
 
-    return perceivedVelocity.difference(this.velocity).scaledBy(
-        VELOCITY_WEIGHT);
+    return perceivedVelocity.difference(this.velocity)
+        .scaledBy(VELOCITY_WEIGHT);
 
   }
 
@@ -296,8 +294,8 @@ public abstract class Creature extends SizedComponent {
     }
 
     final int numCreatures = this.flock.size() - 1;
-    final Point3D center = new Point3D(xSum / numCreatures, ySum
-        / numCreatures, zSum / numCreatures);
+    final Point3D center = new Point3D(xSum / numCreatures,
+        ySum / numCreatures, zSum / numCreatures);
 
     return center.difference(this.position()).scaledBy(CENTER_WEIGHT);
   }

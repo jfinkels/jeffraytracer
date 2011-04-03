@@ -39,23 +39,29 @@ public class Quaternion {
   private final float[] v = new float[3];
 
   /**
-   * Returns {@code true} if and only the components of this quaternion exactly
-   * equal the components of the specified other quaternion.
-   * 
-   * @param that
-   *          The other quaternion.
-   * @return {@code true} if and only the components of this quaternion exactly
-   *         equal the components of the specified other quaternion.
-   */
-  public boolean equals(final Quaternion that) {
-    return this.s == that.s && Arrays.equals(this.v, that.v);
-  }
-
-  /**
    * Instantiates this quaternion with an initial value of (1, 0, 0, 0).
    */
   public Quaternion() {
     this(1, 0, 0, 0);
+  }
+
+  /**
+   * Instantiates this quaternion with the specified component values.
+   * 
+   * Note: the component values will be cast to float values, so some loss of
+   * precision may occur.
+   * 
+   * @param s
+   *          The scalar component of this quaternion.
+   * @param v0
+   *          The first vector component of this quaternion.
+   * @param v1
+   *          The second vector component of this quaternion.
+   * @param v2
+   *          The third vector component of this quaternion.
+   */
+  public Quaternion(double s, double v0, double v1, double v2) {
+    this((float) s, (float) v0, (float) v1, (float) v2);
   }
 
   /**
@@ -92,27 +98,21 @@ public class Quaternion {
   }
 
   /**
-   * Instantiates this quaternion with the specified component values.
+   * Returns {@code true} if and only the components of this quaternion exactly
+   * equal the components of the specified other quaternion.
    * 
-   * Note: the component values will be cast to float values, so some loss of
-   * precision may occur.
-   * 
-   * @param s
-   *          The scalar component of this quaternion.
-   * @param v0
-   *          The first vector component of this quaternion.
-   * @param v1
-   *          The second vector component of this quaternion.
-   * @param v2
-   *          The third vector component of this quaternion.
+   * @param that
+   *          The other quaternion.
+   * @return {@code true} if and only the components of this quaternion exactly
+   *         equal the components of the specified other quaternion.
    */
-  public Quaternion(double s, double v0, double v1, double v2) {
-    this((float) s, (float) v0, (float) v1, (float) v2);
+  public boolean equals(final Quaternion that) {
+    return this.s == that.s && Arrays.equals(this.v, that.v);
   }
 
   /**
-   * Returns a new quaternion representing the product of this and the
-   * specified other quaternion.
+   * Returns a new quaternion representing the product of this and the specified
+   * other quaternion.
    * 
    * @param that
    *          The other quaternion with which to multiply this one.
@@ -148,8 +148,7 @@ public class Quaternion {
   /**
    * Normalizes this quaternion so that it is truly unit.
    * 
-   * It may be necessary to call this method after accumulating round-off
-   * error.
+   * It may be necessary to call this method after accumulating round-off error.
    */
   public void normalize() {
     final float mag = this.norm();

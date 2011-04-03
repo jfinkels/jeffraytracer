@@ -18,10 +18,10 @@ public class KeyboardController implements KeyListener {
 
   /** The object which animates the scene. */
   Animator animator = null;
-  /** The controller for view rotations. */
-  private RotationController rotationController = null;
   /** The controller for drawing to the screen. */
   private DrawingController drawingController = null;
+  /** The controller for view rotations. */
+  private RotationController rotationController = null;
 
   /**
    * This method is intentionally unimplemented.
@@ -102,17 +102,6 @@ public class KeyboardController implements KeyListener {
   }
 
   /**
-   * Sets the controller for view rotations, so that the display can be updated
-   * based on the rotation requested by the user.
-   * 
-   * @param rotationController
-   *          The controller for view rotations.
-   */
-  public void setRotationController(final RotationController rotationController) {
-    this.rotationController = rotationController;
-  }
-
-  /**
    * Sets the drawing controller, so that the display can be updated when food
    * is added.
    * 
@@ -121,5 +110,16 @@ public class KeyboardController implements KeyListener {
    */
   public void setDrawingController(final DrawingController drawingController) {
     this.drawingController = drawingController;
+  }
+
+  /**
+   * Sets the controller for view rotations, so that the display can be updated
+   * based on the rotation requested by the user.
+   * 
+   * @param rotationController
+   *          The controller for view rotations.
+   */
+  public void setRotationController(final RotationController rotationController) {
+    this.rotationController = rotationController;
   }
 }

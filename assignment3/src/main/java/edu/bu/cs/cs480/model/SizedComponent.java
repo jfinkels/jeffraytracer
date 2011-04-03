@@ -43,6 +43,13 @@ public abstract class SizedComponent extends Component {
   }
 
   /**
+   * Returns the radius of the sphere which bounds this object.
+   * 
+   * @return The radius of the sphere which bounds this object.
+   */
+  public abstract double boundingRadius();
+
+  /**
    * Returns true if and only if this component is touching the specified other
    * component.
    * 
@@ -59,12 +66,5 @@ public abstract class SizedComponent extends Component {
     return this.position().distanceTo(that.position()) < this.boundingRadius()
         + that.boundingRadius();
   }
-
-  /**
-   * Returns the radius of the sphere which bounds this object.
-   * 
-   * @return The radius of the sphere which bounds this object.
-   */
-  public abstract double boundingRadius();
 
 }

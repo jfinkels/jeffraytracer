@@ -36,8 +36,8 @@ public class Component extends BaseRotatable implements Colorable, Nameable,
   private Point3D position;
 
   /**
-   * Instantiates this component with the specified position and the
-   * displayable which this component represents.
+   * Instantiates this component with the specified position and the displayable
+   * which this component represents.
    * 
    * If the specified displayable object is {@code null}, this component will
    * only provide a positioning and rotation.
@@ -106,8 +106,8 @@ public class Component extends BaseRotatable implements Colorable, Nameable,
   }
 
   /**
-   * Initializes the call list which this component uses for drawing, then
-   * calls the corresponding method on the children of this component.
+   * Initializes the call list which this component uses for drawing, then calls
+   * the corresponding method on the children of this component.
    * 
    * @param gl
    *          The OpenGL object with which to perform the drawing.

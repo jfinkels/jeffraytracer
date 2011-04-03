@@ -39,18 +39,43 @@ public class DrawingController implements GLEventListener {
   /** A random number generator. */
   private static final Random prg = new Random();
   /**
-   * The length of one side of the cube-shaped tank in which the creatures
-   * live.
+   * The length of one side of the cube-shaped tank in which the creatures live.
    */
   public static final int TANK_SIZE = 6;
+
+  /**
+   * Returns a random point within the bounds of the tank, as specified by
+   * {@value #TANK_SIZE}.
+   * 
+   * @return A random point within the bounds of the tank.
+   */
+  private static Point3D randomPoint() {
+    final double x = (prg.nextDouble() * TANK_SIZE) - (TANK_SIZE / 2);
+    final double y = (prg.nextDouble() * TANK_SIZE) - (TANK_SIZE / 2);
+    final double z = (prg.nextDouble() * TANK_SIZE) - (TANK_SIZE / 2);
+    return new Point3D(x, y, z);
+  }
+
+  /** The list of food currently in the tank. */
+  private final List<Food> food = new ArrayList<Food>();
+  /** The number of times {@link #generateFood()} has been called. */
+  private int foodCounter = 0;
+  /**
+   * The piece of food to add on the next call to
+   * {@link #display(GLAutoDrawable)}.
+   */
+  private Food foodToAdd = null;
   /** The OpenGL utility object. */
   private final GLU glu = new GLU();
 
   /** The OpenGL utility toolkit object. */
   // TODO should this be a static member?
   private final GLUT glut = new GLUT();
+
   private final List<Creature> predators = new ArrayList<Creature>();
+
   private final List<Creature> prey = new ArrayList<Creature>();
+
   /** The controller for view rotations. */
   private RotationController rotationController = null;
 
@@ -98,43 +123,6 @@ public class DrawingController implements GLEventListener {
     this.prey.add(fish);
     this.topLevelComponent.addChildren(bird, fish);
   }
-
-  /**
-   * Returns a random point within the bounds of the tank, as specified by
-   * {@value #TANK_SIZE}.
-   * 
-   * @return A random point within the bounds of the tank.
-   */
-  private static Point3D randomPoint() {
-    final double x = (prg.nextDouble() * TANK_SIZE) - (TANK_SIZE / 2);
-    final double y = (prg.nextDouble() * TANK_SIZE) - (TANK_SIZE / 2);
-    final double z = (prg.nextDouble() * TANK_SIZE) - (TANK_SIZE / 2);
-    return new Point3D(x, y, z);
-  }
-
-  /**
-   * Queues a single piece of food to be added to the tank at a random
-   * position.
-   * 
-   * Even if this method is called multiple times before
-   * {@link #display(GLAutoDrawable)} is called, only one new piece of food
-   * will be added.
-   */
-  public void generateFood() {
-    this.foodToAdd = new Food(randomPoint(), this.glut, "food "
-        + this.foodCounter);
-    this.foodCounter++;
-  }
-
-  /** The number of times {@link #generateFood()} has been called. */
-  private int foodCounter = 0;
-  /** The list of food currently in the tank. */
-  private final List<Food> food = new ArrayList<Food>();
-  /**
-   * The piece of food to add on the next call to
-   * {@link #display(GLAutoDrawable)}.
-   */
-  private Food foodToAdd = null;
 
   /**
    * Redisplays the scene containing the model.
@@ -223,6 +211,19 @@ public class DrawingController implements GLEventListener {
   public void displayChanged(GLAutoDrawable drawable, boolean modeChanged,
       boolean deviceChanged) {
     // intentionally unimplemented
+  }
+
+  /**
+   * Queues a single piece of food to be added to the tank at a random position.
+   * 
+   * Even if this method is called multiple times before
+   * {@link #display(GLAutoDrawable)} is called, only one new piece of food will
+   * be added.
+   */
+  public void generateFood() {
+    this.foodToAdd = new Food(randomPoint(), this.glut, "food "
+        + this.foodCounter);
+    this.foodCounter++;
   }
 
   /**

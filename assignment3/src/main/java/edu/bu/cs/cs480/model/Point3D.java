@@ -55,8 +55,22 @@ public class Point3D {
   }
 
   /**
-   * Computes the cross product of this with the specified other vector (in
-   * that order).
+   * Returns the angle in degrees between this vector and the specified other
+   * vector.
+   * 
+   * @param that
+   *          The other vector.
+   * @return The angle in degrees between this vector and the specified other
+   *         vector.
+   */
+  public double angleBetween(final Point3D that) {
+    return Math.acos(this.dotProduct(that) / (this.norm() * that.norm()))
+        * (180 / Math.PI);
+  }
+
+  /**
+   * Computes the cross product of this with the specified other vector (in that
+   * order).
    * 
    * @param that
    *          The other vector with which to compute the cross product.
@@ -72,8 +86,8 @@ public class Point3D {
    * 
    * @param that
    *          The vector to subtract from this one.
-   * @return A new vector whose values are the component-wise difference
-   *         between this and the specified other vector.
+   * @return A new vector whose values are the component-wise difference between
+   *         this and the specified other vector.
    */
   public Point3D difference(final Point3D that) {
     return new Point3D(this.x - that.x, this.y - that.y, this.z - that.z);
@@ -115,27 +129,6 @@ public class Point3D {
   }
 
   /**
-   * Determines whether this line is parallel to the specified other line.
-   * 
-   * This method is symmetric, so if {@code v1} and {@code v2} are two
-   * {@code Line} objects, then {@code v1.parallelTo(v2)} if and only if
-   * {@code v2.parallelTo(v1)}.
-   * 
-   * Algorithm: since two vectors are parallel if they have the same direction,
-   * all we need to check is whether this vector is a dilation of the other
-   * vector. Therefore we need only check that the ratios of each of the
-   * corresponding components in both vectors are the same. We actually do this
-   * by cross-multiplying so that we don't have possible divide by zero errors.
-   * 
-   * @param that
-   *          The other line to compare with.
-   * @return Whether this line is parallel to the specified other line.
-   */
-  public boolean parallelTo(final Point3D that) {
-    return this.crossProduct(that).equals(ORIGIN);
-  }
-
-  /**
    * Computes the norm of this vector.
    * 
    * @return The norm of this vector.
@@ -154,6 +147,61 @@ public class Point3D {
   public Point3D normalized() {
     final double norm = this.norm();
     return new Point3D(this.x / norm, this.y / norm, this.z / norm);
+  }
+
+  /**
+   * Returns {@code true} if and only if this vector is parallel to and in the
+   * opposite direction from the specified other vector.
+   * 
+   * Pre-condition: the specified other vector is parallel to this one. If not,
+   * the result is undefined.
+   * 
+   * @param that
+   *          The other vector which is parallel to this one.
+   * @return {@code true} if and only if the specified other vector is in the
+   *         opposite direction from this one.
+   */
+  public boolean oppositeDirectionFrom(final Point3D that) {
+    return Math.signum(this.x) != Math.signum(that.x)
+        && Math.signum(this.y) != Math.signum(that.y)
+        && Math.signum(this.z) != Math.signum(that.z);
+  }
+
+  /**
+   * Returns a new unit vector which is orthogonal to this one.
+   * 
+   * @return A new unit vector which is orthogonal to this one.
+   */
+  public Point3D orthogonal() {
+    if (this.parallelTo(new Point3D(1, 0, 0))) {
+      return new Point3D(0, 1, 0);
+    }
+    return this.crossProduct(new Point3D(1, 0, 0)).normalized();
+  }
+
+  public boolean orthogonalTo(final Point3D that) {
+    return this.dotProduct(that) == 0;
+  }
+
+  /**
+   * Determines whether this line is parallel to the specified other line.
+   * 
+   * This method is symmetric, so if {@code v1} and {@code v2} are two
+   * {@code Line} objects, then {@code v1.parallelTo(v2)} if and only if
+   * {@code v2.parallelTo(v1)}.
+   * 
+   * Algorithm: since two vectors are parallel if they have the same direction,
+   * all we need to check is whether this vector is a dilation of the other
+   * vector. Therefore we need only check that the ratios of each of the
+   * corresponding components in both vectors are the same. We actually do this
+   * by cross-multiplying so that we don't have possible divide by zero errors.
+   * 
+   * @param that
+   *          The other line to compare with.
+   * @return Whether this line is parallel to the specified other line.
+   */
+  public boolean parallelTo(final Point3D that) {
+    return this.crossProduct(that).equals(ORIGIN);
   }
 
   /**
@@ -217,54 +265,6 @@ public class Point3D {
    */
   public double z() {
     return this.z;
-  }
-
-  public boolean orthogonalTo(final Point3D that) {
-    return this.dotProduct(that) == 0;
-  }
-
-  /**
-   * Returns a new unit vector which is orthogonal to this one.
-   * 
-   * @return A new unit vector which is orthogonal to this one.
-   */
-  public Point3D orthogonal() {
-    if (this.parallelTo(new Point3D(1, 0, 0))) {
-      return new Point3D(0, 1, 0);
-    }
-    return this.crossProduct(new Point3D(1, 0, 0)).normalized();
-  }
-
-  /**
-   * Returns {@code true} if and only if this vector is parallel to and in the
-   * opposite direction from the specified other vector.
-   * 
-   * Pre-condition: the specified other vector is parallel to this one. If not,
-   * the result is undefined.
-   * 
-   * @param that
-   *          The other vector which is parallel to this one.
-   * @return {@code true} if and only if the specified other vector is in the
-   *         opposite direction from this one.
-   */
-  public boolean oppositeDirectionFrom(final Point3D that) {
-    return Math.signum(this.x) != Math.signum(that.x)
-        && Math.signum(this.y) != Math.signum(that.y)
-        && Math.signum(this.z) != Math.signum(that.z);
-  }
-
-  /**
-   * Returns the angle in degrees between this vector and the specified other
-   * vector.
-   * 
-   * @param that
-   *          The other vector.
-   * @return The angle in degrees between this vector and the specified other
-   *         vector.
-   */
-  public double angleBetween(final Point3D that) {
-    return Math.acos(this.dotProduct(that) / (this.norm() * that.norm()))
-        * (180 / Math.PI);
   }
 
 }

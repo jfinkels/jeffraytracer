@@ -145,8 +145,8 @@ public class Bird extends Creature {
         + " - left wing");
     this.rightWing = new Wing(new Point3D(0, 0, 0.8 * BODY_RADIUS), glut, name
         + " - right wing");
-    final Component head = new Head(new Point3D(BODY_RADIUS,
-        0.5 * BODY_RADIUS, 0), glut, name + " - head");
+    final Component head = new Head(new Point3D(BODY_RADIUS, 0.5 * BODY_RADIUS,
+        0), glut, name + " - head");
 
     this.addChildren(body, this.leftWing, this.rightWing, head);
   }

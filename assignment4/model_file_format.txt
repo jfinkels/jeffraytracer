@@ -1,0 +1,133 @@
+File format for ray tracer models
+=================================
+
+Ray tracer model files are stored in the following ASCII file format.
+
+-----
+Light
+-----
+
+  light ID <#> {pnt,inf,amb} <x> <y> <z> <lx> <ly> <lz> <R> <G> <B> <a0> <a1> <a2> <aa> {shadow_on,shadow_off}
+
+Where:
+
+* <#> is the unique light identification number
+* <x> <y> <z> is the position
+* <lx> <ly> <lz> is the direction
+* <R> <G> <B> is the color specified with components in the range [0,1]
+* <a0> <a1> <a2> are the attenuation coefficients for distance
+* <aa> is the angular attenuation exponent
+* {shadow_on,shadow_off} turn shadows "on" or "off" for that light
+
+--------
+Material
+--------
+
+  mat ID <#> <R> <G> <B> <Ka> <Kd> <Ks> <ns> <Kt> <Kr> <Irefract>
+
+Where:
+
+* <#> is the unique material identification number
+* <R> <G> <B> is the color in the range [0,1]
+* <Ka> <Kd> <Ks> are the coefficients of ambient, diffuse, and specular
+  reflection
+* <ns> is the specular-reflection exponent
+* <Kt> <Kr> <Irefract> are the coefficients of transmission and reflection, and
+  index of refraction
+
+---------------
+Surface objects
+---------------
+
+  obj sphere ID <#> mat ID <mat #> <x> <y> <z> <radius>
+
+Where:
+
+* <#> is the unique object identifier number
+* <mat #> is the material assigned to this object
+* <x> <y> <z> is the center point
+* <radius> is the radius
+
+  obj ellipsoid ID <#> mat ID <mat #> <x> <y> <z> <rx> <ry> <yz>
+
+Where:
+
+* <#> is the unique object identifier number
+* <mat #> is the material assigned to this object
+* <x> <y> <z> is the center point
+* <xr> <yr> <zr> are the radii
+
+  obj cylinder ID <#> mat ID <mat #> <x> <y> <z> <nx> <ny> <nz> <radius> <length>
+
+Where:
+
+* <#> is the unique object identifier number
+* <mat #> is the material assigned to this object
+* <x> <y> <z> is the center point
+* <nx> <ny> <nz> is the unit vector in the direction of the cylinder's long
+  axis
+* <radius> <length> are the radius and length
+
+  obj box ID <#> mat ID <#> <x> <y> <z> <ux> <uy> <uz> <vx> <vy> <vz> <wx> <wy> <wz> <u_width> <v_width> <w_width>
+
+Where:
+
+* <#> is the unique object identifier number
+* <mat #> is the material assigned to this object
+* <x> <y> <z> is the center point
+* <ux> <uy> <uz> <vx> <vy> <vz> <wx> <wy> <wz> are three unit vectors defining
+  the box orientation
+* <u_width> <v_width> <w_width> are the box widths along the respective
+  dimensions
+
+----------
+CSG object
+----------
+
+  obj CSG ID <#> {union,intersect,difference} ID <ID1#> ID <ID2#>
+
+Where:
+
+Two previously defined objects are combined via a CSG operation. The objects
+can be spheres, ellipsoids, boxes, cylinders, or other CSG objects.
+
+--------------------
+Camera specification
+--------------------
+
+  viewport <width> <height>
+
+Where:
+
+* <width> is the window width in pixels
+* <height> is the window height in pixels
+
+  resolution <x_res> <y_res>
+
+Where:
+
+* <x_res> is the width of a pixel in world units
+* <y_res> is the height of a pixel in world units
+
+  camera {perspective,orthographic} <cop_x> <cop_y> <cop_z> <look_x> <look_y> <look_z> <up_x> <up_y> <up_z> <focal_length> <near_clip_plane_dist> <far_clip_plane_dist>
+
+Where:
+
+* {perspective,orthographic} is the camera type
+* <cop_x> <cop_y> <cop_z> is the camera center
+* <look_x> <look_y> <look_z> is the "look at" point
+* <up_x> <up_y> <up_z> is the up vector
+* <focal_length> is the focal length (ignored for "orthographic")
+* <near_clip_plane_dist> <far_clip_plane_dist> are the near and far clip plane
+  distances
+
+--------------
+Render control
+--------------
+
+render N ID <#> ... ID <#>
+
+Where:
+
+when N = 0 all objects are rendered, or when N > 0, then a list of N object ID
+numbers to be rendered is given

@@ -13,7 +13,7 @@ import edu.bu.cs.cs480.Vector3D;
 public class Cylinder extends SurfaceObject implements Directed {
 
   private double radius = 0;
-  private int length = 0;
+  private double length = 0;
 
   /**
    * @return the radius
@@ -32,14 +32,14 @@ public class Cylinder extends SurfaceObject implements Directed {
   /**
    * @return the length
    */
-  public int length() {
+  public double length() {
     return this.length;
   }
 
   /**
    * @param length the length to set
    */
-  public void setLength(int length) {
+  public void setLength(double length) {
     this.length = length;
   }
 

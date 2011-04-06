@@ -71,13 +71,13 @@ public class Light extends PositionableTracerObject implements Directed,
     this.color = color;
   }
 
-  void setShadow(final boolean shadow) {
+  public void setShadow(final boolean shadow) {
     this.shadow = shadow;
   }
 
   private boolean shadow = false;
 
-  boolean shadow() {
+  public boolean shadow() {
     return this.shadow;
   }
 }

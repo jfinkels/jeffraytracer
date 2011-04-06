@@ -15,6 +15,7 @@ public class Material extends TracerObject implements Colorable {
   private double transmission = 0;
   private double reflection = 0;
   private double refraction = 0;
+
   /**
    * @return the refraction
    */
@@ -23,7 +24,8 @@ public class Material extends TracerObject implements Colorable {
   }
 
   /**
-   * @param refraction the refraction to set
+   * @param refraction
+   *          the refraction to set
    */
   public void setRefraction(double refraction) {
     this.refraction = refraction;
@@ -57,13 +59,13 @@ public class Material extends TracerObject implements Colorable {
     this.specularReflection = specularReflection;
   }
 
-  public void setSpecularExponent(final int specularExponent) {
+  public void setSpecularExponent(final double specularExponent) {
     this.specularExponent = specularExponent;
   }
 
-  private int specularExponent;
+  private double specularExponent;
 
-  public int specularExponent() {
+  public double specularExponent() {
     return this.specularExponent;
   }
 

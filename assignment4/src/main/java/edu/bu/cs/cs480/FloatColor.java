@@ -58,7 +58,7 @@ public class FloatColor extends Color {
    *          The value of the blue component of this color as a float between 0
    *          and 1.
    */
-  private FloatColor(final float red, final float green, final float blue) {
+  public FloatColor(final float red, final float green, final float blue) {
     this(new Color(red, green, blue));
   }
 

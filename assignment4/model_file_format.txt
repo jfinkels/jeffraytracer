@@ -3,6 +3,10 @@ File format for ray tracer models
 
 Ray tracer model files are stored in the following ASCII file format.
 
+Note: the file format does not allow forward referencing of ID numbers. In
+other words, a material, light, object, etc. must be defined before it can be
+referenced on a later line.
+
 -----
 Light
 -----
@@ -12,6 +16,7 @@ Light
 Where:
 
 * <#> is the unique light identification number
+* {pnt,inf,amb} is the type of light source (point, infinity, ambient)
 * <x> <y> <z> is the position
 * <lx> <ly> <lz> is the direction
 * <R> <G> <B> is the color specified with components in the range [0,1]

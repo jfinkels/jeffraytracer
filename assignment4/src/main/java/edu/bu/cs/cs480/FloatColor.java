@@ -29,8 +29,8 @@ public class FloatColor extends Color {
   private final float red;
 
   /**
-   * Creates a FloatColor object with the same component values of the specified
-   * Color object.
+   * Creates a FloatColor object with the same component values of the
+   * specified Color object.
    * 
    * @param color
    *          The color from which to get component values.
@@ -55,16 +55,16 @@ public class FloatColor extends Color {
    *          The value of the green component of this color as a float between
    *          0 and 1.
    * @param blue
-   *          The value of the blue component of this color as a float between 0
-   *          and 1.
+   *          The value of the blue component of this color as a float between
+   *          0 and 1.
    */
   public FloatColor(final float red, final float green, final float blue) {
     this(new Color(red, green, blue));
   }
 
   /**
-   * Gets the value of the blue component of this color as a float between 0 and
-   * 1.
+   * Gets the value of the blue component of this color as a float between 0
+   * and 1.
    * 
    * @return The value of the blue component of this color as a float between 0
    *         and 1.
@@ -73,12 +73,17 @@ public class FloatColor extends Color {
     return this.blue;
   }
 
+  public boolean equals(final FloatColor that) {
+    return this.red == that.red && this.green == that.green
+        && this.blue == that.blue;
+  }
+
   /**
    * Gets the value of the green component of this color as a float between 0
    * and 1.
    * 
-   * @return The value of the green component of this color as a float between 0
-   *         and 1.
+   * @return The value of the green component of this color as a float between
+   *         0 and 1.
    */
   public float green() {
     return this.green;

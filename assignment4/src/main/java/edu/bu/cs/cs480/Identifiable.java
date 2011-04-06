@@ -16,5 +16,12 @@ public interface Identifiable {
    * @return The unique identifying integer of this object.
    */
   int id();
+
+  /**
+   * Sets the unique identifying integer of this object.
+   * 
+   * @param id
+   *          The unique identifying integer of this object.
+   */
   void setId(final int id);
 }

@@ -1,5 +1,5 @@
 /**
- * TracerEnvironment.java - 
+ * TracerEnvironment.java -
  */
 package edu.bu.cs.cs480.main;
 
@@ -18,44 +18,52 @@ import edu.bu.cs.cs480.surfaces.SurfaceObject;
  */
 public class TracerEnvironment {
   private Camera camera = null;
-  private Resolution resolution = null;
-  private Viewport viewport = null;
-  private List<SurfaceObject> surfaceObjects = new ArrayList<SurfaceObject>();
   private List<Light> lights = new ArrayList<Light>();
+  private Resolution resolution = null;
+  private List<SurfaceObject> surfaceObjects = new ArrayList<SurfaceObject>();
+  private Viewport viewport = null;
+
   /**
-   * @param camera the camera to set
-   */
-  public void setCamera(final Camera camera) {
-    this.camera = camera;
-  }
-  /**
-   * @param resolution the resolution to set
-   */
-  public void setResolution(final Resolution resolution) {
-    this.resolution = resolution;
-  }
-  /**
-   * @param viewport the viewport to set
-   */
-  public void setViewport(final Viewport viewport) {
-    this.viewport = viewport;
-  }
-  /**
-   * @param surfaceObject the surfaceObject to set
-   */
-  public void addSurfaceObject(final SurfaceObject surfaceObject) {
-    this.surfaceObjects.add(surfaceObject);
-  }
-  
-  
-  /**
-   * @param lights the lights to set
+   * @param lights
+   *          the lights to set
    */
   public void addLight(final Light light) {
     this.lights.add(light);
   }
-  
+
+  /**
+   * @param surfaceObject
+   *          the surfaceObject to set
+   */
+  public void addSurfaceObject(final SurfaceObject surfaceObject) {
+    this.surfaceObjects.add(surfaceObject);
+  }
+
   public void render(final String filename) {
-    
+    // not yet implemented
+  }
+
+  /**
+   * @param camera
+   *          the camera to set
+   */
+  public void setCamera(final Camera camera) {
+    this.camera = camera;
+  }
+
+  /**
+   * @param resolution
+   *          the resolution to set
+   */
+  public void setResolution(final Resolution resolution) {
+    this.resolution = resolution;
+  }
+
+  /**
+   * @param viewport
+   *          the viewport to set
+   */
+  public void setViewport(final Viewport viewport) {
+    this.viewport = viewport;
   }
 }

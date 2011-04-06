@@ -1,5 +1,5 @@
 /**
- * ModelReader.java -
+ * ModelReader.java - reads a tracer model from a file
  */
 package edu.bu.cs.cs480.main;
 
@@ -34,6 +34,10 @@ import edu.bu.cs.cs480.surfaces.SymmetricDifference;
 import edu.bu.cs.cs480.surfaces.Union;
 
 /**
+ * Reads a TracerEnvironment model from a file.
+ * 
+ * The file must be in the format specified by the model_file_format.txt file.
+ * 
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
@@ -43,12 +47,12 @@ public class ModelReader {
       throws FileNotFoundException, FileFormatException {
     final TracerEnvironment result = new TracerEnvironment();
     final Scanner input = new Scanner(new File(filename));
-    
+
     // TODO use hashmap so we don't have to iterate to find objects by id
     final List<Material> materials = new ArrayList<Material>();
     final List<SurfaceObject> surfaceObjects = new ArrayList<SurfaceObject>();
     List<Integer> toRender = null;
-    
+
     while (input.hasNextLine()) {
       final String token = input.next();
       if (token.equals("camera")) {
@@ -62,7 +66,8 @@ public class ModelReader {
       } else if (token.equals("mat")) {
         materials.add(readMaterial(input));
       } else if (token.equals("obj")) {
-        surfaceObjects.add(readSurfaceObject(input, materials, surfaceObjects));
+        surfaceObjects
+            .add(readSurfaceObject(input, materials, surfaceObjects));
       } else if (token.equals("render")) {
         toRender = readIntegerList(input);
       } else {
@@ -88,8 +93,8 @@ public class ModelReader {
     return result;
   }
 
-  protected static <E extends Identifiable> E getObjectWithID(final List<E> list,
-      final int id) {
+  protected static <E extends Identifiable> E getObjectWithID(
+      final List<E> list, final int id) {
     for (final E element : list) {
       if (element.id() == id) {
         return element;
@@ -99,7 +104,8 @@ public class ModelReader {
     return null;
   }
 
-  protected static Box readBox(final Scanner input, final List<Material> materials) {
+  protected static Box readBox(final Scanner input,
+      final List<Material> materials) {
     final Box box = new Box();
 
     input.next(); // throw away the string "ID"

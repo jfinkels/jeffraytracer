@@ -1,5 +1,5 @@
 /**
- * Orientation.java - 
+ * Orientation.java -
  */
 package edu.bu.cs.cs480.surfaces;
 

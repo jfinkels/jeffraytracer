@@ -1,5 +1,5 @@
 /**
- * Union.java - 
+ * Union.java -
  */
 package edu.bu.cs.cs480.surfaces;
 

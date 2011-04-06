@@ -1,5 +1,5 @@
 /**
- * SymmetricDifference.java - 
+ * SymmetricDifference.java -
  */
 package edu.bu.cs.cs480.surfaces;
 

@@ -85,8 +85,8 @@ public class Vector3D {
   }
 
   /**
-   * Computes the cross product of this with the specified other vector (in that
-   * order).
+   * Computes the cross product of this with the specified other vector (in
+   * that order).
    * 
    * @param that
    *          The other vector with which to compute the cross product.
@@ -102,8 +102,8 @@ public class Vector3D {
    * 
    * @param that
    *          The vector to subtract from this one.
-   * @return A new vector whose values are the component-wise difference between
-   *         this and the specified other vector.
+   * @return A new vector whose values are the component-wise difference
+   *         between this and the specified other vector.
    */
   public Vector3D difference(final Vector3D that) {
     return new Vector3D(this.x - that.x, this.y - that.y, this.z - that.z);
@@ -195,6 +195,18 @@ public class Vector3D {
     return this.crossProduct(new Vector3D(1, 0, 0)).normalized();
   }
 
+  /**
+   * Returns {@code true} if and only if this vector is orthogonal to the
+   * specified other vector.
+   * 
+   * Algorithm: check if the dot product between the two vectors equals zero.
+   * They are orthogonal if and only if it is.
+   * 
+   * @param that
+   *          The other vector.
+   * @return {@code true} if and only if this vector is orthogonal to the
+   *         specified other vector.
+   */
   public boolean orthogonalTo(final Vector3D that) {
     return this.dotProduct(that) == 0;
   }
@@ -234,8 +246,8 @@ public class Vector3D {
   }
 
   /**
-   * Returns a new Vector3D object which is the component-wise sum of this point
-   * with the specified other point.
+   * Returns a new Vector3D object which is the component-wise sum of this
+   * point with the specified other point.
    * 
    * @param that
    *          The point with which to sum this one.

@@ -10,23 +10,21 @@ import edu.bu.cs.cs480.Vector3D;
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
-public class Cylinder extends SurfaceObject implements Directed {
+public class Cylinder extends ConcreteSurfaceObject implements Directed {
 
-  private double radius = 0;
+  private Vector3D direction = null;
   private double length = 0;
 
-  /**
-   * @return the radius
-   */
-  public double radius() {
-    return this.radius;
-  }
+  private double radius = 0;
 
-  /**
-   * @param radius the radius to set
+  /*
+   * (non-Javadoc)
+   * 
+   * @see edu.bu.cs.cs480.Directed#direction()
    */
-  public void setRadius(double radius) {
-    this.radius = radius;
+  @Override
+  public Vector3D direction() {
+    return this.direction;
   }
 
   /**
@@ -37,20 +35,10 @@ public class Cylinder extends SurfaceObject implements Directed {
   }
 
   /**
-   * @param length the length to set
+   * @return the radius
    */
-  public void setLength(double length) {
-    this.length = length;
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see edu.bu.cs.cs480.Directed#direction()
-   */
-  @Override
-  public Vector3D direction() {
-    return this.direction;
+  public double radius() {
+    return this.radius;
   }
 
   /*
@@ -63,6 +51,20 @@ public class Cylinder extends SurfaceObject implements Directed {
     this.direction = direction;
   }
 
-  private Vector3D direction = null;
+  /**
+   * @param length
+   *          the length to set
+   */
+  public void setLength(double length) {
+    this.length = length;
+  }
+
+  /**
+   * @param radius
+   *          the radius to set
+   */
+  public void setRadius(double radius) {
+    this.radius = radius;
+  }
 
 }

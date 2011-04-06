@@ -1,38 +1,61 @@
 /**
- * Light.java -
+ * Light.java - a light source
  */
 package edu.bu.cs.cs480;
 
 /**
+ * A light source.
+ * 
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
 public class Light extends PositionableTracerObject implements Directed,
     Colorable {
-  private Vector3D direction = null;
-  private FloatColor color = null;
+  /** The coefficients of attenuation of this light source. */
   private Vector3D attenuationCoefficients = null;
+  /** The exponent of attenuation of this light source. */
   private int attenuationExponent = 0;
+  /** The color of this light source. */
+  private FloatColor color = null;
+  /** The direction in which this light source points. */
+  private Vector3D direction = null;
 
-  public void setAttenuationExponent(final int attenuationExponent) {
-    this.attenuationExponent = attenuationExponent;
-  }
+  /** Whether this light source casts a shadow. */
+  private boolean shadow = false;
 
-  public int attenuationExponent() {
-    return this.attenuationExponent;
-  }
-
+  /**
+   * Gets the attenuation coefficients of this light source.
+   * 
+   * @return The attenuation coefficients of this light source.
+   */
   public Vector3D attenuationCoefficients() {
     return this.attenuationCoefficients;
   }
 
-  public void setAttenuationCoefficients(final Vector3D attenuationCoefficients) {
-    this.attenuationCoefficients = attenuationCoefficients;
+  /**
+   * Gets the attenuation exponent of this light source.
+   * 
+   * @return The attenuation exponent of this light source.
+   */
+  public int attenuationExponent() {
+    return this.attenuationExponent;
   }
 
-  /*
-   * (non-Javadoc)
+  /**
+   * {@inheritDoc}
    * 
+   * @return {@inheritDoc}
+   * @see edu.bu.cs.cs480.Colorable#color()
+   */
+  @Override
+  public FloatColor color() {
+    return this.color;
+  }
+
+  /**
+   * {@inheritDoc}
+   * 
+   * @return {@inheritDoc}
    * @see edu.bu.cs.cs480.Directed#direction()
    */
   @Override
@@ -40,30 +63,31 @@ public class Light extends PositionableTracerObject implements Directed,
     return this.direction;
   }
 
-  /*
-   * (non-Javadoc)
+  /**
+   * Sets the attenuation coefficients of this light source.
    * 
-   * @see edu.bu.cs.cs480.Directed#setDirection(edu.bu.cs.cs480.Vector3D)
+   * @param attenuationCoefficients
+   *          The attenuation coefficients of this light source.
    */
-  @Override
-  public void setDirection(Vector3D direction) {
-    this.direction = direction;
+  public void setAttenuationCoefficients(final Vector3D attenuationCoefficients) {
+    this.attenuationCoefficients = attenuationCoefficients;
   }
 
-  /*
-   * (non-Javadoc)
+  /**
+   * Sets the attenuation exponent of this light source.
    * 
-   * @see edu.bu.cs.cs480.Colorable#color()
+   * @param attenuationExponent
+   *          The attenuation exponent of this light source.
    */
-  @Override
-  public FloatColor color() {
-    // TODO Auto-generated method stub
-    return this.color;
+  public void setAttenuationExponent(final int attenuationExponent) {
+    this.attenuationExponent = attenuationExponent;
   }
 
-  /*
-   * (non-Javadoc)
+  /**
+   * {@inheritDoc}
    * 
+   * @param color
+   *          {@inheritDoc}
    * @see edu.bu.cs.cs480.Colorable#setColor(edu.bu.cs.cs480.FloatColor)
    */
   @Override
@@ -71,12 +95,33 @@ public class Light extends PositionableTracerObject implements Directed,
     this.color = color;
   }
 
+  /**
+   * {@inheritDoc}
+   * 
+   * @param direction
+   *          {@inheritDoc}
+   * @see edu.bu.cs.cs480.Directed#setDirection(edu.bu.cs.cs480.Vector3D)
+   */
+  @Override
+  public void setDirection(final Vector3D direction) {
+    this.direction = direction;
+  }
+
+  /**
+   * Sets whether this light source casts a shadow.
+   * 
+   * @param shadow
+   *          Whether this light source casts a shadow.
+   */
   public void setShadow(final boolean shadow) {
     this.shadow = shadow;
   }
 
-  private boolean shadow = false;
-
+  /**
+   * Gets whether this light source casts a shadow.
+   * 
+   * @return Whether this light source casts a shadow.
+   */
   public boolean shadow() {
     return this.shadow;
   }

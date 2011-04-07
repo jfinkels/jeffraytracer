@@ -116,7 +116,7 @@ public class ModelReaderTest {
     }
 
     assertTrue(camera instanceof OrthographicCamera);
-    assertTrue(camera.center().equals(new Vector3D(7, -7, 7)));
+    assertTrue(camera.position().equals(new Vector3D(7, -7, 7)));
     assertTrue(camera.lookAt().equals(new Vector3D(0, 1, 1)));
     assertTrue(camera.up().equals(new Vector3D(0, 0, 1)));
     assertEquals(1, camera.near(), 0);

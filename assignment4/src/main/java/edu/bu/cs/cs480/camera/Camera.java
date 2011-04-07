@@ -1,91 +1,124 @@
 /**
- * Camera.java -
+ * Camera.java - representation of a camera which views the scene
  */
 package edu.bu.cs.cs480.camera;
 
+import edu.bu.cs.cs480.Positionable;
 import edu.bu.cs.cs480.Vector3D;
 
 /**
+ * A camera which has a position, a direction, an orientation, and near and far
+ * clip plane.
+ * 
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
-public abstract class Camera {
-  private Vector3D center = null;
+public abstract class Camera implements Positionable {
+  /** The position of this camera. */
+  private Vector3D position = null;
+  /** The distance to the far clip plane. */
   private double far = 0;
+  /** The point at which this camera is looking. */
   private Vector3D lookAt = null;
+  /** The distance to the near clip plane. */
   private double near = 0;
+  /** The up direction of the camera. */
   private Vector3D up = null;
 
   /**
-   * @return the center
+   * {@inheritDoc}
+   * 
+   * @return {@inheritDoc}
+   * @see edu.bu.cs.cs480.Positionable#position()
    */
-  public Vector3D center() {
-    return this.center;
+  @Override
+  public Vector3D position() {
+    return this.position;
   }
 
   /**
-   * @return the far
+   * Gets the distance to the far clip plane.
+   * 
+   * @return The distance to the far clip plane.
    */
   public double far() {
     return this.far;
   }
 
   /**
-   * @return the lookAt
+   * Gets the point at which this camera is looking.
+   * 
+   * @return The point at which this camera is looking.
    */
   public Vector3D lookAt() {
     return this.lookAt;
   }
 
   /**
-   * @return the near
+   * Gets the distance to the near clip plane.
+   * 
+   * @return The distance to the near clip plane.
    */
   public double near() {
     return this.near;
   }
 
   /**
-   * @param center
-   *          the center to set
+   * {@inheritDoc}
+   * 
+   * @param position
+   *          {@inheritDoc}
+   * @see edu.bu.cs.cs480.Positionable#setPosition(edu.bu.cs.cs480.Vector3D)
    */
-  public void setCenter(Vector3D center) {
-    this.center = center;
+  @Override
+  public void setPosition(Vector3D position) {
+    this.position = position;
   }
 
   /**
+   * Sets the distance to the far clip plane.
+   * 
    * @param far
-   *          the far to set
+   *          The distance to the far clip plane.
    */
   public void setFar(double far) {
     this.far = far;
   }
 
   /**
+   * Sets the point at which this camera is looking.
+   * 
    * @param lookAt
-   *          the lookAt to set
+   *          The point at which this camera is looking.
    */
   public void setLookAt(Vector3D lookAt) {
     this.lookAt = lookAt;
   }
 
   /**
+   * Sets the distance to the near clip plane.
+   * 
    * @param near
-   *          the near to set
+   *          The distance to the near clip plane.
    */
   public void setNear(double near) {
     this.near = near;
   }
 
   /**
+   * Sets the up direction of this camera.
+   * 
    * @param up
-   *          the up to set
+   *          The up direction of this camera.
    */
   public void setUp(Vector3D up) {
     this.up = up;
   }
 
   /**
-   * @return the up
+   * Gets the up direction of this camera.
+   * 
+   * @return The up direction of this camera.
    */
   public Vector3D up() {
     return this.up;

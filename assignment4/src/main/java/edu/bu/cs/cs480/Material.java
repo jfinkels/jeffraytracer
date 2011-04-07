@@ -23,10 +23,14 @@ public class Material extends TracerObject implements Colorable {
   private double specularExponent;
   /** The coefficient of specular reflection of this material. */
   private double specularReflection = 0;
-
   /** The coefficient of transmission of this material. */
   private double transmission = 0;
 
+  /**
+   * Gets the coefficient of ambient reflection.
+   * 
+   * @return The coefficient of ambient reflection.
+   */
   public double ambientReflection() {
     return this.ambientReflection;
   }
@@ -42,10 +46,20 @@ public class Material extends TracerObject implements Colorable {
     return this.color;
   }
 
+  /**
+   * Gets the coefficient of diffuse reflection.
+   * 
+   * @return The coefficient of diffuse reflection.
+   */
   public double diffuseReflection() {
     return this.diffuseReflection;
   }
 
+  /**
+   * Gets the coefficient of reflection.
+   * 
+   * @return The coefficient of reflection.
+   */
   public double reflection() {
     return this.reflection;
   }
@@ -59,6 +73,12 @@ public class Material extends TracerObject implements Colorable {
     return this.refraction;
   }
 
+  /**
+   * Sets the coefficient of ambient reflection.
+   * 
+   * @param ambientReflection
+   *          The coefficient of ambient reflection.
+   */
   public void setAmbientReflection(final double ambientReflection) {
     this.ambientReflection = ambientReflection;
   }
@@ -75,10 +95,22 @@ public class Material extends TracerObject implements Colorable {
     this.color = color;
   }
 
+  /**
+   * Sets the coefficient of diffuse reflection.
+   * 
+   * @param diffuseReflection
+   *          The coefficient of diffuse reflection.
+   */
   public void setDiffuseReflection(final double diffuseReflection) {
     this.diffuseReflection = diffuseReflection;
   }
 
+  /**
+   * Sets the coefficient of reflection.
+   * 
+   * @param reflection
+   *          The coefficient of reflection.
+   */
   public void setReflection(final double reflection) {
     this.reflection = reflection;
   }
@@ -93,26 +125,60 @@ public class Material extends TracerObject implements Colorable {
     this.refraction = refraction;
   }
 
+  /**
+   * Sets the exponent of specular reflection.
+   * 
+   * @param specularExponent
+   *          The exponent of specular reflection.
+   */
   public void setSpecularExponent(final double specularExponent) {
     this.specularExponent = specularExponent;
   }
 
+  /**
+   * Sets the coefficient of specular reflection.
+   * 
+   * @param specularReflection
+   *          The coefficient of specular reflection.
+   */
   public void setSpecularReflection(final double specularReflection) {
     this.specularReflection = specularReflection;
   }
 
+  /**
+   * Sets the coefficient of transmission.
+   * 
+   * @param transmission
+   *          The coefficient of transmission.
+   */
   public void setTransmission(final double transmission) {
     this.transmission = transmission;
   }
+
+  /**
+   * Gets the exponent of specular reflection.
+   * 
+   * @return The exponent of specular reflection.
+   */
 
   public double specularExponent() {
     return this.specularExponent;
   }
 
+  /**
+   * Gets the coefficient of specular reflection.
+   * 
+   * @return The coefficient of specular reflection.
+   */
   public double specularReflection() {
     return this.specularReflection;
   }
 
+  /**
+   * Gets the coefficient of transmission.
+   * 
+   * @return The coefficient of transmission.
+   */
   public double transmission() {
     return this.transmission;
   }

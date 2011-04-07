@@ -42,6 +42,44 @@ import edu.bu.cs.cs480.surfaces.Union;
  * @since Spring 2011
  */
 public class ModelReader {
+  /**
+   * The identifier in the model file format for an orthographic projection
+   * camera.
+   */
+  public static final String ORTHOGRAPHIC = "orthographic";
+  /**
+   * The identifier in the model file format for a perspective projection
+   * camera.
+   */
+  public static final String PERSPECTIVE = "perspective";
+  /**
+   * The identifier for the union operation on surface objects in the model
+   * file format.
+   */
+  public static final String UNION = "union";
+  /**
+   * The identifier for the intersection operation on surface objects in the
+   * model file format.
+   */
+  public static final String INTERSECTION = "intersect";
+  /**
+   * The identifier for the symmetric difference operation on surface objects
+   * in the model file format.
+   */
+  public static final String SYMMETRIC_DIFFERENCE = "difference";
+  /**
+   * The identifier for a light source at distance infinity in the model file
+   * format.
+   */
+  public static final String INFINITY = "inf";
+  /**
+   * The identifier for an ambient light source in the model file format.
+   */
+  public static final String AMBIENT = "amb";
+  /**
+   * The identifier for a point light source in the model file format.
+   */
+  public static final String POINT = "pnt";
 
   public static TracerEnvironment fromFile(final String filename)
       throws FileNotFoundException, FileFormatException {
@@ -93,6 +131,16 @@ public class ModelReader {
     return result;
   }
 
+  /**
+   * Iterates over the specified list and returns the object with the specified
+   * ID, or {@code null} if no such element exists in the list.
+   *
+   * @param <E> The type of element in the list.
+   * @param list The list of elements through which to search.
+   * @param id The ID of the element to find in the list.
+   * @return The object in the list with the specified ID number, or {@code
+   * null} if no such element exists.
+   */
   protected static <E extends Identifiable> E getObjectWithID(
       final List<E> list, final int id) {
     for (final E element : list) {
@@ -104,6 +152,16 @@ public class ModelReader {
     return null;
   }
 
+  /**
+   * Creates a box with the properties specified on the current line of the
+   * scanner.
+   *
+   * @param input The scanner from which to read the properties of the box.
+   * @param materials The list of known materials which the input will
+   * reference when describing the material of the box by its ID number.
+   * @return A box with the properties specified on the current line of the
+   * scanner.
+   */
   protected static Box readBox(final Scanner input,
       final List<Material> materials) {
     final Box box = new Box();
@@ -125,6 +183,15 @@ public class ModelReader {
     return box;
   }
 
+  /**
+   * Creates a camera with the properties specified on the current line of
+   * the scanner.
+   *
+   * @param input The scanner from which to read the properties of the camera.
+   * @return A camera with the properties specified on the current line of the
+   * scanner.
+   * @throws FileFormatException If the projection type is not of a known type.
+   */
   protected static Camera readCamera(final Scanner input)
       throws FileFormatException {
     final Camera camera;
@@ -136,9 +203,9 @@ public class ModelReader {
     final Vector3D up = readTriple(input);
 
     double focalLength = input.nextDouble();
-    if (projectionType.equals("orthographic")) {
+    if (projectionType.equals(ORTHOGRAPHIC)) {
       camera = new OrthographicCamera();
-    } else if (projectionType.equals("perspective")) {
+    } else if (projectionType.equals(PERSPECTIVE)) {
       camera = new PerspectiveCamera();
       ((PerspectiveCamera) camera).setFocalLength(focalLength);
     } else {
@@ -148,7 +215,7 @@ public class ModelReader {
 
     }
 
-    camera.setCenter(center);
+    camera.setPosition(center);
     camera.setLookAt(lookAt);
     camera.setUp(up);
 
@@ -160,6 +227,14 @@ public class ModelReader {
     return camera;
   }
 
+  /**
+   * Reads the next three float values between 0 and 1 from the Scanner and
+   * returns the corresponding color.
+   *
+   * @param input The scanner from which to read the component values.
+   * @return The color whose component values are read from the specified
+   * input.
+   */
   protected static FloatColor readColor(final Scanner input) {
     final float red = input.nextFloat();
     final float green = input.nextFloat();
@@ -167,6 +242,20 @@ public class ModelReader {
     return new FloatColor(red, green, blue);
   }
 
+  /**
+   * Creates a union, intersection, or symmetric difference object from two
+   * other surface objects.
+   *
+   * @param input The scanner from which to read the properties of this
+   * constructive solid geometry object.
+   * @param surfaceObjects The list of known surface objects which the input
+   * will reference when describing the two surface objects by ID number which
+   * comprise this constructive solid geometry object.
+   * @return A union, intersection, or symmetric difference object of two other
+   * surface objects, as specified by the input.
+   * @throws FileFormatException If the constructive solid geometry operation
+   * is not of a known type.
+   */
   protected static ConstructiveSolidGeometry readCSG(final Scanner input,
       final List<SurfaceObject> surfaceObjects) throws FileFormatException {
     final ConstructiveSolidGeometry result;
@@ -185,11 +274,11 @@ public class ModelReader {
     final SurfaceObject leftObject = getObjectWithID(surfaceObjects, leftId);
     final SurfaceObject rightObject = getObjectWithID(surfaceObjects, rightId);
 
-    if (type.equals("union")) {
+    if (type.equals(UNION)) {
       result = new Union(leftObject, rightObject);
-    } else if (type.equals("intersect")) {
+    } else if (type.equals(INTERSECTION)) {
       result = new Intersection(leftObject, rightObject);
-    } else if (type.equals("difference")) {
+    } else if (type.equals(SYMMETRIC_DIFFERENCE)) {
       result = new SymmetricDifference(leftObject, rightObject);
     } else {
       throw new FileFormatException("Do not understand CSG type \"" + type
@@ -201,6 +290,17 @@ public class ModelReader {
     return result;
   }
 
+  /**
+   * Creates a cylinder with the properties specified on the current line of
+   * the scanner.
+   *
+   * @param input The scanner from which to read the properties of the
+   * cylinder.
+   * @param materials The list of known materials which the input will
+   * reference when describing the material of the cylinder by its ID number.
+   * @return A cylinder with the properties specified on the current line of
+   * the scanner.
+   */
   protected static Cylinder readCylinder(final Scanner input,
       final List<Material> materials) {
     final Cylinder cylinder = new Cylinder();
@@ -226,6 +326,17 @@ public class ModelReader {
     return cylinder;
   }
 
+  /**
+   * Creates an ellipsoid with the properties specified on the current line of
+   * the scanner.
+   *
+   * @param input The scanner from which to read the properties of the
+   * ellipsoid.
+   * @param materials The list of known materials which the input will
+   * reference when describing the material of the ellipsoid by its ID number.
+   * @return An ellipsoid with the properties specified on the current line of
+   * the scanner.
+   */
   protected static Ellipsoid readEllipsoid(final Scanner input,
       final List<Material> materials) {
     final Ellipsoid ellipsoid = new Ellipsoid();
@@ -246,6 +357,14 @@ public class ModelReader {
     return ellipsoid;
   }
 
+  /**
+   * Reads a sequence of consecutive integers of arbitrary length from the
+   * specified input.
+   *
+   * @param input The scanner from which to read the sequence of consecutive
+   * integers.
+   * @return A list of integers read from the input.
+   */
   protected static List<Integer> readIntegerList(final Scanner input) {
     final List<Integer> result = new ArrayList<Integer>();
     while (input.hasNextInt()) {
@@ -254,6 +373,17 @@ public class ModelReader {
     return result;
   }
 
+  /**
+   * Creates a light with the properties specified on the current line of
+   * the scanner.
+   *
+   * @param input The scanner from which to read the properties of the
+   * light.
+   * @return A light with the properties specified on the current line of
+   * the scanner.
+   * @throws FileFormatException If the specified type of light is not
+   * recognized.
+   */
   protected static Light readLight(final Scanner input)
       throws FileFormatException {
     final Light light;
@@ -262,11 +392,11 @@ public class ModelReader {
     final int id = input.nextInt();
     final String lightType = input.next();
 
-    if (lightType.equals("inf")) {
+    if (lightType.equals(INFINITY)) {
       light = new InfinityLight();
-    } else if (lightType.equals("amb")) {
+    } else if (lightType.equals(AMBIENT)) {
       light = new AmbientLight();
-    } else if (lightType.equals("pnt")) {
+    } else if (lightType.equals(POINT)) {
       light = new PointLight();
     } else {
       throw new RuntimeException();
@@ -392,6 +522,14 @@ public class ModelReader {
     return surfaceObject;
   }
 
+  /**
+   * Returns a three-dimensional vector containing the next three double
+   * values from the specified scanner.
+   *
+   * @param input The scanner from which to read the three double values.
+   * @return The vector containing the three double values read from the
+   * specified input.
+   */
   protected static Vector3D readTriple(final Scanner input) {
     double x = input.nextDouble();
     double y = input.nextDouble();

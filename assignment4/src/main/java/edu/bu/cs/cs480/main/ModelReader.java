@@ -81,6 +81,21 @@ public class ModelReader {
    */
   public static final String POINT = "pnt";
 
+  /**
+   * Reads a complete tracer environment from the model file at the specified
+   * location.
+   * 
+   * @param filename
+   *          The name of the file containing the description of the tracer
+   *          model.
+   * @return A tracer environment which can render the scene as described in
+   *         the model file.
+   * @throws FileNotFoundException
+   *           If no file exists at the specified location.
+   * @throws FileFormatException
+   *           If the file is not in the correct format, as specified by
+   *           "model_file_format.txt".
+   */
   public static TracerEnvironment fromFile(final String filename)
       throws FileNotFoundException, FileFormatException {
     final TracerEnvironment result = new TracerEnvironment();
@@ -134,12 +149,15 @@ public class ModelReader {
   /**
    * Iterates over the specified list and returns the object with the specified
    * ID, or {@code null} if no such element exists in the list.
-   *
-   * @param <E> The type of element in the list.
-   * @param list The list of elements through which to search.
-   * @param id The ID of the element to find in the list.
-   * @return The object in the list with the specified ID number, or {@code
-   * null} if no such element exists.
+   * 
+   * @param <E>
+   *          The type of element in the list.
+   * @param list
+   *          The list of elements through which to search.
+   * @param id
+   *          The ID of the element to find in the list.
+   * @return The object in the list with the specified ID number, or
+   *         {@code null} if no such element exists.
    */
   protected static <E extends Identifiable> E getObjectWithID(
       final List<E> list, final int id) {
@@ -155,12 +173,14 @@ public class ModelReader {
   /**
    * Creates a box with the properties specified on the current line of the
    * scanner.
-   *
-   * @param input The scanner from which to read the properties of the box.
-   * @param materials The list of known materials which the input will
-   * reference when describing the material of the box by its ID number.
+   * 
+   * @param input
+   *          The scanner from which to read the properties of the box.
+   * @param materials
+   *          The list of known materials which the input will reference when
+   *          describing the material of the box by its ID number.
    * @return A box with the properties specified on the current line of the
-   * scanner.
+   *         scanner.
    */
   protected static Box readBox(final Scanner input,
       final List<Material> materials) {
@@ -184,13 +204,15 @@ public class ModelReader {
   }
 
   /**
-   * Creates a camera with the properties specified on the current line of
-   * the scanner.
-   *
-   * @param input The scanner from which to read the properties of the camera.
-   * @return A camera with the properties specified on the current line of the
+   * Creates a camera with the properties specified on the current line of the
    * scanner.
-   * @throws FileFormatException If the projection type is not of a known type.
+   * 
+   * @param input
+   *          The scanner from which to read the properties of the camera.
+   * @return A camera with the properties specified on the current line of the
+   *         scanner.
+   * @throws FileFormatException
+   *           If the projection type is not of a known type.
    */
   protected static Camera readCamera(final Scanner input)
       throws FileFormatException {
@@ -230,10 +252,11 @@ public class ModelReader {
   /**
    * Reads the next three float values between 0 and 1 from the Scanner and
    * returns the corresponding color.
-   *
-   * @param input The scanner from which to read the component values.
+   * 
+   * @param input
+   *          The scanner from which to read the component values.
    * @return The color whose component values are read from the specified
-   * input.
+   *         input.
    */
   protected static FloatColor readColor(final Scanner input) {
     final float red = input.nextFloat();
@@ -245,16 +268,21 @@ public class ModelReader {
   /**
    * Creates a union, intersection, or symmetric difference object from two
    * other surface objects.
-   *
-   * @param input The scanner from which to read the properties of this
-   * constructive solid geometry object.
-   * @param surfaceObjects The list of known surface objects which the input
-   * will reference when describing the two surface objects by ID number which
-   * comprise this constructive solid geometry object.
+   * 
+   * Post-condition: the list of surface objects is not modified.
+   * 
+   * @param input
+   *          The scanner from which to read the properties of this
+   *          constructive solid geometry object.
+   * @param surfaceObjects
+   *          The list of known surface objects which the input will reference
+   *          when describing the two surface objects by ID number which
+   *          comprise this constructive solid geometry object.
    * @return A union, intersection, or symmetric difference object of two other
-   * surface objects, as specified by the input.
-   * @throws FileFormatException If the constructive solid geometry operation
-   * is not of a known type.
+   *         surface objects, as specified by the input.
+   * @throws FileFormatException
+   *           If the constructive solid geometry operation is not of a known
+   *           type.
    */
   protected static ConstructiveSolidGeometry readCSG(final Scanner input,
       final List<SurfaceObject> surfaceObjects) throws FileFormatException {
@@ -293,13 +321,14 @@ public class ModelReader {
   /**
    * Creates a cylinder with the properties specified on the current line of
    * the scanner.
-   *
-   * @param input The scanner from which to read the properties of the
-   * cylinder.
-   * @param materials The list of known materials which the input will
-   * reference when describing the material of the cylinder by its ID number.
+   * 
+   * @param input
+   *          The scanner from which to read the properties of the cylinder.
+   * @param materials
+   *          The list of known materials which the input will reference when
+   *          describing the material of the cylinder by its ID number.
    * @return A cylinder with the properties specified on the current line of
-   * the scanner.
+   *         the scanner.
    */
   protected static Cylinder readCylinder(final Scanner input,
       final List<Material> materials) {
@@ -329,13 +358,14 @@ public class ModelReader {
   /**
    * Creates an ellipsoid with the properties specified on the current line of
    * the scanner.
-   *
-   * @param input The scanner from which to read the properties of the
-   * ellipsoid.
-   * @param materials The list of known materials which the input will
-   * reference when describing the material of the ellipsoid by its ID number.
+   * 
+   * @param input
+   *          The scanner from which to read the properties of the ellipsoid.
+   * @param materials
+   *          The list of known materials which the input will reference when
+   *          describing the material of the ellipsoid by its ID number.
    * @return An ellipsoid with the properties specified on the current line of
-   * the scanner.
+   *         the scanner.
    */
   protected static Ellipsoid readEllipsoid(final Scanner input,
       final List<Material> materials) {
@@ -360,9 +390,10 @@ public class ModelReader {
   /**
    * Reads a sequence of consecutive integers of arbitrary length from the
    * specified input.
-   *
-   * @param input The scanner from which to read the sequence of consecutive
-   * integers.
+   * 
+   * @param input
+   *          The scanner from which to read the sequence of consecutive
+   *          integers.
    * @return A list of integers read from the input.
    */
   protected static List<Integer> readIntegerList(final Scanner input) {
@@ -374,15 +405,15 @@ public class ModelReader {
   }
 
   /**
-   * Creates a light with the properties specified on the current line of
-   * the scanner.
-   *
-   * @param input The scanner from which to read the properties of the
-   * light.
-   * @return A light with the properties specified on the current line of
-   * the scanner.
-   * @throws FileFormatException If the specified type of light is not
-   * recognized.
+   * Creates a light with the properties specified on the current line of the
+   * scanner.
+   * 
+   * @param input
+   *          The scanner from which to read the properties of the light.
+   * @return A light with the properties specified on the current line of the
+   *         scanner.
+   * @throws FileFormatException
+   *           If the specified type of light is not recognized.
    */
   protected static Light readLight(final Scanner input)
       throws FileFormatException {
@@ -427,6 +458,17 @@ public class ModelReader {
     return light;
   }
 
+  /**
+   * Creates a material with the properties specified on the current line of
+   * the scanner.
+   * 
+   * @param input
+   *          The scanner from which to read the properties of the material.
+   * @return A material with the properties specified on the current line of
+   *         the scanner.
+   * @throws FileFormatException
+   *           If the specified type of material is not recognized.
+   */
   protected static Material readMaterial(final Scanner input) {
     final Material material = new Material();
 
@@ -456,6 +498,15 @@ public class ModelReader {
     return material;
   }
 
+  /**
+   * Creates an orientation from the next three triples of double values from
+   * the specified scanner.
+   * 
+   * @param input
+   *          The scanner from which to read the orientation.
+   * @return An orientation whose three vectors have the values read from the
+   *         input.
+   */
   protected static Orientation readOrientation(final Scanner input) {
     final Vector3D v1 = readTriple(input);
     final Vector3D v2 = readTriple(input);
@@ -464,6 +515,14 @@ public class ModelReader {
     return new Orientation(v1, v2, v3);
   }
 
+  /**
+   * Returns the resolution at which to display the scene in the viewport.
+   * 
+   * @param input
+   *          The scanner from which to read the two double values which
+   *          specify the resolution.
+   * @return The resolution at which to display the scene in the viewport.
+   */
   protected static Resolution readResolution(final Scanner input) {
     final double x = input.nextDouble();
     final double y = input.nextDouble();
@@ -475,6 +534,18 @@ public class ModelReader {
     return resolution;
   }
 
+  /**
+   * Creates a sphere with the properties specified on the current line of the
+   * scanner.
+   * 
+   * @param input
+   *          The scanner from which to read the properties of the sphere.
+   * @param materials
+   *          The list of known materials which the input will reference when
+   *          describing the material of the sphere by its ID number.
+   * @return A sphere with the properties specified on the current line of the
+   *         scanner.
+   */
   protected static Sphere readSphere(final Scanner input,
       final List<Material> materials) {
     final Sphere sphere = new Sphere();
@@ -497,7 +568,25 @@ public class ModelReader {
     return sphere;
   }
 
-  // post-condition: list of surface objects is not modified
+  /**
+   * Creates a surface object with the properties specified on the current line
+   * of the scanner.
+   * 
+   * Post-condition: the list of surface objects is not modified.
+   * 
+   * @param input
+   *          The scanner from which to read the properties of the surface
+   *          object.
+   * @param materials
+   *          The list of known materials which the input will reference when
+   *          describing the material of the ellipsoid by its ID number.
+   * @param surfaceObjects
+   *          The list of known surface objects which the input will reference
+   *          when describing the two surface objects which comprise a
+   *          constructive solid geometry object by ID number.
+   * @return An surface object with the properties specified on the current
+   *         line of the scanner.
+   */
   protected static SurfaceObject readSurfaceObject(final Scanner input,
       final List<Material> materials, final List<SurfaceObject> surfaceObjects)
       throws FileFormatException {
@@ -523,12 +612,13 @@ public class ModelReader {
   }
 
   /**
-   * Returns a three-dimensional vector containing the next three double
-   * values from the specified scanner.
-   *
-   * @param input The scanner from which to read the three double values.
+   * Returns a three-dimensional vector containing the next three double values
+   * from the specified scanner.
+   * 
+   * @param input
+   *          The scanner from which to read the three double values.
    * @return The vector containing the three double values read from the
-   * specified input.
+   *         specified input.
    */
   protected static Vector3D readTriple(final Scanner input) {
     double x = input.nextDouble();
@@ -537,6 +627,14 @@ public class ModelReader {
     return new Vector3D(x, y, z);
   }
 
+  /**
+   * Returns the dimensions of the viewport as defined in the input.
+   * 
+   * @param input
+   *          The scanner from which to read the two integer values which
+   *          specify the dimensions of the viewport.
+   * @return The dimensions of the viewport on which to display the scene.
+   */
   protected static Viewport readViewport(final Scanner input) {
     final int width = input.nextInt();
     final int height = input.nextInt();

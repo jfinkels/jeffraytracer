@@ -3,7 +3,7 @@
  */
 package edu.bu.cs.cs480.camera;
 
-import edu.bu.cs.cs480.Positionable;
+import edu.bu.cs.cs480.PositionedDirected;
 import edu.bu.cs.cs480.Vector3D;
 
 /**
@@ -13,28 +13,13 @@ import edu.bu.cs.cs480.Vector3D;
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
-public abstract class Camera implements Positionable {
-  /** The position of this camera. */
-  private Vector3D position = null;
+public abstract class Camera extends PositionedDirected {
   /** The distance to the far clip plane. */
   private double far = 0;
-  /** The point at which this camera is looking. */
-  private Vector3D lookAt = null;
   /** The distance to the near clip plane. */
   private double near = 0;
   /** The up direction of the camera. */
   private Vector3D up = null;
-
-  /**
-   * {@inheritDoc}
-   * 
-   * @return {@inheritDoc}
-   * @see edu.bu.cs.cs480.Positionable#position()
-   */
-  @Override
-  public Vector3D position() {
-    return this.position;
-  }
 
   /**
    * Gets the distance to the far clip plane.
@@ -43,15 +28,6 @@ public abstract class Camera implements Positionable {
    */
   public double far() {
     return this.far;
-  }
-
-  /**
-   * Gets the point at which this camera is looking.
-   * 
-   * @return The point at which this camera is looking.
-   */
-  public Vector3D lookAt() {
-    return this.lookAt;
   }
 
   /**
@@ -64,16 +40,15 @@ public abstract class Camera implements Positionable {
   }
 
   /**
-   * {@inheritDoc}
+   * Computes the direction of a ray which originates at the specified position.
+   * 
+   * The returned vector is of unit length.
    * 
    * @param position
-   *          {@inheritDoc}
-   * @see edu.bu.cs.cs480.Positionable#setPosition(edu.bu.cs.cs480.Vector3D)
+   *          The starting position of the ray whose direction will be computed.
+   * @return The direction of the ray starting at the specified position.
    */
-  @Override
-  public void setPosition(Vector3D position) {
-    this.position = position;
-  }
+  public abstract Vector3D rayDirection(final Vector3D position);
 
   /**
    * Sets the distance to the far clip plane.
@@ -83,16 +58,6 @@ public abstract class Camera implements Positionable {
    */
   public void setFar(double far) {
     this.far = far;
-  }
-
-  /**
-   * Sets the point at which this camera is looking.
-   * 
-   * @param lookAt
-   *          The point at which this camera is looking.
-   */
-  public void setLookAt(Vector3D lookAt) {
-    this.lookAt = lookAt;
   }
 
   /**

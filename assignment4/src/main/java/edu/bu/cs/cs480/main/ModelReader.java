@@ -120,8 +120,8 @@ public class ModelReader {
     final List<SurfaceObject> surfaceObjects = new ArrayList<SurfaceObject>();
     List<Integer> toRender = null;
 
-    while (input.hasNextLine()) {
-      final String token = input.next();
+    while (input.hasNext()) {
+      final String token = input.next();System.out.println(token);
       if (token.equals(CAMERA)) {
         result.setCamera(readCamera(input));
       } else if (token.equals(RESOLUTION)) {
@@ -251,7 +251,7 @@ public class ModelReader {
     }
 
     camera.setPosition(center);
-    camera.setLookAt(lookAt);
+    camera.setDirection(lookAt);
     camera.setUp(up);
 
     double near = input.nextDouble();

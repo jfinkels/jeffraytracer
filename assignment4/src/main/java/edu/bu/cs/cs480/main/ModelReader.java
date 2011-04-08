@@ -53,8 +53,8 @@ public class ModelReader {
    */
   public static final String PERSPECTIVE = "perspective";
   /**
-   * The identifier for the union operation on surface objects in the model
-   * file format.
+   * The identifier for the union operation on surface objects in the model file
+   * format.
    */
   public static final String UNION = "union";
   /**
@@ -63,8 +63,8 @@ public class ModelReader {
    */
   public static final String INTERSECTION = "intersect";
   /**
-   * The identifier for the symmetric difference operation on surface objects
-   * in the model file format.
+   * The identifier for the symmetric difference operation on surface objects in
+   * the model file format.
    */
   public static final String SYMMETRIC_DIFFERENCE = "difference";
   /**
@@ -80,6 +80,20 @@ public class ModelReader {
    * The identifier for a point light source in the model file format.
    */
   public static final String POINT = "pnt";
+  /** The identifier for the camera definition in the model file format. */
+  public static final String CAMERA = "camera";
+  /** The identifier for the resolution definition in the model file format. */
+  public static final String RESOLUTION = "resolution";
+  /** The identifier for the viewport definition in the model file format. */
+  public static final String VIEWPORT = "viewport";
+  /** The identifier for a light definition in the model file format. */
+  public static final String LIGHT = "light";
+  /** The identifier for a material definition in the model file format. */
+  public static final String MATERIAL = "mat";
+  /** The identifier for an object definition in the model file format. */
+  public static final String OBJECT = "obj";
+  /** The identifier for a render list definition in the model file format. */
+  public static final String RENDER = "render";
 
   /**
    * Reads a complete tracer environment from the model file at the specified
@@ -88,8 +102,8 @@ public class ModelReader {
    * @param filename
    *          The name of the file containing the description of the tracer
    *          model.
-   * @return A tracer environment which can render the scene as described in
-   *         the model file.
+   * @return A tracer environment which can render the scene as described in the
+   *         model file.
    * @throws FileNotFoundException
    *           If no file exists at the specified location.
    * @throws FileFormatException
@@ -108,20 +122,19 @@ public class ModelReader {
 
     while (input.hasNextLine()) {
       final String token = input.next();
-      if (token.equals("camera")) {
+      if (token.equals(CAMERA)) {
         result.setCamera(readCamera(input));
-      } else if (token.equals("resolution")) {
+      } else if (token.equals(RESOLUTION)) {
         result.setResolution(readResolution(input));
-      } else if (token.equals("viewport")) {
+      } else if (token.equals(VIEWPORT)) {
         result.setViewport(readViewport(input));
-      } else if (token.equals("light")) {
+      } else if (token.equals(LIGHT)) {
         result.addLight(readLight(input));
-      } else if (token.equals("mat")) {
+      } else if (token.equals(MATERIAL)) {
         materials.add(readMaterial(input));
-      } else if (token.equals("obj")) {
-        surfaceObjects
-            .add(readSurfaceObject(input, materials, surfaceObjects));
-      } else if (token.equals("render")) {
+      } else if (token.equals(OBJECT)) {
+        surfaceObjects.add(readSurfaceObject(input, materials, surfaceObjects));
+      } else if (token.equals(RENDER)) {
         toRender = readIntegerList(input);
       } else {
         throw new FileFormatException("Do not understand declaration \""
@@ -255,8 +268,7 @@ public class ModelReader {
    * 
    * @param input
    *          The scanner from which to read the component values.
-   * @return The color whose component values are read from the specified
-   *         input.
+   * @return The color whose component values are read from the specified input.
    */
   protected static FloatColor readColor(final Scanner input) {
     final float red = input.nextFloat();
@@ -272,8 +284,8 @@ public class ModelReader {
    * Post-condition: the list of surface objects is not modified.
    * 
    * @param input
-   *          The scanner from which to read the properties of this
-   *          constructive solid geometry object.
+   *          The scanner from which to read the properties of this constructive
+   *          solid geometry object.
    * @param surfaceObjects
    *          The list of known surface objects which the input will reference
    *          when describing the two surface objects by ID number which
@@ -319,16 +331,16 @@ public class ModelReader {
   }
 
   /**
-   * Creates a cylinder with the properties specified on the current line of
-   * the scanner.
+   * Creates a cylinder with the properties specified on the current line of the
+   * scanner.
    * 
    * @param input
    *          The scanner from which to read the properties of the cylinder.
    * @param materials
    *          The list of known materials which the input will reference when
    *          describing the material of the cylinder by its ID number.
-   * @return A cylinder with the properties specified on the current line of
-   *         the scanner.
+   * @return A cylinder with the properties specified on the current line of the
+   *         scanner.
    */
   protected static Cylinder readCylinder(final Scanner input,
       final List<Material> materials) {
@@ -459,13 +471,13 @@ public class ModelReader {
   }
 
   /**
-   * Creates a material with the properties specified on the current line of
-   * the scanner.
+   * Creates a material with the properties specified on the current line of the
+   * scanner.
    * 
    * @param input
    *          The scanner from which to read the properties of the material.
-   * @return A material with the properties specified on the current line of
-   *         the scanner.
+   * @return A material with the properties specified on the current line of the
+   *         scanner.
    * @throws FileFormatException
    *           If the specified type of material is not recognized.
    */
@@ -519,8 +531,8 @@ public class ModelReader {
    * Returns the resolution at which to display the scene in the viewport.
    * 
    * @param input
-   *          The scanner from which to read the two double values which
-   *          specify the resolution.
+   *          The scanner from which to read the two double values which specify
+   *          the resolution.
    * @return The resolution at which to display the scene in the viewport.
    */
   protected static Resolution readResolution(final Scanner input) {
@@ -584,8 +596,8 @@ public class ModelReader {
    *          The list of known surface objects which the input will reference
    *          when describing the two surface objects which comprise a
    *          constructive solid geometry object by ID number.
-   * @return An surface object with the properties specified on the current
-   *         line of the scanner.
+   * @return An surface object with the properties specified on the current line
+   *         of the scanner.
    */
   protected static SurfaceObject readSurfaceObject(final Scanner input,
       final List<Material> materials, final List<SurfaceObject> surfaceObjects)

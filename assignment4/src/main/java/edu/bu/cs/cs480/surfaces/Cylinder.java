@@ -1,5 +1,5 @@
 /**
- * Cylinder.java -
+ * Cylinder.java - a right circular cylinder
  */
 package edu.bu.cs.cs480.surfaces;
 
@@ -7,18 +7,23 @@ import edu.bu.cs.cs480.Directed;
 import edu.bu.cs.cs480.Vector3D;
 
 /**
+ * A right circular cylinder.
+ * 
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
 public class Cylinder extends ConcreteSurfaceObject implements Directed {
-
+  /** The direction of the perpendicular to the base of this cylinder. */
   private Vector3D direction = null;
-  private double length = 0;
-
+  /** The height of this cylinder. */
+  private double height = 0;
+  /** The radius of this cylinder. */
   private double radius = 0;
 
-  /*
-   * (non-Javadoc)
+  /**
+   * {@inheritDoc}
+   * 
+   * @return {@inheritDoc}
    * 
    * @see edu.bu.cs.cs480.Directed#direction()
    */
@@ -28,40 +33,50 @@ public class Cylinder extends ConcreteSurfaceObject implements Directed {
   }
 
   /**
-   * @return the length
+   * Gets the height of this cylinder.
+   * 
+   * @return The height of this cylinder.
    */
   public double length() {
-    return this.length;
+    return this.height;
   }
 
   /**
-   * @return the radius
+   * Gets the radius of this cylinder.
+   * 
+   * @return The radius of this cylinder.
    */
   public double radius() {
     return this.radius;
   }
 
-  /*
-   * (non-Javadoc)
+  /**
+   * {@inheritDoc}
    * 
+   * @param direction
+   *          {@inheritDoc}
    * @see edu.bu.cs.cs480.Directed#setDirection(edu.bu.cs.cs480.Vector3D)
    */
   @Override
-  public void setDirection(Vector3D direction) {
+  public void setDirection(final Vector3D direction) {
     this.direction = direction;
   }
 
   /**
-   * @param length
-   *          the length to set
+   * Sets the height of this cylinder.
+   * 
+   * @param height
+   *          The height of this cylinder.
    */
-  public void setLength(double length) {
-    this.length = length;
+  public void setLength(final double length) {
+    this.height = length;
   }
 
   /**
+   * Sets the radius of this cylinder.
+   * 
    * @param radius
-   *          the radius to set
+   *          The radius of this cylinder.
    */
   public void setRadius(double radius) {
     this.radius = radius;

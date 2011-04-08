@@ -40,9 +40,22 @@ public abstract class ConstructiveSolidGeometry extends TracerObject implements
     this.object2 = object2;
   }
 
-  /*
-   * protected SurfaceObject object1() { return this.object1; }
+  /**
+   * Gets the first surface object.
    * 
-   * protected SurfaceObject object2() { return this.object2; }
+   * @return One of the surface objects.
    */
+  protected SurfaceObject object1() {
+    return this.object1;
+  }
+
+  /**
+   * Gets the second surface object.
+   * 
+   * @return One of the surface objects.
+   */
+  protected SurfaceObject object2() {
+    return this.object2;
+  }
+
 }

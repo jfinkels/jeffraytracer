@@ -1,9 +1,10 @@
 /**
- * ModelReaderTest.java -
+ * ModelReaderTest.java - test for the ModelReader class
  */
 package edu.bu.cs.cs480.main;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -32,13 +33,25 @@ import edu.bu.cs.cs480.surfaces.SurfaceObject;
 import edu.bu.cs.cs480.surfaces.Union;
 
 /**
+ * Test for the ModelReader class.
+ * 
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
 public class ModelReaderTest {
 
-  public static final String TESTFILE = "src/test/resources/edu/bu/cs/cs480/model1.dat";
+  /** The directory containing the model files for testing. */
+  public static final String TESTDIR = "src/test/resources/edu/bu/cs/cs480/";
+  /** The file containing a test model. */
+  public static final String TESTFILE = TESTDIR + "model1.dat";
 
+  /**
+   * Prints the stack trace of the specified throwable to stderr, then fails the
+   * current test.
+   * 
+   * @param throwable
+   *          The throwable which was the cause of the current test failure.
+   */
   private static void fail(final Throwable throwable) {
     throwable.printStackTrace(System.err);
     junit.framework.Assert.fail(throwable.getLocalizedMessage());
@@ -58,6 +71,8 @@ public class ModelReaderTest {
     } catch (final FileFormatException exception) {
       fail(exception);
     }
+    
+    assertNotNull(e);
   }
 
   /**

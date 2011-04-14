@@ -85,8 +85,8 @@ public class Vector3D {
   }
 
   /**
-   * Computes the cross product of this with the specified other vector (in
-   * that order).
+   * Computes the cross product of this with the specified other vector (in that
+   * order).
    * 
    * @param that
    *          The other vector with which to compute the cross product.
@@ -102,8 +102,8 @@ public class Vector3D {
    * 
    * @param that
    *          The vector to subtract from this one.
-   * @return A new vector whose values are the component-wise difference
-   *         between this and the specified other vector.
+   * @return A new vector whose values are the component-wise difference between
+   *         this and the specified other vector.
    */
   public Vector3D difference(final Vector3D that) {
     return new Vector3D(this.x - that.x, this.y - that.y, this.z - that.z);
@@ -246,8 +246,8 @@ public class Vector3D {
   }
 
   /**
-   * Returns a new Vector3D object which is the component-wise sum of this
-   * point with the specified other point.
+   * Returns a new Vector3D object which is the component-wise sum of this point
+   * with the specified other point.
    * 
    * @param that
    *          The point with which to sum this one.
@@ -268,10 +268,10 @@ public class Vector3D {
     return "Vector[" + this.x + ", " + this.y + ", " + this.z + "]";
   }
 
-  public Vector4D toVector4D() {
-    return new Vector4D(this, 1);
-  }
-  
+  // public Vector4D toVector4D() {
+  // return new Vector4D(this, 1);
+  // }
+
   /**
    * Gets the x component of this point.
    * 

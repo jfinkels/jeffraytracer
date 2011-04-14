@@ -53,15 +53,21 @@ public class Sphere extends ConcreteSurfaceObject {
    */
   @Override
   public Intercept interceptWith(final Ray ray) {
-    final Vector4D u = ray.direction().toVector4D();
-    final Vector4D p = ray.position().toVector4D();
-
+    final Vector4D u = new Vector4D(ray.direction(), 0);
+    final Vector4D p = new Vector4D(ray.position(), 0);
+    System.out.println("ray position:  " + p);
+    System.out.println("ray direction: " + u);
     final double a = u.dotProduct(this.matrix.product(u));
     final Vector4D temp = this.matrix.product(p);
+    System.out.println("temp " + temp);
     final double b = 2 * u.dotProduct(temp);
     final double c = p.dotProduct(temp);
-    
+    System.out.println("a " + a);
+    System.out.println("b " + b);
+    System.out.println("c " + c);
+
     final Pair pair = QuadraticSolver.solve(a, b, c);
+    System.out.println("pair " + pair);
     if (pair == null) {
       return null;
     }

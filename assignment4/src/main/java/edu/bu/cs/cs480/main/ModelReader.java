@@ -121,7 +121,7 @@ public class ModelReader {
     List<Integer> toRender = null;
 
     while (input.hasNext()) {
-      final String token = input.next();System.out.println(token);
+      final String token = input.next();
       if (token.equals(CAMERA)) {
         result.setCamera(readCamera(input));
       } else if (token.equals(RESOLUTION)) {
@@ -251,8 +251,8 @@ public class ModelReader {
     }
 
     camera.setPosition(center);
-    camera.setDirection(lookAt);
-    camera.setUp(up);
+    camera.setDirection(lookAt.difference(center).normalized());
+    camera.setUp(up.normalized());
 
     double near = input.nextDouble();
     double far = input.nextDouble();
@@ -357,7 +357,7 @@ public class ModelReader {
     cylinder.setMaterial(getObjectWithID(materials, materialID));
 
     cylinder.setPosition(readTriple(input));
-    cylinder.setDirection(readTriple(input));
+    cylinder.setDirection(readTriple(input).normalized());
 
     final double radius = input.nextDouble();
     final double length = input.nextDouble();
@@ -448,7 +448,7 @@ public class ModelReader {
     light.setId(id);
 
     light.setPosition(readTriple(input));
-    light.setDirection(readTriple(input));
+    light.setDirection(readTriple(input).normalized());
 
     light.setColor(readColor(input));
 
@@ -524,7 +524,7 @@ public class ModelReader {
     final Vector3D v2 = readTriple(input);
     final Vector3D v3 = readTriple(input);
 
-    return new Orientation(v1, v2, v3);
+    return new Orientation(v1.normalized(), v2.normalized(), v3.normalized());
   }
 
   /**

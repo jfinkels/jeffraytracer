@@ -22,6 +22,8 @@ public class Orientation {
   /**
    * Instantiates this orientation with the three specified vectors as a basis.
    * 
+   * Pre-condition: the vectors are unit vectors.
+   * 
    * @param u
    *          The u vector.
    * @param v

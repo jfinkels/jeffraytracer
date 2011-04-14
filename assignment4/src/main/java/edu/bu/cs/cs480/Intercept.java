@@ -63,4 +63,7 @@ public class Intercept implements Comparable<Intercept> {
     return this.time;
   }
 
+  public String toString() {
+    return "Intercept[" + this.surfaceObject + " at " + this.time + "]";
+  }
 }

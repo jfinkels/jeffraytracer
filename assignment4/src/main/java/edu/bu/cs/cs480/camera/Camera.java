@@ -31,6 +31,13 @@ public abstract class Camera extends PositionedDirected {
   }
 
   /**
+   * Gets the focal length of this camera.
+   * 
+   * @return The focal length of this camera.
+   */
+  public abstract double focalLength();
+
+  /**
    * Gets the distance to the near clip plane.
    * 
    * @return The distance to the near clip plane.
@@ -40,12 +47,14 @@ public abstract class Camera extends PositionedDirected {
   }
 
   /**
-   * Computes the direction of a ray which originates at the specified position.
+   * Computes the direction of a ray which originates at the specified
+   * position.
    * 
    * The returned vector is of unit length.
    * 
    * @param position
-   *          The starting position of the ray whose direction will be computed.
+   *          The starting position of the ray whose direction will be
+   *          computed.
    * @return The direction of the ray starting at the specified position.
    */
   public abstract Vector3D rayDirection(final Vector3D position);
@@ -73,17 +82,19 @@ public abstract class Camera extends PositionedDirected {
   /**
    * Sets the up direction of this camera.
    * 
+   * Pre-condition: the up vector is normalized.
+   * 
    * @param up
    *          The up direction of this camera.
    */
-  public void setUp(Vector3D up) {
+  public void setUp(final Vector3D up) {
     this.up = up;
   }
 
   /**
-   * Gets the up direction of this camera.
+   * Gets the up direction of this camera as a unit vector.
    * 
-   * @return The up direction of this camera.
+   * @return The up direction of this camera as a unit vector.
    */
   public Vector3D up() {
     return this.up;

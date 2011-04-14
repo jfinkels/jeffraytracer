@@ -265,9 +265,13 @@ public class Vector3D {
    */
   @Override
   public String toString() {
-    return "Point[" + this.x + ", " + this.y + ", " + this.z + "]";
+    return "Vector[" + this.x + ", " + this.y + ", " + this.z + "]";
   }
 
+  public Vector4D toVector4D() {
+    return new Vector4D(this, 1);
+  }
+  
   /**
    * Gets the x component of this point.
    * 

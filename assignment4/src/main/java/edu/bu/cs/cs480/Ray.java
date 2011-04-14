@@ -3,8 +3,6 @@
  */
 package edu.bu.cs.cs480;
 
-import edu.bu.cs.cs480.surfaces.SurfaceObject;
-
 /**
  * A "half line", starting at a point and extending to infinity in a direction.
  * 
@@ -12,14 +10,7 @@ import edu.bu.cs.cs480.surfaces.SurfaceObject;
  * @since Spring 2011
  */
 public class Ray extends PositionedDirected {
-
-  /**
-   * @param surfaceObject
-   * @return
-   */
-  public Intercept interceptWith(final SurfaceObject surfaceObject) {
-    // TODO Auto-generated method stub
-    return null;
+  public String toString() {
+    return "Ray at " + this.position() + " directed by " + this.direction();
   }
-
 }

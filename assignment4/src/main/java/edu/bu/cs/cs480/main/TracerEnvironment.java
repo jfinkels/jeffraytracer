@@ -3,10 +3,13 @@
  */
 package edu.bu.cs.cs480.main;
 
-import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import edu.bu.cs.cs480.Intercept;
 import edu.bu.cs.cs480.Light;
@@ -60,39 +63,76 @@ public class TracerEnvironment {
    * 
    * @return The image which is the result of rendering the scene.
    */
-  public Image render() {
+  public RenderedImage render() {
     // get the width and height of the viewport
     final int width = this.viewport.width();
     final int height = this.viewport.height();
 
     // first create the rays and initialize them with the appropriate computed
     // origin and direction based on the camera type and measurements
+    System.out.println("Generating primary rays...");
     final Ray[] rays = new Ray[width * height];
-    for (int i = 0; i < height; ++i) {
-      for (int j = 0; j < width; ++j) {
-        rays[i * width + j] = generateRay(i, j);
+    for (int y = 0; y < height; ++y) {
+      for (int x = 0; x < width; ++x) {
+        rays[y * width + x] = generateRay(x, y);
       }
-    }
-    
-    for (final Ray ray : rays) {
-      // compute all intersections with surface objects
-      final List<Intercept> intercepts = new ArrayList<Intercept>();
-      for (final SurfaceObject surfaceObject : this.surfaceObjects) {
-        intercepts.add(ray.interceptWith(surfaceObject));
-      }
-      
-      // get intercept of some surface object with current ray
-      final Intercept minIntercept = Collections.min(intercepts);
     }
 
-    return null;
+    // compile all the surface objects so that we only compute their quadratic
+    // form matrices one time
+    // for (final SurfaceObject surfaceObject : this.surfaceObjects) {
+    // surfaceObject.compile();
+    // }
+
+    // compute the min intercept for each ray
+    System.out.println("Computing min intercepts for each ray...");
+    final Map<Ray, Intercept> intercepts = new HashMap<Ray, Intercept>();
+    for (final Ray ray : rays) {
+      // compute all intersections with surface objects
+      final List<Intercept> candidates = new ArrayList<Intercept>();
+      for (final SurfaceObject surfaceObject : this.surfaceObjects) {
+        final Intercept intercept = surfaceObject.interceptWith(ray);
+        if (intercept != null) {
+          candidates.add(intercept);
+        }
+      }
+
+      if (candidates.isEmpty()) {
+        intercepts.put(ray, null);
+      } else {
+        intercepts.put(ray, Collections.min(candidates));
+      }
+    }
+
+    // draw the intercept on an image
+    System.out.println("Drawing from primary rays...");
+    final BufferedImage result = new BufferedImage(width, height,
+        BufferedImage.TYPE_INT_RGB);
+    for (int y = 0; y < height; ++y) {
+      for (int x = 0; x < width; ++x) {
+        final Ray ray = rays[y * width + x];
+        //System.out.println("(x, y): " + x + ", " + y);
+        //System.out.println("ray: " + ray);
+        //System.out.println("intercepts: " + intercepts.get(ray));
+        if (intercepts.get(ray) == null) {
+          result.setRGB(x, y, BACKGROUND_COLOR);
+        } else {
+          result.setRGB(x, y, 0x00FFFF);
+        }
+      }
+    }
+
+    return result;
   }
+
+  /** The color of the background for rendered images. */
+  public static final int BACKGROUND_COLOR = 0xFF0000;
 
   /**
    * Generates the ray which would start at pixel location (i, j) in the
    * viewport based on the resolution, the viewport size, and the camera's
    * measurements.
-   *
+   * 
    * Algorithm adapted from source code of Zheng Wu.
    * 
    * @param i
@@ -101,7 +141,8 @@ public class TracerEnvironment {
    * @param j
    *          The vertical pixel location in the viewport at which the ray
    *          originates.
-   * @return The ray which would start at pixel location (i, j) in the viewport.
+   * @return The ray which would start at pixel location (i, j) in the
+   *         viewport.
    */
   protected Ray generateRay(final int i, final int j) {
     // compute location of pixel on view plane
@@ -114,16 +155,15 @@ public class TracerEnvironment {
     final Vector3D c = this.camera.position();
     final Vector3D n = this.camera.direction();
     final Vector3D v = this.camera.up();
-    final Vector3D u = v.crossProduct(n).normalized();
-
+    final Vector3D u = v.crossProduct(n);
+    
     // convert (du, dv) to location in scene coordinates using the camera's
     // basis vectors
-    // TODO what about orthographic projection, infinite focal length?
-    final Vector3D temp1 = n/*.scaledBy(this.camera.focalLength())*/;
+    final Vector3D temp1 = n.scaledBy(this.camera.focalLength());
     final Vector3D temp2 = u.scaledBy(du);
     final Vector3D temp3 = v.scaledBy(dv);
     final Vector3D origin = c.sumWith(temp1).sumWith(temp2).sumWith(temp3);
-
+    
     // compute the direction of the ray with respect to the camera and position
     final Vector3D direction = this.camera.rayDirection(origin);
 

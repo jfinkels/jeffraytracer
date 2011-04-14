@@ -20,6 +20,7 @@ public class PerspectiveCamera extends Camera {
    * 
    * @return The focal length of this camera.
    */
+  @Override
   public double focalLength() {
     return this.focalLength;
   }

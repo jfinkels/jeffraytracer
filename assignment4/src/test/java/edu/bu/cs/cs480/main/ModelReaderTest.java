@@ -46,18 +46,6 @@ public class ModelReaderTest {
   public static final String TESTFILE = TESTDIR + "model1.dat";
 
   /**
-   * Prints the stack trace of the specified throwable to stderr, then fails the
-   * current test.
-   * 
-   * @param throwable
-   *          The throwable which was the cause of the current test failure.
-   */
-  private static void fail(final Throwable throwable) {
-    throwable.printStackTrace(System.err);
-    junit.framework.Assert.fail(throwable.getLocalizedMessage());
-  }
-
-  /**
    * Test method for
    * {@link edu.bu.cs.cs480.main.ModelReader#fromFile(java.lang.String)}.
    */
@@ -67,9 +55,9 @@ public class ModelReaderTest {
     try {
       e = ModelReader.fromFile(TESTFILE);
     } catch (final FileNotFoundException exception) {
-      fail(exception);
+      TestUtils.fail(exception);
     } catch (final FileFormatException exception) {
-      fail(exception);
+      TestUtils.fail(exception);
     }
     
     assertNotNull(e);
@@ -127,7 +115,7 @@ public class ModelReaderTest {
     try {
       camera = ModelReader.readCamera(s);
     } catch (final FileFormatException exception) {
-      fail(exception);
+      TestUtils.fail(exception);
     }
 
     assertTrue(camera instanceof OrthographicCamera);
@@ -170,7 +158,7 @@ public class ModelReaderTest {
     try {
       csg = ModelReader.readCSG(s, Arrays.asList(o1, o2));
     } catch (final FileFormatException exception) {
-      fail(exception);
+      TestUtils.fail(exception);
     }
 
     assertTrue(csg instanceof Union);
@@ -242,7 +230,7 @@ public class ModelReaderTest {
     try {
       l = ModelReader.readLight(s);
     } catch (final FileFormatException exception) {
-      fail(exception);
+      TestUtils.fail(exception);
     }
 
     assertEquals(0, l.id());
@@ -332,7 +320,7 @@ public class ModelReaderTest {
     try {
       assertTrue(ModelReader.readSurfaceObject(s, Arrays.asList(m), null) instanceof Sphere);
     } catch (final FileFormatException exception) {
-      fail(exception);
+      TestUtils.fail(exception);
     }
   }
 

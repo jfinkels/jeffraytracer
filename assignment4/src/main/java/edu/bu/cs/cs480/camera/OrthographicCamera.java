@@ -16,6 +16,21 @@ public class OrthographicCamera extends Camera {
   /**
    * {@inheritDoc}
    * 
+   * Since this is an orthographic projection camera, the focal length has no
+   * effect on the projection, so we just return 1. Because what is life
+   * without whimsy?
+   * 
+   * @return {@inheritDoc}
+   * @see edu.bu.cs.cs480.camera.Camera#focalLength()
+   */
+  @Override
+  public double focalLength() {
+    return 1.0;
+  }
+
+  /**
+   * {@inheritDoc}
+   * 
    * @param position
    *          {@inheritDoc}
    * @return {@inheritDoc}
@@ -25,4 +40,5 @@ public class OrthographicCamera extends Camera {
   public Vector3D rayDirection(final Vector3D position) {
     return this.direction();
   }
+
 }

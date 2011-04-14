@@ -11,7 +11,7 @@ package edu.bu.cs.cs480;
  */
 public interface Directed {
   /**
-   * Gets the direction of this object.
+   * Gets the direction of this object as a unit vector.
    * 
    * @return The direction of this object.
    */
@@ -19,6 +19,8 @@ public interface Directed {
 
   /**
    * Sets the direction of this object.
+   * 
+   * Pre-condition: the direction vector is a unit vector.
    * 
    * @param direction
    *          The direction of this object.

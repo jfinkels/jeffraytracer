@@ -17,6 +17,10 @@ public class Intercept implements Comparable<Intercept> {
   /** The time at which the ray intercepts the surface object. */
   private final double time;
 
+  public static Vector3D pointOfIntersection(final Ray ray, final double time) {
+    return ray.position().sumWith(ray.direction().scaledBy(time));
+  }
+
   /**
    * Instantiates this intercept with the specified surface object at the
    * specified time.
@@ -63,6 +67,7 @@ public class Intercept implements Comparable<Intercept> {
     return this.time;
   }
 
+  @Override
   public String toString() {
     return "Intercept[" + this.surfaceObject + " at " + this.time + "]";
   }

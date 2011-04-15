@@ -27,6 +27,8 @@ import edu.bu.cs.cs480.surfaces.SurfaceObject;
  * @since Spring 2011
  */
 public class TracerEnvironment {
+  /** The color of the background for rendered images. */
+  public static final int BACKGROUND_COLOR = 0x101010;
   /** The virtual camera through which the scene is viewed. */
   private Camera camera = null;
   /** The list of light sources for the scene. */
@@ -35,6 +37,7 @@ public class TracerEnvironment {
   private Resolution resolution = null;
   /** The list of surface objects to be rendered. */
   private List<SurfaceObject> surfaceObjects = new ArrayList<SurfaceObject>();
+
   /** The dimensions of the viewport in which the scene is displayed. */
   private Viewport viewport = null;
 
@@ -56,6 +59,52 @@ public class TracerEnvironment {
    */
   public void addSurfaceObject(final SurfaceObject surfaceObject) {
     this.surfaceObjects.add(surfaceObject);
+  }
+
+  /**
+   * Generates the ray which would start at pixel location (i, j) in the
+   * viewport based on the resolution, the viewport size, and the camera's
+   * measurements.
+   * 
+   * Algorithm adapted from source code of Zheng Wu.
+   * 
+   * @param i
+   *          The horizontal pixel location in the viewport at which the ray
+   *          originates.
+   * @param j
+   *          The vertical pixel location in the viewport at which the ray
+   *          originates.
+   * @return The ray which would start at pixel location (i, j) in the
+   *         viewport.
+   */
+  protected Ray generateRay(final int i, final int j) {
+    // compute location of pixel on view plane
+    final double du = (i - (this.viewport.width() / 2) + 1)
+        * this.resolution.xResolution();
+    final double dv = (-j + (this.viewport.height() / 2) - 1)
+        * this.resolution.yResolution();
+
+    // get the vectors which define the camera's basis
+    final Vector3D c = this.camera.position();
+    final Vector3D n = this.camera.direction();
+    final Vector3D v = this.camera.up();
+    final Vector3D u = v.crossProduct(n);
+
+    // convert (du, dv) to location in scene coordinates using the camera's
+    // basis vectors
+    final Vector3D temp1 = n.scaledBy(this.camera.focalLength());
+    final Vector3D temp2 = u.scaledBy(du);
+    final Vector3D temp3 = v.scaledBy(dv);
+    final Vector3D origin = c.sumWith(temp1).sumWith(temp2).sumWith(temp3);
+
+    // compute the direction of the ray with respect to the camera and position
+    final Vector3D direction = this.camera.rayDirection(origin);
+
+    final Ray result = new Ray();
+    result.setPosition(origin);
+    result.setDirection(direction);
+
+    return result;
   }
 
   /**
@@ -111,9 +160,6 @@ public class TracerEnvironment {
     for (int y = 0; y < height; ++y) {
       for (int x = 0; x < width; ++x) {
         final Ray ray = rays[y * width + x];
-        // System.out.println("(x, y): " + x + ", " + y);
-        // System.out.println("ray: " + ray);
-        // System.out.println("intercepts: " + intercepts.get(ray));
         if (intercepts.get(ray) == null) {
           result.setRGB(x, y, BACKGROUND_COLOR);
         } else {
@@ -121,55 +167,6 @@ public class TracerEnvironment {
         }
       }
     }
-
-    return result;
-  }
-
-  /** The color of the background for rendered images. */
-  public static final int BACKGROUND_COLOR = 0xFF0000;
-
-  /**
-   * Generates the ray which would start at pixel location (i, j) in the
-   * viewport based on the resolution, the viewport size, and the camera's
-   * measurements.
-   * 
-   * Algorithm adapted from source code of Zheng Wu.
-   * 
-   * @param i
-   *          The horizontal pixel location in the viewport at which the ray
-   *          originates.
-   * @param j
-   *          The vertical pixel location in the viewport at which the ray
-   *          originates.
-   * @return The ray which would start at pixel location (i, j) in the
-   *         viewport.
-   */
-  protected Ray generateRay(final int i, final int j) {
-    // compute location of pixel on view plane
-    final double du = (i - (this.viewport.width() / 2) + 1)
-        * this.resolution.xResolution();
-    final double dv = (-j + (this.viewport.height() / 2) - 1)
-        * this.resolution.yResolution();
-
-    // get the vectors which define the camera's basis
-    final Vector3D c = this.camera.position();
-    final Vector3D n = this.camera.direction();
-    final Vector3D v = this.camera.up();
-    final Vector3D u = v.crossProduct(n);
-
-    // convert (du, dv) to location in scene coordinates using the camera's
-    // basis vectors
-    final Vector3D temp1 = n.scaledBy(this.camera.focalLength());
-    final Vector3D temp2 = u.scaledBy(du);
-    final Vector3D temp3 = v.scaledBy(dv);
-    final Vector3D origin = c.sumWith(temp1).sumWith(temp2).sumWith(temp3);
-
-    // compute the direction of the ray with respect to the camera and position
-    final Vector3D direction = this.camera.rayDirection(origin);
-
-    final Ray result = new Ray();
-    result.setPosition(origin);
-    result.setDirection(direction);
 
     return result;
   }

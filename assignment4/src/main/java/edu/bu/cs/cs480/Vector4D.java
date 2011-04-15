@@ -32,7 +32,7 @@ public class Vector4D {
   }
 
   public double dotProduct(final Vector4D that) {
-    return this.x * this.x + this.y * this.y + this.z * this.z + this.w
+    return this.x * that.x + this.y * that.y + this.z * that.z + this.w
         * that.w;
   }
 

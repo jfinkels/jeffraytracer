@@ -3,6 +3,8 @@
  */
 package edu.bu.cs.cs480;
 
+import java.util.Arrays;
+
 /**
  * A 4x4 matrix.
  * 
@@ -14,7 +16,8 @@ public class Matrix4x4 {
   final double[][] m = new double[4][4];
 
   /**
-   * Sets the value of the entry at the specified row and column in this matrix.
+   * Sets the value of the entry at the specified row and column in this
+   * matrix.
    * 
    * @param row
    *          The row of the entry to set.
@@ -28,7 +31,8 @@ public class Matrix4x4 {
   }
 
   /**
-   * Gets the value of the entry at the specified row and column in this matrix.
+   * Gets the value of the entry at the specified row and column in this
+   * matrix.
    * 
    * @param row
    *          The row of the entry to get.
@@ -41,8 +45,8 @@ public class Matrix4x4 {
   }
 
   /**
-   * Computes the product of this matrix (on the left) with the specified vector
-   * (on the right).
+   * Computes the product of this matrix (on the left) with the specified
+   * vector (on the right).
    * 
    * @param right
    *          The vector with which to multiply (on the right).
@@ -60,4 +64,12 @@ public class Matrix4x4 {
     return new Vector4D(x, y, z, w);
   }
 
+  @Override
+  public String toString() {
+    String result = "[" + Arrays.toString(this.m[0]) + "]\n";
+    result += "[" + Arrays.toString(this.m[1]) + "]\n";
+    result += "[" + Arrays.toString(this.m[2]) + "]\n";
+    result += "[" + Arrays.toString(this.m[3]) + "]";
+    return result;
+  }
 }

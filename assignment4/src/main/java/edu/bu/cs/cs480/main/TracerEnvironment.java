@@ -80,9 +80,9 @@ public class TracerEnvironment {
 
     // compile all the surface objects so that we only compute their quadratic
     // form matrices one time
-    // for (final SurfaceObject surfaceObject : this.surfaceObjects) {
-    // surfaceObject.compile();
-    // }
+    for (final SurfaceObject surfaceObject : this.surfaceObjects) {
+      surfaceObject.compile();
+    }
 
     // compute the min intercept for each ray
     System.out.println("Computing min intercepts for each ray...");
@@ -111,9 +111,9 @@ public class TracerEnvironment {
     for (int y = 0; y < height; ++y) {
       for (int x = 0; x < width; ++x) {
         final Ray ray = rays[y * width + x];
-        //System.out.println("(x, y): " + x + ", " + y);
-        //System.out.println("ray: " + ray);
-        //System.out.println("intercepts: " + intercepts.get(ray));
+        // System.out.println("(x, y): " + x + ", " + y);
+        // System.out.println("ray: " + ray);
+        // System.out.println("intercepts: " + intercepts.get(ray));
         if (intercepts.get(ray) == null) {
           result.setRGB(x, y, BACKGROUND_COLOR);
         } else {
@@ -156,14 +156,14 @@ public class TracerEnvironment {
     final Vector3D n = this.camera.direction();
     final Vector3D v = this.camera.up();
     final Vector3D u = v.crossProduct(n);
-    
+
     // convert (du, dv) to location in scene coordinates using the camera's
     // basis vectors
     final Vector3D temp1 = n.scaledBy(this.camera.focalLength());
     final Vector3D temp2 = u.scaledBy(du);
     final Vector3D temp3 = v.scaledBy(dv);
     final Vector3D origin = c.sumWith(temp1).sumWith(temp2).sumWith(temp3);
-    
+
     // compute the direction of the ray with respect to the camera and position
     final Vector3D direction = this.camera.rayDirection(origin);
 

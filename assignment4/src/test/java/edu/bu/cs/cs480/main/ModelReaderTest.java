@@ -18,6 +18,7 @@ import edu.bu.cs.cs480.FloatColor;
 import edu.bu.cs.cs480.Light;
 import edu.bu.cs.cs480.Material;
 import edu.bu.cs.cs480.PointLight;
+import edu.bu.cs.cs480.TestUtils;
 import edu.bu.cs.cs480.Vector3D;
 import edu.bu.cs.cs480.camera.Camera;
 import edu.bu.cs.cs480.camera.OrthographicCamera;

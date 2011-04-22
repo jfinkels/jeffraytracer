@@ -22,8 +22,10 @@ import edu.bu.cs.cs480.Vector3D;
  * @since Spring 2011
  */
 public class SimpleQuadricFormTest {
+  /** The object under test. */
   private SimpleQuadricForm s = null;
 
+  /** Instantiate the object before each test. */
   @Before
   public void setUp() {
     this.s = new SimpleQuadricForm() {

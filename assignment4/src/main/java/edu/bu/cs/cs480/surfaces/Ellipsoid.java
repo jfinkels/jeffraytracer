@@ -49,8 +49,9 @@ public class Ellipsoid extends UnrotatedSimpleQuadricForm {
     final double yRadius = this.radii.y();
     final double zRadius = this.radii.z();
     result.set(0, 0, 1 / (xRadius * xRadius));
-    result.set(0, 0, 1 / (yRadius * yRadius));
-    result.set(0, 0, 1 / (zRadius * zRadius));
+    result.set(1, 1, 1 / (yRadius * yRadius));
+    result.set(2, 2, 1 / (zRadius * zRadius));
+    result.set(3, 3, -1);
     return result;
   }
 

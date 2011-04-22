@@ -6,8 +6,6 @@ package edu.bu.cs.cs480;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
-import java.util.Random;
-
 import org.junit.Test;
 
 /**
@@ -60,16 +58,9 @@ public class Matrix4x4Test {
    */
   @Test
   public void testTransposed() {
-    final Matrix4x4 matrix = new Matrix4x4();
-
     for (int n = 0; n < 100; ++n) {
-      final Random r = new Random();
-      for (int i = 0; i < 4; ++i) {
-        for (int j = 0; j < 4; ++j) {
-          matrix.m[i][j] = r.nextInt(10);
-        }
-      }
-
+      final Matrix4x4 matrix = TestUtils.randomMatrix();
+      
       final Matrix4x4 transpose = matrix.transposed();
       for (int i = 0; i < 4; ++i) {
         for (int j = 0; j < 4; ++j) {

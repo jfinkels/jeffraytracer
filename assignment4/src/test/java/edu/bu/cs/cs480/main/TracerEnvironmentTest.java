@@ -13,6 +13,8 @@ import javax.imageio.ImageIO;
 
 import org.junit.Test;
 
+import edu.bu.cs.cs480.TestUtils;
+
 /**
  * @author jeff
  *
@@ -41,7 +43,7 @@ public class TracerEnvironmentTest {
   @Test
   public void testRender() {
     try {
-      final TracerEnvironment e = ModelReader.fromFile("src/test/resources/edu/bu/cs/cs480/singlesphere.dat");
+      final TracerEnvironment e = ModelReader.fromFile("src/test/resources/edu/bu/cs/cs480/singlecylinder.dat");
       final File outputFile = new File("target/test.png");
       ImageIO.write(e.render(), "png", outputFile);
     } catch (final FileNotFoundException exception) {

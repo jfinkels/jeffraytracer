@@ -3,6 +3,7 @@
  */
 package edu.bu.cs.cs480.surfaces;
 
+import sun.awt.windows.ThemeReader;
 import edu.bu.cs.cs480.Intercept;
 import edu.bu.cs.cs480.Matrix4x4;
 import edu.bu.cs.cs480.Pair;
@@ -17,9 +18,13 @@ import edu.bu.cs.cs480.Vector4D;
 public abstract class SimpleQuadricForm extends ConcreteSurfaceObject {
 
   private Matrix4x4 matrix = null;
-protected Matrix4x4 matrix() { return this.matrix; }
-  /*
-   * (non-Javadoc)
+
+  protected Matrix4x4 matrix() {
+    return this.matrix;
+  }
+
+  /**
+   * {
    * 
    * @see
    * edu.bu.cs.cs480.surfaces.SurfaceObject#interceptWith(edu.bu.cs.cs480.Ray)
@@ -52,20 +57,33 @@ protected Matrix4x4 matrix() { return this.matrix; }
    */
   protected abstract Matrix4x4 rotation();
 
+  /**
+   * Compiles the matrix which represents the quadric form of this surface
+   * object with respect to its base matrix representation, its rotation matrix,
+   * and its translation matrix.
+   * 
+   * This method MUST be called before calling the {@link #interceptWith(Ray)}
+   * method.
+   * 
+   * This method must only be called AFTER the
+   * {@link #setPosition(edu.bu.cs.cs480.Vector3D)} method has been called, in
+   * order to create the translation matrix.
+   * 
+   * This method will overwrite the contents of the {@link #matrix} field.
+   * 
+   * Algorithm: To account for the translation and rotation of this object, we
+   * save time by compiling it into {@link #matrix} field. Let L be the
+   * translation matrix from the origin to the position of this object. Let R be
+   * the rotation matrix from the standard Euclidean orthonormal basis to the
+   * orthonormal basis of this object, and let Q be the quadric form matrix of
+   * this object. This method compiles and stores Q' =
+   * ((L^-1)^T)((R^-1)^T)Q(R^-1)(L^-1) in the {@link #matrix} field.
+   */
   @Override
   public void compile() {
-    // Need to account for translation to the center of the object and
-    // rotation. To do this we apply the inverse transformation to the points
-    // in the quadratic equation. To save time, we compile this inverse
-    // transformation on the vector into the quadric form matrix of this
-    // object.
-
     // first we need the inverse of the matrix representing the translation to
     // the center of the sphere
-    final Matrix4x4 inverseTranslation = Matrix4x4.identity();
-    inverseTranslation.set(0, 3, -this.position().x());
-    inverseTranslation.set(1, 3, -this.position().y());
-    inverseTranslation.set(2, 3, -this.position().z());
+    final Matrix4x4 inverseTranslation = this.inverseTranslationMatrix();
 
     // next we need its transpose
     final Matrix4x4 translationTranspose = inverseTranslation.transposed();
@@ -81,6 +99,21 @@ protected Matrix4x4 matrix() { return this.matrix; }
     this.matrix = this.baseMatrix().product(this.matrix);
     this.matrix = rotationTranspose.product(this.matrix);
     this.matrix = translationTranspose.product(this.matrix);
+  }
+
+  /**
+   * Returns a new matrix representing the inverse of the translation to the
+   * center of this object as specified by the {@link #position()} method.
+   * 
+   * @return The inverse of the translation matrix to the position of this
+   *         object.
+   */
+  private Matrix4x4 inverseTranslationMatrix() {
+    final Matrix4x4 result = Matrix4x4.identity();
+    result.set(0, 3, -this.position().x());
+    result.set(1, 3, -this.position().y());
+    result.set(2, 3, -this.position().z());
+    return result;
   }
 
   /**

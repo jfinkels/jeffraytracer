@@ -14,7 +14,8 @@ import org.junit.runners.Suite.SuiteClasses;
  * @since Spring 2011
  */
 @RunWith(Suite.class)
-@SuiteClasses({ SphereTest.class })
+@SuiteClasses({ EllipsoidTest.class, SphereTest.class,
+    SimpleQuadricFormTest.class })
 public class AllTest {
   // intentionally unimplemented
 }

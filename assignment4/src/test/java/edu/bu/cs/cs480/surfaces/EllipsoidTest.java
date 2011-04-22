@@ -1,13 +1,18 @@
 /**
- * EllipsoidTest.java - 
+ * EllipsoidTest.java - test for the Ellipsoid class
  */
 package edu.bu.cs.cs480.surfaces;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import edu.bu.cs.cs480.Matrix4x4;
+import edu.bu.cs.cs480.Vector3D;
+
 /**
+ * Test for the Ellipsoid class.
+ * 
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
@@ -18,23 +23,14 @@ public class EllipsoidTest {
    */
   @Test
   public void testBaseMatrix() {
-    fail("Not yet implemented");
-  }
+    final Ellipsoid ellipsoid = new Ellipsoid();
+    ellipsoid.setRadii(new Vector3D(1, 2, 3));
+    final Matrix4x4 base = ellipsoid.baseMatrix();
 
-  /**
-   * Test method for {@link edu.bu.cs.cs480.surfaces.Ellipsoid#radii()}.
-   */
-  @Test
-  public void testRadii() {
-    fail("Not yet implemented");
-  }
-
-  /**
-   * Test method for {@link edu.bu.cs.cs480.surfaces.Ellipsoid#setRadii(edu.bu.cs.cs480.Vector3D)}.
-   */
-  @Test
-  public void testSetRadii() {
-    fail("Not yet implemented");
+    assertEquals(1.0 / 1, base.get(0, 0), 0);
+    assertEquals(1.0 / 4, base.get(1, 1), 0);
+    assertEquals(1.0 / 9, base.get(2, 2), 0);
+    assertEquals(-1, base.get(3, 3), 0);
   }
 
 }

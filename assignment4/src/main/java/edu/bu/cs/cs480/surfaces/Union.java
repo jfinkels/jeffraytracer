@@ -3,6 +3,12 @@
  */
 package edu.bu.cs.cs480.surfaces;
 
+import java.util.Arrays;
+import java.util.Collections;
+
+import edu.bu.cs.cs480.Intercept;
+import edu.bu.cs.cs480.Ray;
+
 /**
  * The union of two surface objects.
  * 
@@ -24,6 +30,16 @@ public class Union extends ConstructiveSolidGeometry {
    */
   public Union(SurfaceObject object1, SurfaceObject object2) {
     super(object1, object2);
+  }
+
+  /* (non-Javadoc)
+   * @see edu.bu.cs.cs480.surfaces.SurfaceObject#interceptWith(edu.bu.cs.cs480.Ray)
+   */
+  @Override
+  public Intercept interceptWith(final Ray ray) {
+    final Intercept intercept1 = this.object1().interceptWith(ray);
+    final Intercept intercept2 = this.object2().interceptWith(ray);
+    return Collections.min(Arrays.asList(intercept1, intercept2));
   }
 
 }

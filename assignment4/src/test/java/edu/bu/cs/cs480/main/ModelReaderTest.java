@@ -109,7 +109,7 @@ public class ModelReaderTest {
   @Test
   public void testReadCamera() {
     final Scanner s = new Scanner(
-        "orthographic  7 -7 7  0 1 1   0 0 1   5 1 20");
+        "orthographic  -1 1 1  0 1 1   0 0 1   5 1 20");
 
     Camera camera = null;
     try {
@@ -119,8 +119,8 @@ public class ModelReaderTest {
     }
 
     assertTrue(camera instanceof OrthographicCamera);
-    assertTrue(camera.position().equals(new Vector3D(7, -7, 7)));
-    assertTrue(camera.direction().equals(new Vector3D(0, 1, 1)));
+    assertTrue(camera.position().equals(new Vector3D(-1, 1, 1)));
+    assertTrue(camera.direction().equals(new Vector3D(1, 0, 0)));
     assertTrue(camera.up().equals(new Vector3D(0, 0, 1)));
     assertEquals(1, camera.near(), 0);
     assertEquals(20, camera.far(), 0);
@@ -236,7 +236,7 @@ public class ModelReaderTest {
     assertEquals(0, l.id());
     assertTrue(l instanceof PointLight);
     assertTrue(l.position().equals(new Vector3D(0, -10, 10)));
-    assertTrue(l.direction().equals(new Vector3D(0, 1, -0.7)));
+    assertTrue(l.direction().equals(new Vector3D(0, 1, -0.7).normalized()));
     assertTrue(l.color().equals(new FloatColor(1, 1, 1)));
     assertTrue(l.attenuationCoefficients().equals(new Vector3D(1, 0, 0)));
     assertEquals(10, l.attenuationExponent());
@@ -273,9 +273,9 @@ public class ModelReaderTest {
   public void testReadOrientation() {
     final Scanner s = new Scanner("1 2 3 4 5 6 7 8 9");
     final Orientation o = ModelReader.readOrientation(s);
-    assertTrue(o.u().equals(new Vector3D(1, 2, 3)));
-    assertTrue(o.v().equals(new Vector3D(4, 5, 6)));
-    assertTrue(o.w().equals(new Vector3D(7, 8, 9)));
+    assertTrue(o.u().equals(new Vector3D(1, 2, 3).normalized()));
+    assertTrue(o.v().equals(new Vector3D(4, 5, 6).normalized()));
+    assertTrue(o.w().equals(new Vector3D(7, 8, 9).normalized()));
   }
 
   /**

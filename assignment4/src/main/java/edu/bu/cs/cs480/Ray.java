@@ -15,6 +15,7 @@ public class Ray extends PositionedDirected {
    * 
    * @return The human-readable string representation of this ray.
    */
+  @Override
   public String toString() {
     return "Ray at " + this.position() + " directed by " + this.direction();
   }

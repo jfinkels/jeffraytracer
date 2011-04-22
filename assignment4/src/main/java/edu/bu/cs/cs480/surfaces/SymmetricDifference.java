@@ -9,7 +9,8 @@ package edu.bu.cs.cs480.surfaces;
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
-public class SymmetricDifference extends ConstructiveSolidGeometry {
+// TODO should be non-symmetric difference, I think
+public abstract class SymmetricDifference extends ConstructiveSolidGeometry {
 
   /**
    * Instantiates this object with the two specified surface objects which

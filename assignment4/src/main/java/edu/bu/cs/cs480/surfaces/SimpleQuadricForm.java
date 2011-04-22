@@ -12,20 +12,12 @@ import edu.bu.cs.cs480.Vector4D;
 
 /**
  * @author jeff
- *
+ * 
  */
 public abstract class SimpleQuadricForm extends ConcreteSurfaceObject {
 
-  private Matrix4x4 matrix = new Matrix4x4();
-  
-  protected Matrix4x4 matrix() {
-    return this.matrix;
-  }
-  
-  protected void setMatrix(final Matrix4x4 matrix) {
-    this.matrix = matrix;
-  }
-  
+  private Matrix4x4 matrix = null;
+protected Matrix4x4 matrix() { return this.matrix; }
   /*
    * (non-Javadoc)
    * 
@@ -51,5 +43,51 @@ public abstract class SimpleQuadricForm extends ConcreteSurfaceObject {
     return new Intercept(this, time);
   }
 
+  /**
+   * The matrix representing the rotation which is applied to this surface
+   * object.
+   * 
+   * @return The matrix representing the rotation which is applied to this
+   *         surface object.
+   */
+  protected abstract Matrix4x4 rotation();
 
+  @Override
+  public void compile() {
+    // Need to account for translation to the center of the object and
+    // rotation. To do this we apply the inverse transformation to the points
+    // in the quadratic equation. To save time, we compile this inverse
+    // transformation on the vector into the quadric form matrix of this
+    // object.
+
+    // first we need the inverse of the matrix representing the translation to
+    // the center of the sphere
+    final Matrix4x4 inverseTranslation = Matrix4x4.identity();
+    inverseTranslation.set(0, 3, -this.position().x());
+    inverseTranslation.set(1, 3, -this.position().y());
+    inverseTranslation.set(2, 3, -this.position().z());
+
+    // next we need its transpose
+    final Matrix4x4 translationTranspose = inverseTranslation.transposed();
+
+    // now we need the inverse of the rotation matrix (the inverse of a
+    // homogeneous matrix with an orthonormal basis as its columns is just the
+    // transpose) and its transpose (which is just the original)
+    final Matrix4x4 rotationTranspose = this.rotation();
+    final Matrix4x4 inverseRotation = rotationTranspose.transposed();
+
+    // finally we multiply them all together
+    final Matrix4x4 left = rotationTranspose.product(translationTranspose);
+    final Matrix4x4 right = inverseTranslation.product(inverseRotation);
+    this.matrix = left.product(this.baseMatrix().product(right));
+  }
+
+  /**
+   * The matrix of the quadric form of this surface object centered at the
+   * origin and with no rotation.
+   * 
+   * @return The matrix of the quadric form of this surface object centered at
+   *         the origin and with no rotation.
+   */
+  protected abstract Matrix4x4 baseMatrix();
 }

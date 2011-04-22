@@ -58,4 +58,15 @@ public abstract class ConstructiveSolidGeometry extends TracerObject implements
     return this.object2;
   }
 
+  /**
+   * {@inheritDoc}
+   * 
+   * @see edu.bu.cs.cs480.surfaces.SurfaceObject#compile()
+   */
+  @Override
+  public void compile() {
+    this.object1.compile();
+    this.object2.compile();
+  }
+
 }

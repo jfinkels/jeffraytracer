@@ -317,9 +317,11 @@ public class ModelReader {
     if (type.equals(UNION)) {
       result = new Union(leftObject, rightObject);
     } else if (type.equals(INTERSECTION)) {
-      result = new Intersection(leftObject, rightObject);
+      //result = new Intersection(leftObject, rightObject);
+      result = null;
     } else if (type.equals(SYMMETRIC_DIFFERENCE)) {
-      result = new SymmetricDifference(leftObject, rightObject);
+      //result = new SymmetricDifference(leftObject, rightObject);
+      result = null;
     } else {
       throw new FileFormatException("Do not understand CSG type \"" + type
           + "\".");

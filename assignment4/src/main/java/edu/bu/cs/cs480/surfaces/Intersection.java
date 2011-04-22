@@ -9,7 +9,7 @@ package edu.bu.cs.cs480.surfaces;
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
-public class Intersection extends ConstructiveSolidGeometry {
+public abstract class Intersection extends ConstructiveSolidGeometry {
 
   /**
    * Instantiates this object with the two specified surface objects which

@@ -9,6 +9,7 @@ import java.util.List;
 
 import edu.bu.cs.cs480.Directed;
 import edu.bu.cs.cs480.Intercept;
+import edu.bu.cs.cs480.Matrix4x4;
 import edu.bu.cs.cs480.Ray;
 import edu.bu.cs.cs480.Vector3D;
 
@@ -115,12 +116,12 @@ public class Cylinder extends SimpleQuadricForm implements Directed {
     if (intercept != null) {
       possibleIntercepts.add(intercept);
     }
-    
+
     // if there are no intercepts, return null. otherwise return the minimum
     if (possibleIntercepts.isEmpty()) {
       return null;
     }
-    
+
     return Collections.min(possibleIntercepts);
   }
 
@@ -134,20 +135,59 @@ public class Cylinder extends SimpleQuadricForm implements Directed {
     // create the top and bottom planes
     // TODO check if this is the right way to get the bottom and top planes
     final Vector3D pointOnTopPlane = this.position().sumWith(
-        this.direction.normalized().scaledBy(this.height / 2));
+        this.direction.scaledBy(this.height / 2));
     final Vector3D pointOnBottomPlane = this.position().sumWith(
-        this.direction.normalized().scaledBy(-(this.height / 2)));
+        this.direction.scaledBy(-(this.height / 2)));
     this.top = new Plane(this.direction,
         -this.direction.dotProduct(pointOnTopPlane));
     this.bottom = new Plane(this.direction.scaledBy(-1),
         this.direction.dotProduct(pointOnBottomPlane));
 
-    // initially, this will be a cylinder along the y axis
-    this.matrix().set(0, 0, 1);
-    this.matrix().set(2, 2, 1);
-    this.matrix().set(3, 3, -(this.radius * this.radius));
+    super.compile();
+  }
 
-    // need to multiply matrix on the left and right by inverse rotation
-    // applied to the point
+  /*
+   * (non-Javadoc)
+   * 
+   * @see edu.bu.cs.cs480.surfaces.SimpleQuadricForm#baseMatrix()
+   */
+  @Override
+  protected Matrix4x4 baseMatrix() {
+    final Matrix4x4 result = new Matrix4x4();
+    result.set(0, 0, 1);
+    result.set(2, 2, 1);
+    result.set(3, 3, -(this.radius * this.radius));
+    return result;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see edu.bu.cs.cs480.surfaces.SimpleQuadricForm#rotation()
+   */
+  @Override
+  protected Matrix4x4 rotation() {
+    final Matrix4x4 result = new Matrix4x4();
+
+    // v is in the direction of the y axis
+    final Vector3D v = this.direction;
+    final Vector3D w = this.direction.orthogonal();
+    final Vector3D u = v.crossProduct(w).normalized();
+    
+    result.set(0, 0, u.x());
+    result.set(1, 0, u.y());
+    result.set(2, 0, u.z());
+    
+    result.set(0, 1, v.x());
+    result.set(1, 1, v.y());
+    result.set(2, 1, v.z());
+    
+    result.set(0, 2, w.x());
+    result.set(1, 2, w.y());
+    result.set(2, 2, w.z());
+    
+    result.set(3, 3, 1);
+    
+    return result;
   }
 }

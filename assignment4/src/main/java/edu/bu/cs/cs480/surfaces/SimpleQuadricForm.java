@@ -29,7 +29,7 @@ public abstract class SimpleQuadricForm extends ConcreteSurfaceObject {
   @Override
   public Intercept interceptWith(final Ray ray) {
     final Vector4D u = new Vector4D(ray.direction(), 0);
-    final Vector4D p = new Vector4D(ray.position().difference(this.position()), 1);
+    final Vector4D p = new Vector4D(ray.position(), 1);
 
     final double a = u.dotProduct(this.matrix.product(u));
     final Vector4D temp = this.matrix.product(p);

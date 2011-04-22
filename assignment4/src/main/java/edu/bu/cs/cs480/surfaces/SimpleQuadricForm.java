@@ -40,7 +40,7 @@ protected Matrix4x4 matrix() { return this.matrix; }
     }
     final double time = Math.min(pair.left(), pair.right());
 
-    return new Intercept(this, time);
+    return new Intercept(ray, time, this);
   }
 
   /**
@@ -76,10 +76,11 @@ protected Matrix4x4 matrix() { return this.matrix; }
     final Matrix4x4 rotationTranspose = this.rotation();
     final Matrix4x4 inverseRotation = rotationTranspose.transposed();
 
-    // finally we multiply them all together
-    final Matrix4x4 left = rotationTranspose.product(translationTranspose);
-    final Matrix4x4 right = inverseTranslation.product(inverseRotation);
-    this.matrix = left.product(this.baseMatrix().product(right));
+    // finally we multiply them all together, from right to left
+    this.matrix = inverseRotation.product(inverseTranslation);
+    this.matrix = this.baseMatrix().product(this.matrix);
+    this.matrix = rotationTranspose.product(this.matrix);
+    this.matrix = translationTranspose.product(this.matrix);
   }
 
   /**

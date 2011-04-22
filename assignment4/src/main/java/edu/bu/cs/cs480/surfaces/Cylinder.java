@@ -99,8 +99,7 @@ public class Cylinder extends SimpleQuadricForm implements Directed {
     // planes
     Intercept intercept = super.interceptWith(ray);
     if (intercept != null) {
-      final Vector3D pointOfIntersection = Intercept.pointOfIntersection(ray,
-          intercept.time());
+      final Vector3D pointOfIntersection = intercept.pointOfIntersection();
       if (this.top.pointIsBelow(pointOfIntersection)
           && this.bottom.pointIsBelow(pointOfIntersection)) {
         possibleIntercepts.add(intercept);

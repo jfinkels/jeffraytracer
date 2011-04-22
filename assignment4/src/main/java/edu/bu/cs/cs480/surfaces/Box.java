@@ -83,43 +83,42 @@ public class Box extends ConcreteSurfaceObject {
   public Intercept interceptWith(final Ray ray) {
     final List<Intercept> possibleIntercepts = new ArrayList<Intercept>();
     Intercept intercept = this.front.interceptWith(ray);
-    Vector3D pointOfIntersection = Intercept.pointOfIntersection(ray,
-        intercept.time());
+    Vector3D pointOfIntersection = intercept.pointOfIntersection();
     if (isBetween(pointOfIntersection, this.left, this.right, this.top,
         this.bottom)) {
       possibleIntercepts.add(intercept);
     }
 
     intercept = this.back.interceptWith(ray);
-    pointOfIntersection = Intercept.pointOfIntersection(ray, intercept.time());
+    pointOfIntersection = intercept.pointOfIntersection();
     if (isBetween(pointOfIntersection, this.left, this.right, this.top,
         this.bottom)) {
       possibleIntercepts.add(intercept);
     }
 
     intercept = this.top.interceptWith(ray);
-    pointOfIntersection = Intercept.pointOfIntersection(ray, intercept.time());
+    pointOfIntersection = intercept.pointOfIntersection();
     if (isBetween(pointOfIntersection, this.left, this.right, this.front,
         this.back)) {
       possibleIntercepts.add(intercept);
     }
 
     intercept = this.bottom.interceptWith(ray);
-    pointOfIntersection = Intercept.pointOfIntersection(ray, intercept.time());
+    pointOfIntersection = intercept.pointOfIntersection();
     if (isBetween(pointOfIntersection, this.left, this.right, this.front,
         this.back)) {
       possibleIntercepts.add(intercept);
     }
 
     intercept = this.left.interceptWith(ray);
-    pointOfIntersection = Intercept.pointOfIntersection(ray, intercept.time());
+    pointOfIntersection = intercept.pointOfIntersection();
     if (isBetween(pointOfIntersection, this.top, this.bottom, this.front,
         this.back)) {
       possibleIntercepts.add(intercept);
     }
 
     intercept = this.right.interceptWith(ray);
-    pointOfIntersection = Intercept.pointOfIntersection(ray, intercept.time());
+    pointOfIntersection = intercept.pointOfIntersection();
     if (isBetween(pointOfIntersection, this.top, this.bottom, this.front,
         this.back)) {
       possibleIntercepts.add(intercept);

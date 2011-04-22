@@ -163,6 +163,7 @@ public class TracerEnvironment {
         if (intercepts.get(ray) == null) {
           result.setRGB(x, y, BACKGROUND_COLOR);
         } else {
+          final int color = computeColor(intercepts.get(ray));
           result.setRGB(x, y, 0x00FFFF);
         }
       }
@@ -171,6 +172,10 @@ public class TracerEnvironment {
     return result;
   }
 
+  private int computeColor(final Intercept intercept) {
+    return 0x000000;
+  }
+  
   /**
    * Sets the virtual camera through which the scene is viewed.
    * 

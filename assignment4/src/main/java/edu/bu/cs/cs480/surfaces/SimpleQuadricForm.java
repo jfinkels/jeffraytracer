@@ -16,10 +16,16 @@ import edu.bu.cs.cs480.Vector4D;
  */
 public abstract class SimpleQuadricForm extends ConcreteSurfaceObject {
 
-  private final Matrix4x4 matrix = new Matrix4x4();
+  private Matrix4x4 matrix = new Matrix4x4();
+  
   protected Matrix4x4 matrix() {
     return this.matrix;
   }
+  
+  protected void setMatrix(final Matrix4x4 matrix) {
+    this.matrix = matrix;
+  }
+  
   /*
    * (non-Javadoc)
    * 

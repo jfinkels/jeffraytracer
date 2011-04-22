@@ -3,7 +3,10 @@
  */
 package edu.bu.cs.cs480;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+
+import java.util.Random;
 
 import org.junit.Test;
 
@@ -50,6 +53,130 @@ public class Matrix4x4Test {
     assertEquals(4, vector.y(), 0);
     assertEquals(6, vector.z(), 0);
     assertEquals(8, vector.w(), 0);
+  }
+
+  /**
+   * Test method for {@link edu.bu.cs.cs480.Matrix4x4#transposed()}.
+   */
+  @Test
+  public void testTransposed() {
+    final Matrix4x4 matrix = new Matrix4x4();
+
+    for (int n = 0; n < 100; ++n) {
+      final Random r = new Random();
+      for (int i = 0; i < 4; ++i) {
+        for (int j = 0; j < 4; ++j) {
+          matrix.m[i][j] = r.nextInt(10);
+        }
+      }
+
+      final Matrix4x4 transpose = matrix.transposed();
+      for (int i = 0; i < 4; ++i) {
+        for (int j = 0; j < 4; ++j) {
+          assertEquals(matrix.m[i][j], transpose.m[j][i], 0);
+        }
+      }
+    }
+  }
+
+  /**
+   * Test method for
+   * {@link edu.bu.cs.cs480.Matrix4x4#product(edu.bu.cs.cs480.Matrix4x4)}.
+   */
+  @Test
+  public void testProductMatrix() {
+    final Matrix4x4 matrix1 = new Matrix4x4();
+    matrix1.set(0, 0, 2);
+    matrix1.set(1, 1, 2);
+    matrix1.set(2, 2, 2);
+    matrix1.set(3, 3, 2);
+
+    final Matrix4x4 matrix2 = new Matrix4x4();
+    matrix2.set(0, 0, 1);
+    matrix2.set(1, 1, 1);
+    matrix2.set(2, 2, 1);
+    matrix2.set(3, 3, 1);
+
+    Matrix4x4 result = matrix1.product(matrix2);
+    assertArrayEquals(matrix1.m, result.m);
+    result = matrix2.product(matrix1);
+    assertArrayEquals(matrix1.m, result.m);
+
+    matrix2.set(0, 3, 1);
+    matrix2.set(1, 3, 2);
+    matrix2.set(2, 3, 3);
+
+    result = matrix2.product(matrix1);
+    for (int i = 0; i < 4; ++i) {
+      for (int j = 0; j < 4; ++j) {
+        assertEquals(2 * matrix2.m[i][j], result.m[i][j], 0);
+      }
+    }
+
+    final Matrix4x4 matrix3 = Matrix4x4.identity();
+    matrix3.set(3, 3, -16);
+    final Matrix4x4 matrix4 = Matrix4x4.identity();
+    matrix4.set(0, 3, -1);
+    matrix4.set(1, 3, -2);
+    matrix4.set(2, 3, -3);
+
+    result = matrix3.product(matrix4);
+
+    // first row
+    assertEquals(1, result.get(0, 0), 0);
+    assertEquals(0, result.get(0, 1), 0);
+    assertEquals(0, result.get(0, 2), 0);
+    assertEquals(-1, result.get(0, 3), 0);
+
+    // second row
+    assertEquals(0, result.get(1, 0), 0);
+    assertEquals(1, result.get(1, 1), 0);
+    assertEquals(0, result.get(1, 2), 0);
+    assertEquals(-2, result.get(1, 3), 0);
+
+    // third row
+    assertEquals(0, result.get(2, 0), 0);
+    assertEquals(0, result.get(2, 1), 0);
+    assertEquals(1, result.get(2, 2), 0);
+    assertEquals(-3, result.get(2, 3), 0);
+
+    // fourth row
+    assertEquals(0, result.get(3, 0), 0);
+    assertEquals(0, result.get(3, 1), 0);
+    assertEquals(0, result.get(3, 2), 0);
+    assertEquals(-16, result.get(3, 3), 0);
+
+    final Matrix4x4 matrix5 = Matrix4x4.identity();
+    matrix5.set(3, 0, -1);
+    matrix5.set(3, 1, -2);
+    matrix5.set(3, 2, -3);
+    
+    result = matrix5.product(result);
+    
+    
+    // first row
+    assertEquals(1, result.get(0, 0), 0);
+    assertEquals(0, result.get(0, 1), 0);
+    assertEquals(0, result.get(0, 2), 0);
+    assertEquals(-1, result.get(0, 3), 0);
+
+    // second row
+    assertEquals(0, result.get(1, 0), 0);
+    assertEquals(1, result.get(1, 1), 0);
+    assertEquals(0, result.get(1, 2), 0);
+    assertEquals(-2, result.get(1, 3), 0);
+
+    // third row
+    assertEquals(0, result.get(2, 0), 0);
+    assertEquals(0, result.get(2, 1), 0);
+    assertEquals(1, result.get(2, 2), 0);
+    assertEquals(-3, result.get(2, 3), 0);
+
+    // fourth row
+    assertEquals(-1, result.get(3, 0), 0);
+    assertEquals(-2, result.get(3, 1), 0);
+    assertEquals(-3, result.get(3, 2), 0);
+    assertEquals(1 + 4 + 9 - 16, result.get(3, 3), 0);
   }
 
 }

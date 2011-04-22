@@ -9,6 +9,7 @@ package edu.bu.cs.cs480;
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
+@Immutable
 public class Vector4D {
   private final double w;
   private final double x;
@@ -72,8 +73,8 @@ public class Vector4D {
   }
 
   /**
-   * Returns a new Vector4D object which is the component-wise sum of this point
-   * with the specified other point.
+   * Returns a new Vector4D object which is the component-wise sum of this
+   * point with the specified other point.
    * 
    * @param that
    *          The point with which to sum this one.

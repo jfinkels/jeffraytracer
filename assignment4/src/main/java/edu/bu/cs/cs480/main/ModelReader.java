@@ -26,11 +26,9 @@ import edu.bu.cs.cs480.surfaces.Box;
 import edu.bu.cs.cs480.surfaces.ConstructiveSolidGeometry;
 import edu.bu.cs.cs480.surfaces.Cylinder;
 import edu.bu.cs.cs480.surfaces.Ellipsoid;
-import edu.bu.cs.cs480.surfaces.Intersection;
 import edu.bu.cs.cs480.surfaces.Orientation;
 import edu.bu.cs.cs480.surfaces.Sphere;
 import edu.bu.cs.cs480.surfaces.SurfaceObject;
-import edu.bu.cs.cs480.surfaces.SymmetricDifference;
 import edu.bu.cs.cs480.surfaces.Union;
 
 /**

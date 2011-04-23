@@ -141,8 +141,10 @@ public class Cylinder extends SimpleQuadricForm implements Directed {
         -this.direction.dotProduct(pointOnTopPlane));
     this.bottom = new Plane(this.direction.scaledBy(-1),
         this.direction.dotProduct(pointOnBottomPlane));
+    
     this.top.compile();
     this.bottom.compile();
+    
     super.compile();
   }
 

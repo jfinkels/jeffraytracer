@@ -62,7 +62,7 @@ public class TracerEnvironment {
   }
 
   /**
-   * Generates the ray which would start at pixel location (i, j) in the
+   * Generates the ray which would start at pixel location (row, column) in the
    * viewport based on the resolution, the viewport size, and the camera's
    * measurements.
    * 
@@ -74,14 +74,14 @@ public class TracerEnvironment {
    * @param j
    *          The vertical pixel location in the viewport at which the ray
    *          originates.
-   * @return The ray which would start at pixel location (i, j) in the
+   * @return The ray which would start at pixel location (row, column) in the
    *         viewport.
    */
-  protected Ray generateRay(final int i, final int j) {
+  protected Ray generateRay(final int row, final int column) {
     // compute location of pixel on view plane
-    final double du = (i - (this.viewport.width() / 2) + 1)
+    final double du = (column - (this.viewport.width() / 2.0) + 1)
         * this.resolution.xResolution();
-    final double dv = (-j + (this.viewport.height() / 2) - 1)
+    final double dv = -(row - (this.viewport.height() / 2.0) + 1)
         * this.resolution.yResolution();
 
     // get the vectors which define the camera's basis
@@ -175,7 +175,7 @@ public class TracerEnvironment {
   private int computeColor(final Intercept intercept) {
     return 0x000000;
   }
-  
+
   /**
    * Sets the virtual camera through which the scene is viewed.
    * 

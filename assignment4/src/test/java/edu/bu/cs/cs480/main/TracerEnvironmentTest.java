@@ -1,90 +1,108 @@
 /**
- * 
+ * TracerEnvironment.java - test for the TracerEnvironment class
  */
 package edu.bu.cs.cs480.main;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
 import org.junit.Test;
 
+import edu.bu.cs.cs480.Ray;
 import edu.bu.cs.cs480.TestUtils;
+import edu.bu.cs.cs480.Vector3D;
+import edu.bu.cs.cs480.camera.PerspectiveCamera;
+import edu.bu.cs.cs480.camera.Resolution;
+import edu.bu.cs.cs480.camera.Viewport;
 
 /**
- * @author jeff
- *
+ * Test for the TracerEnvironment class.
+ * 
+ * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
+ * @since Spring 2011
  */
 public class TracerEnvironmentTest {
 
-  /**
-   * Test method for {@link edu.bu.cs.cs480.main.TracerEnvironment#addLight(edu.bu.cs.cs480.Light)}.
-   */
-  @Test
-  public void testAddLight() {
-    fail("Not yet implemented");
-  }
-
-  /**
-   * Test method for {@link edu.bu.cs.cs480.main.TracerEnvironment#addSurfaceObject(edu.bu.cs.cs480.surfaces.SurfaceObject)}.
-   */
-  @Test
-  public void testAddSurfaceObject() {
-    fail("Not yet implemented");
-  }
+  /** The directory containing the data files for testing. */
+  public static final String DATA_DIR = "src/test/resources/edu/bu/cs/cs480/";
+  /** The directory to which to write generated image files. */
+  public static final String OUTPUT_DIR = "target/";
+  /** The type of input model files. */
+  public static final String INPUT_FILE_TYPE = "dat";
+  /** The type of output image files. */
+  public static final String OUTPUT_FILE_TYPE = "png";
+  /** The list of files to test. */
+  public static final List<String> TEST_FILES = Arrays.asList("singlesphere",
+      "singlecylinder", "singleellipsoid", "singlebox", "sphereTest");
 
   /**
    * Test method for {@link edu.bu.cs.cs480.main.TracerEnvironment#render()}.
    */
   @Test
   public void testRender() {
-    try {
-      final TracerEnvironment e = ModelReader.fromFile("src/test/resources/edu/bu/cs/cs480/singlecylinder.dat");
-      final File outputFile = new File("target/test.png");
-      ImageIO.write(e.render(), "png", outputFile);
-    } catch (final FileNotFoundException exception) {
-      TestUtils.fail(exception);
-    } catch (final FileFormatException exception) {
-      TestUtils.fail(exception);
-    } catch (final IOException exception) {
-      TestUtils.fail(exception);
+    for (final String dataFile : TEST_FILES) {
+      try {
+        final TracerEnvironment e = ModelReader.fromFile(DATA_DIR + dataFile
+            + "." + INPUT_FILE_TYPE);
+        final File outputFile = new File(OUTPUT_DIR + dataFile + "."
+            + OUTPUT_FILE_TYPE);
+        ImageIO.write(e.render(), OUTPUT_FILE_TYPE, outputFile);
+
+      } catch (final FileNotFoundException exception) {
+        TestUtils.fail(exception);
+      } catch (final FileFormatException exception) {
+        TestUtils.fail(exception);
+      } catch (final IOException exception) {
+        TestUtils.fail(exception);
+      }
     }
   }
 
   /**
-   * Test method for {@link edu.bu.cs.cs480.main.TracerEnvironment#generateRay(int, int)}.
+   * Test method for
+   * {@link edu.bu.cs.cs480.main.TracerEnvironment#generateRay(int, int)}.
    */
   @Test
   public void testGenerateRay() {
-    fail("Not yet implemented");
-  }
+    final Viewport viewport = new Viewport();
+    viewport.setWidth(4);
+    viewport.setHeight(4);
 
-  /**
-   * Test method for {@link edu.bu.cs.cs480.main.TracerEnvironment#setCamera(edu.bu.cs.cs480.camera.Camera)}.
-   */
-  @Test
-  public void testSetCamera() {
-    fail("Not yet implemented");
-  }
+    final Resolution resolution = new Resolution();
+    resolution.setxResolution(1);
+    resolution.setyResolution(1);
 
-  /**
-   * Test method for {@link edu.bu.cs.cs480.main.TracerEnvironment#setResolution(edu.bu.cs.cs480.camera.Resolution)}.
-   */
-  @Test
-  public void testSetResolution() {
-    fail("Not yet implemented");
-  }
+    final PerspectiveCamera camera = new PerspectiveCamera();
+    camera.setPosition(new Vector3D(0, 0, -1));
+    camera.setDirection(new Vector3D(0, 0, 1));
+    camera.setUp(new Vector3D(0, 1, 0));
+    camera.setFocalLength(1);
 
-  /**
-   * Test method for {@link edu.bu.cs.cs480.main.TracerEnvironment#setViewport(edu.bu.cs.cs480.camera.Viewport)}.
-   */
-  @Test
-  public void testSetViewport() {
-    fail("Not yet implemented");
+    final TracerEnvironment e = new TracerEnvironment();
+    e.setCamera(camera);
+    e.setResolution(resolution);
+    e.setViewport(viewport);
+
+    final double[][][] expected = {
+        { { -1, 1, 0 }, { 0, 1, 0 }, { 1, 1, 0 }, { 2, 1, 0 } },
+        { { -1, 0, 0 }, { 0, 0, 0 }, { 1, 0, 0 }, { 2, 0, 0 } },
+        { { -1, -1, 0 }, { 0, -1, 0 }, { 1, -1, 0 }, { 2, -1, 0 } },
+        { { -1, -2, 0 }, { 0, -2, 0 }, { 1, -2, 0 }, { 2, -2, 0 } } };
+    for (int row = 0; row < 4; ++row) {
+      for (int col = 0; col < 4; ++col) {
+        final Ray ray = e.generateRay(row, col);
+        assertTrue(ray.position().equals(
+            new Vector3D(expected[row][col][0], expected[row][col][1],
+                expected[row][col][2])));
+      }
+    }
   }
 
 }

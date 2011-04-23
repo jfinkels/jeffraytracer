@@ -21,6 +21,9 @@ class Plane extends UnrotatedSimpleQuadricForm {
   Plane(final Vector3D normal, final double d) {
     this.normal = normal;
     this.d = d;
+    // HACK set the position to 0, since the position is taken care of by the
+    // quadric form matrix
+    this.setPosition(new Vector3D(0, 0, 0));
   }
 
   /**

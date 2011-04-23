@@ -4,6 +4,7 @@
 package edu.bu.cs.cs480.surfaces;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -157,6 +158,12 @@ public class Box extends ConcreteSurfaceObject {
     // TODO are the front and back switched?
     this.front = forwardPlane(w, depth);
     this.back = backwardPlane(w, depth);
+
+    // compile each of the planes
+    for (final Plane plane : Arrays.asList(this.right, this.left, this.top,
+        this.bottom, this.front, this.back)) {
+      plane.compile();
+    }
   }
 
   private Plane forwardPlane(final Vector3D normal, final double size) {

@@ -6,6 +6,6 @@ light ID 0 pnt 	0 0 8 	0 0 -1	1 1 1 	1 0 0 	10	shadow_on
 
 mat ID 1 	0.5 0.5 1 	0.3 0.5 0.5 50 		0 1 0 
 
-obj cylinder ID 0 mat ID 1 		0 0 0  0 1 0   1 1
+obj box ID 0 mat ID 1 		0 0 0 	1 0 0  0 1 0 0 0 1 1.0 1.0 1.0
 
 render 0

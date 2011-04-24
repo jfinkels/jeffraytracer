@@ -28,6 +28,10 @@ public class FloatColor extends Color {
   /** The value of the red component of this color as a float between 0 and 1. */
   private final float red;
 
+  public Vector3D toVector() {
+    return new Vector3D(this.red, this.green, this.blue);
+  }
+
   /**
    * Creates a FloatColor object with the same component values of the
    * specified Color object.
@@ -42,6 +46,10 @@ public class FloatColor extends Color {
     this.red = components[0];
     this.green = components[1];
     this.blue = components[2];
+  }
+
+  public FloatColor(final Vector3D components) {
+    this(components.x(), components.y(), components.z());
   }
 
   /**
@@ -60,6 +68,18 @@ public class FloatColor extends Color {
    */
   public FloatColor(final float red, final float green, final float blue) {
     this(new Color(red, green, blue));
+  }
+
+  /**
+   * Warning: double values will be cast to floats, so loss of precision is
+   * possible.
+   * 
+   * @param x
+   * @param y
+   * @param z
+   */
+  public FloatColor(double x, double y, double z) {
+    this((float) x, (float) y, (float) z);
   }
 
   /**
@@ -98,5 +118,22 @@ public class FloatColor extends Color {
    */
   public float red() {
     return this.red;
+  }
+
+  /**
+   * @param color
+   * @return
+   */
+  public FloatColor sumWith(final FloatColor that) {
+    return new FloatColor(this.red + that.red, this.green + that.green,
+        this.blue + that.blue);
+  }
+
+  /**
+   * @param shade
+   * @return
+   */
+  public static int toRGB(final Vector3D shade) {
+    return new FloatColor(shade).getRGB();
   }
 }

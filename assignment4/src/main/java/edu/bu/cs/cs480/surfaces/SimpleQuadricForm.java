@@ -117,7 +117,23 @@ public abstract class SimpleQuadricForm extends ConcreteSurfaceObject {
     }
     final double time = Math.min(pair.left(), pair.right());
 
-    return new Intercept(ray, time, this);
+    return new Intercept(ray, time, this, this.normal(Intercept
+        .pointOfIntersection(ray, time)));
+  }
+
+  /**
+   * Returns the unit vector normal to the surface at the specified point.
+   * 
+   * Pre-condition: the quadratic matrix which defines this surface object has
+   * already been built by a call to the {@link #compile()} method.
+   * 
+   * @param point
+   * 
+   * @return
+   */
+  private Vector3D normal(final Vector3D point) {
+    return this.matrix.product(new Vector4D(point, 1)).homogeneized()
+        .normalized();
   }
 
   /**

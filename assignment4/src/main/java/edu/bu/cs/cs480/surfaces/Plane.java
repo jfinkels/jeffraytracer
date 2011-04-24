@@ -25,7 +25,7 @@ class Plane extends PositionableTracerObject implements SurfaceObject {
    * coefficient (in the plane equation ax + by + cz + d = 0).
    * 
    * @param normal
-   *          The normal to this plane.
+   *          The unit vector normal to this plane.
    * @param d
    *          The scalar coefficient.
    */
@@ -64,7 +64,8 @@ class Plane extends PositionableTracerObject implements SurfaceObject {
     final double temp1 = this.normal.dotProduct(ray.position());
     final double temp2 = this.normal.dotProduct(ray.direction());
     final double time = -(this.d + temp1) / (temp2);
-    final Intercept result = new Intercept(ray, time, containingObject);
+    final Intercept result = new Intercept(ray, time, containingObject,
+        this.normal);
     return result;
   }
 
@@ -92,8 +93,11 @@ class Plane extends PositionableTracerObject implements SurfaceObject {
    */
   @Override
   public boolean outside(final Vector3D point) {
-    return this.normal.dotProduct(point) + this.d > 0;
+    return this.normal.dotProduct(point) + this.d > TOLERANCE;
   }
+
+  // TODO extract this to a superclass
+  public static final double TOLERANCE = Double.MIN_VALUE;
 
   /**
    * Returns {@code true} if and only if the specified point is below this
@@ -106,7 +110,7 @@ class Plane extends PositionableTracerObject implements SurfaceObject {
    */
   @Override
   public boolean inside(final Vector3D point) {
-    return this.normal.dotProduct(point) + this.d < 0;
+    return this.normal.dotProduct(point) + this.d < -TOLERANCE;
   }
 
   /**

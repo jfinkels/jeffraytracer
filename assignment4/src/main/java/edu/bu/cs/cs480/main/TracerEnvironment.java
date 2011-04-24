@@ -13,6 +13,8 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import edu.bu.cs.cs480.AmbientLight;
+import edu.bu.cs.cs480.FloatColor;
 import edu.bu.cs.cs480.Intercept;
 import edu.bu.cs.cs480.Light;
 import edu.bu.cs.cs480.Ray;
@@ -20,6 +22,7 @@ import edu.bu.cs.cs480.Vector3D;
 import edu.bu.cs.cs480.camera.Camera;
 import edu.bu.cs.cs480.camera.Resolution;
 import edu.bu.cs.cs480.camera.Viewport;
+import edu.bu.cs.cs480.surfaces.ConcreteSurfaceObject;
 import edu.bu.cs.cs480.surfaces.SurfaceObject;
 
 /**
@@ -42,6 +45,19 @@ public class TracerEnvironment {
 
   /** The dimensions of the viewport in which the scene is displayed. */
   private Viewport viewport = null;
+
+  /**
+   * Adds the specified ambient light to the scene.
+   * 
+   * The light must also be added to the list of all lights, by calling the
+   * {@link #addLight(Light)} method.
+   * 
+   * @param light
+   *          The ambient light to add.
+   */
+  public void addAmbientLight(final AmbientLight light) {
+    this.ambientLights.add(light);
+  }
 
   /**
    * Adds the specified light to the scene.
@@ -162,12 +178,8 @@ public class TracerEnvironment {
     for (int y = 0; y < height; ++y) {
       for (int x = 0; x < width; ++x) {
         final Ray ray = rays[y * width + x];
-        if (intercepts.get(ray) == null) {
-          result.setRGB(x, y, BACKGROUND_COLOR);
-        } else {
-          final int color = computeColor(intercepts.get(ray));
-          result.setRGB(x, y, color);
-        }
+        final int color = this.trace(intercepts.get(ray), 1);
+        result.setRGB(x, y, color);
       }
     }
 
@@ -176,16 +188,87 @@ public class TracerEnvironment {
 
   /** The logger for this class. */
   private static final Logger LOG = Logger.getLogger(TracerEnvironment.class);
+  /** The maximum depth in the ray tree. */
+  public static final int MAX_DEPTH = 3;
 
   /**
    * Computes the color at this intercept.
    * 
+   * Note: in the provided pseudocode this was called RT_trace.
+   * 
    * @param intercept
    *          The intercept for which to compute the color.
+   * @param depth
+   *          The current depth of recursion in the ray tree.
    * @return The color at this intercept.
    */
-  private int computeColor(final Intercept intercept) {
-    return 0x00FFFF;
+  private int trace(final Intercept intercept, final int depth) {
+    if (intercept == null) {
+      return BACKGROUND_COLOR;
+    }
+    return FloatColor.toRGB(this.shade(intercept, depth));
+  }
+
+  private List<AmbientLight> ambientLights = new ArrayList<AmbientLight>();
+
+  private Vector3D shade(final Intercept intercept, final int depth) {
+    // always apply the ambient lighting due to all the ambient lights
+    final Vector3D color = this.ambientColor();
+
+    // get the point of intersection which will be colored
+    final Vector3D point = intercept.pointOfIntersection();
+
+    // get the normal to the surface at the point of intersection
+    final Vector3D normal = intercept.normal();
+
+    // create a ray from the point of intersection to the light
+    final Ray shadowRay = new Ray();
+    shadowRay.setPosition(point);
+
+    for (final Light light : this.lights) {
+      // set the direction of the ray
+      final Vector3D direction = light.position().difference(point)
+          .normalized();
+      shadowRay.setDirection(direction);
+
+      // compute the cosine of the angle between the normal and the ray
+      final double dotProduct = normal.dotProduct(direction);
+
+      // if the light hits the point at an angle between -90 and 90
+      if (dotProduct > TOLERANCE) {
+
+        // determine if the point is not in shadow
+        if (!this.isShadowed(shadowRay)) {
+
+          light.attenuationCoefficients();
+        }
+      }
+    }
+
+    return color;
+  }
+
+  public static final double TOLERANCE = Double.MIN_VALUE;
+
+  private boolean isShadowed(final Ray ray) {
+    for (final SurfaceObject surfaceObject : this.surfaceObjects) {
+      // TODO don't we need to check if the object in between the point of
+      // intersection and the light is not transmissive?
+      // final ConcreteSurfaceObject object = (ConcreteSurfaceObject)
+      // surfaceObject;
+      if (surfaceObject.interceptWith(ray) != null) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private Vector3D ambientColor() {
+    Vector3D color = new Vector3D(0, 0, 0);
+    for (final AmbientLight light : this.ambientLights) {
+      color = color.sumWith(light.ambientColor());
+    }
+    return color;
   }
 
   /**

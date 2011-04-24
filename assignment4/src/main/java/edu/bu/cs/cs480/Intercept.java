@@ -28,9 +28,24 @@ public class Intercept implements Comparable<Intercept> {
    * @return The point on the surface object at which this intercept occurs.
    */
   public Vector3D pointOfIntersection() {
-    return this.ray.position().sumWith(
-        this.ray.direction().scaledBy(this.time));
+    return pointOfIntersection(this.ray, this.time);
   }
+
+  /**
+   * Gets the point on the surface object at which this intercept occurs given
+   * by the specified ray and time of intersection.
+   * 
+   * @return The point on the surface object at which this intercept occurs.
+   */
+  public static Vector3D pointOfIntersection(final Ray ray, final double time) {
+    return ray.position().sumWith(ray.direction().scaledBy(time));
+  }
+
+  public Vector3D normal() {
+    return this.normal;
+  }
+
+  private final Vector3D normal;
 
   /**
    * Instantiates this intercept with the specified surface object at the
@@ -43,12 +58,15 @@ public class Intercept implements Comparable<Intercept> {
    *          The time at which a ray intercepts the surface object.
    * @param surfaceObject
    *          The surface object which a ray intercepts.
+   * @param normal
+   *          The unit vector normal to the surface at the point of intersection.
    */
   public Intercept(final Ray ray, final double time,
-      final SurfaceObject surfaceObject) {
+      final SurfaceObject surfaceObject, final Vector3D normal) {
     this.ray = ray;
     this.time = time;
     this.surfaceObject = surfaceObject;
+    this.normal = normal;
   }
 
   /**

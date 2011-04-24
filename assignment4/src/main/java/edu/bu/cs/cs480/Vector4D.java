@@ -28,6 +28,10 @@ public class Vector4D {
     this.w = w;
   }
 
+  public Vector3D homogeneized() {
+    return new Vector3D(this.x / this.w, this.y / this.w, this.z / this.w);
+  }
+  
   public Vector4D(final Vector3D vector, final double w) {
     this(vector.x(), vector.y(), vector.z(), w);
   }

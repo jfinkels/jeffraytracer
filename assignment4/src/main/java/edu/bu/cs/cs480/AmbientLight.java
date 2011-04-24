@@ -10,5 +10,16 @@ package edu.bu.cs.cs480;
  * @since Spring 2011
  */
 public class AmbientLight extends Light {
-  // not yet implemented
+
+  public static final Vector3D AMBIENT_COEFFICIENTS = new Vector3D(0.1, 0.1,
+      0.1);
+
+  /**
+   * @return
+   */
+  public Vector3D ambientColor() {
+    return new Vector3D(this.color().red() * AMBIENT_COEFFICIENTS.x(), this
+        .color().green() * AMBIENT_COEFFICIENTS.y(), this.color().blue()
+        * AMBIENT_COEFFICIENTS.z());
+  }
 }

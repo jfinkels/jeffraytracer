@@ -9,7 +9,7 @@ package edu.bu.cs.cs480;
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
-public class Light extends PositionableTracerObject implements Directed,
+public abstract class Light extends PositionableTracerObject implements Directed,
     Colorable {
   /** The coefficients of attenuation of this light source. */
   private Vector3D attenuationCoefficients = null;
@@ -19,10 +19,9 @@ public class Light extends PositionableTracerObject implements Directed,
   private FloatColor color = null;
   /** The direction in which this light source points. */
   private Vector3D direction = null;
-
   /** Whether this light source casts a shadow. */
   private boolean shadow = false;
-
+  
   /**
    * Gets the attenuation coefficients of this light source.
    * 

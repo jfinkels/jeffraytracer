@@ -40,17 +40,28 @@ public class Matrix4x4Test {
   @Test
   public void testProduct() {
     // create a matrix which doubles vectors
-    final Matrix4x4 matrix = new Matrix4x4();
+    Matrix4x4 matrix = new Matrix4x4();
     matrix.set(0, 0, 2);
     matrix.set(1, 1, 2);
     matrix.set(2, 2, 2);
     matrix.set(3, 3, 2);
 
-    final Vector4D vector = matrix.product(new Vector4D(1, 2, 3, 4));
+    Vector4D vector = matrix.product(new Vector4D(1, 2, 3, 4));
     assertEquals(2, vector.x(), 0);
     assertEquals(4, vector.y(), 0);
     assertEquals(6, vector.z(), 0);
     assertEquals(8, vector.w(), 0);
+
+    matrix = new Matrix4x4();
+    matrix.set(2, 3, 0.5);
+    matrix.set(3, 2, 0.5);
+    matrix.set(3, 3, 4);
+
+    vector = matrix.product(new Vector4D(0, 0, 1, 0));
+    assertEquals(0, vector.x(), 0);
+    assertEquals(0, vector.y(), 0);
+    assertEquals(0, vector.z(), 0);
+    assertEquals(.5, vector.w(), 0);
   }
 
   /**
@@ -60,7 +71,7 @@ public class Matrix4x4Test {
   public void testTransposed() {
     for (int n = 0; n < 100; ++n) {
       final Matrix4x4 matrix = TestUtils.randomMatrix();
-      
+
       final Matrix4x4 transpose = matrix.transposed();
       for (int i = 0; i < 4; ++i) {
         for (int j = 0; j < 4; ++j) {
@@ -141,10 +152,9 @@ public class Matrix4x4Test {
     matrix5.set(3, 0, -1);
     matrix5.set(3, 1, -2);
     matrix5.set(3, 2, -3);
-    
+
     result = matrix5.product(result);
-    
-    
+
     // first row
     assertEquals(1, result.get(0, 0), 0);
     assertEquals(0, result.get(0, 1), 0);

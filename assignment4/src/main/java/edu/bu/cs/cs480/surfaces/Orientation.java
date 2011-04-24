@@ -3,6 +3,7 @@
  */
 package edu.bu.cs.cs480.surfaces;
 
+import edu.bu.cs.cs480.Immutable;
 import edu.bu.cs.cs480.Vector3D;
 
 /**
@@ -11,7 +12,12 @@ import edu.bu.cs.cs480.Vector3D;
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
+@Immutable
 public class Orientation {
+  /** The standard orthonormal Euclidean basis in three dimensions. */
+  public static final Orientation STANDARD_BASIS = new Orientation(
+      new Vector3D(1, 0, 0), new Vector3D(0, 1, 0), new Vector3D(0, 0, 1));
+
   /** The u vector. */
   private final Vector3D u;
   /** The v vector. */

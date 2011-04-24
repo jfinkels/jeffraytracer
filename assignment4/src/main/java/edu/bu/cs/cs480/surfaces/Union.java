@@ -8,6 +8,7 @@ import java.util.Collections;
 
 import edu.bu.cs.cs480.Intercept;
 import edu.bu.cs.cs480.Ray;
+import edu.bu.cs.cs480.Vector3D;
 
 /**
  * The union of two surface objects.
@@ -32,7 +33,12 @@ public class Union extends ConstructiveSolidGeometry {
     super(object1, object2);
   }
 
-  /* (non-Javadoc)
+  /**
+   * {@inheritDoc}
+   * 
+   * @param ray
+   *          {@inheritDoc}
+   * @return {@inheritDoc}
    * @see edu.bu.cs.cs480.surfaces.SurfaceObject#interceptWith(edu.bu.cs.cs480.Ray)
    */
   @Override
@@ -40,6 +46,32 @@ public class Union extends ConstructiveSolidGeometry {
     final Intercept intercept1 = this.object1().interceptWith(ray);
     final Intercept intercept2 = this.object2().interceptWith(ray);
     return Collections.min(Arrays.asList(intercept1, intercept2));
+  }
+
+  /**
+   * {@inheritDoc}
+   * 
+   * @param point
+   *          {@inheritDoc}
+   * @return {@inheritDoc}
+   * @see edu.bu.cs.cs480.surfaces.SurfaceObject#inside(edu.bu.cs.cs480.Vector3D)
+   */
+  @Override
+  public boolean inside(final Vector3D point) {
+    return this.object1().inside(point) && this.object2().inside(point);
+  }
+
+  /**
+   * {@inheritDoc}
+   * 
+   * @param point
+   *          {@inheritDoc}
+   * @return {@inheritDoc}
+   * @see edu.bu.cs.cs480.surfaces.SurfaceObject#outside(edu.bu.cs.cs480.Vector3D)
+   */
+  @Override
+  public boolean outside(final Vector3D point) {
+    return this.object1().outside(point) && this.object2().outside(point);
   }
 
 }

@@ -22,11 +22,14 @@ public class Intercept implements Comparable<Intercept> {
   /**
    * Gets the point on the surface object at which this intercept occurs.
    * 
+   * Pre-condition: the {@link #ray} object specified in the constructor of
+   * this class has not changed position or direction.
+   * 
    * @return The point on the surface object at which this intercept occurs.
    */
   public Vector3D pointOfIntersection() {
-    return this.ray.position()
-        .sumWith(this.ray.direction().scaledBy(this.time));
+    return this.ray.position().sumWith(
+        this.ray.direction().scaledBy(this.time));
   }
 
   /**
@@ -34,7 +37,8 @@ public class Intercept implements Comparable<Intercept> {
    * specified time.
    * 
    * @param ray
-   *          The ray which intercepts the surface object at the specified time.
+   *          The ray which intercepts the surface object at the specified
+   *          time.
    * @param time
    *          The time at which a ray intercepts the surface object.
    * @param surfaceObject

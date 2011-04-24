@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import edu.bu.cs.cs480.Intercept;
 import edu.bu.cs.cs480.Light;
 import edu.bu.cs.cs480.Ray;
@@ -119,11 +121,11 @@ public class TracerEnvironment {
 
     // first create the rays and initialize them with the appropriate computed
     // origin and direction based on the camera type and measurements
-    System.out.println("Generating primary rays...");
+    LOG.debug("Generating primary rays...");
     final Ray[] rays = new Ray[width * height];
     for (int y = 0; y < height; ++y) {
       for (int x = 0; x < width; ++x) {
-        rays[y * width + x] = generateRay(x, y);
+        rays[y * width + x] = generateRay(y, x);
       }
     }
 
@@ -134,7 +136,7 @@ public class TracerEnvironment {
     }
 
     // compute the min intercept for each ray
-    System.out.println("Computing min intercepts for each ray...");
+    LOG.debug("Computing min intercepts for each ray...");
     final Map<Ray, Intercept> intercepts = new HashMap<Ray, Intercept>();
     for (final Ray ray : rays) {
       // compute all intersections with surface objects
@@ -154,7 +156,7 @@ public class TracerEnvironment {
     }
 
     // draw the intercept on an image
-    System.out.println("Drawing from primary rays...");
+    LOG.debug("Casting primary rays...");
     final BufferedImage result = new BufferedImage(width, height,
         BufferedImage.TYPE_INT_RGB);
     for (int y = 0; y < height; ++y) {
@@ -164,7 +166,7 @@ public class TracerEnvironment {
           result.setRGB(x, y, BACKGROUND_COLOR);
         } else {
           final int color = computeColor(intercepts.get(ray));
-          result.setRGB(x, y, 0x00FFFF);
+          result.setRGB(x, y, color);
         }
       }
     }
@@ -172,8 +174,18 @@ public class TracerEnvironment {
     return result;
   }
 
+  /** The logger for this class. */
+  private static final Logger LOG = Logger.getLogger(TracerEnvironment.class);
+
+  /**
+   * Computes the color at this intercept.
+   * 
+   * @param intercept
+   *          The intercept for which to compute the color.
+   * @return The color at this intercept.
+   */
   private int computeColor(final Intercept intercept) {
-    return 0x000000;
+    return 0x00FFFF;
   }
 
   /**

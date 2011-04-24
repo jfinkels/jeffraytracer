@@ -6,6 +6,7 @@ package edu.bu.cs.cs480.surfaces;
 import edu.bu.cs.cs480.Identifiable;
 import edu.bu.cs.cs480.Intercept;
 import edu.bu.cs.cs480.Ray;
+import edu.bu.cs.cs480.Vector3D;
 
 /**
  * A marker interface for surface objects which can be rendered in a scene.
@@ -14,6 +15,27 @@ import edu.bu.cs.cs480.Ray;
  * @since Spring 2011
  */
 public interface SurfaceObject extends Identifiable {
+
+  /**
+   * Computes and stores the matrix or matrices which defines or define this
+   * object, so that many the object can be tested for intersection with many
+   * rays without having to recompute the matrix.
+   */
+  void compile();
+
+  /**
+   * Returns {@code true} if and only if the specified point is inside this
+   * object.
+   * 
+   * Pre-condition: the quadratic matrix which defines this surface object has
+   * already been built by a call to the {@link #compile()} method.
+   * 
+   * @param point
+   *          The point to test.
+   * @return {@code true} if and only if the specified point is inside this
+   *         object.
+   */
+  boolean inside(final Vector3D point);
 
   /**
    * Get the intercept of the specified ray and this surface object, or
@@ -30,9 +52,16 @@ public interface SurfaceObject extends Identifiable {
   Intercept interceptWith(final Ray ray);
 
   /**
-   * Computes and stores the matrix or matrices which defines or define this
-   * object, so that many the object can be tested for intersection with many
-   * rays without having to recompute the matrix.
+   * Returns {@code true} if and only if the specified point is outside this
+   * object.
+   * 
+   * Pre-condition: the quadratic matrix which defines this surface object has
+   * already been built by a call to the {@link #compile()} method.
+   * 
+   * @param point
+   *          The point to test.
+   * @return {@code true} if and only if the specified point is outside this
+   *         object.
    */
-  void compile();
+  boolean outside(final Vector3D point);
 }

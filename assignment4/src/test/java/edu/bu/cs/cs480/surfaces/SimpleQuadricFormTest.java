@@ -92,7 +92,7 @@ public class SimpleQuadricFormTest {
     this.s.setPosition(new Vector3D(1, 2, 3));
 
     this.s.compile();
-    System.out.println(this.s.matrix());
+
     // first row
     assertEquals(1, this.s.matrix().get(0, 0), 0);
     assertEquals(0, this.s.matrix().get(0, 1), 0);

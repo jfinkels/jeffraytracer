@@ -38,27 +38,6 @@ public class Vector4D {
   }
 
   /**
-   * Computes the norm of this vector.
-   * 
-   * @return The norm of this vector.
-   */
-  public double norm() {
-    return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
-  }
-
-  /**
-   * Returns a new unit vector whose direction is the same as the direction of
-   * this vector.
-   * 
-   * @return A new unit vector whose direction is the same as the direction of
-   *         this vector.
-   */
-  public Vector3D normalized() {
-    final double norm = this.norm();
-    return new Vector3D(this.x / norm, this.y / norm, this.z / norm);
-  }
-
-  /**
    * Returns a new vector which is the result of scaling this vector by the
    * specified scalar.
    * 
@@ -86,6 +65,7 @@ public class Vector4D {
         this.w + that.w);
   }
 
+  @Override
   public String toString() {
     return "Vector[" + this.x + ", " + this.y + ", " + this.z + ", " + this.w
         + "]";

@@ -8,6 +8,7 @@ import edu.bu.cs.cs480.Matrix4x4;
 import edu.bu.cs.cs480.Pair;
 import edu.bu.cs.cs480.QuadraticSolver;
 import edu.bu.cs.cs480.Ray;
+import edu.bu.cs.cs480.Vector3D;
 import edu.bu.cs.cs480.Vector4D;
 
 /**
@@ -17,6 +18,9 @@ import edu.bu.cs.cs480.Vector4D;
  * @since Spring 2011
  */
 public abstract class SimpleQuadricForm extends ConcreteSurfaceObject {
+  /** The tolerance for testing equality of double values. */
+  public static final double TOLERANCE = Double.MIN_VALUE;
+
   /**
    * The matrix assigned by the {@link #compile()} method, which represents the
    * quadric form of this surface object.
@@ -79,6 +83,19 @@ public abstract class SimpleQuadricForm extends ConcreteSurfaceObject {
   /**
    * {@inheritDoc}
    * 
+   * @param point
+   *          {@inheritDoc}
+   * @return {@inheritDoc}
+   */
+  @Override
+  public boolean inside(final Vector3D point) {
+    final Vector4D homogeneous = new Vector4D(point, 1);
+    return homogeneous.dotProduct(this.matrix.product(homogeneous)) < -TOLERANCE;
+  }
+
+  /**
+   * {@inheritDoc}
+   * 
    * @param ray
    *          {@inheritDoc}
    * @return {@inheritDoc}
@@ -129,6 +146,19 @@ public abstract class SimpleQuadricForm extends ConcreteSurfaceObject {
    */
   protected Matrix4x4 matrix() {
     return this.matrix;
+  }
+
+  /**
+   * {@inheritDoc}
+   * 
+   * @param point
+   *          {@inheritDoc}
+   * @return {@inheritDoc}
+   */
+  @Override
+  public boolean outside(final Vector3D point) {
+    final Vector4D homogeneous = new Vector4D(point, 1);
+    return homogeneous.dotProduct(this.matrix.product(homogeneous)) > TOLERANCE;
   }
 
   /**

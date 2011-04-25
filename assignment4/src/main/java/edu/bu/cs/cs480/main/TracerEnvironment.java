@@ -17,12 +17,12 @@ import edu.bu.cs.cs480.AmbientLight;
 import edu.bu.cs.cs480.FloatColor;
 import edu.bu.cs.cs480.Intercept;
 import edu.bu.cs.cs480.Light;
+import edu.bu.cs.cs480.Material;
 import edu.bu.cs.cs480.Ray;
 import edu.bu.cs.cs480.Vector3D;
 import edu.bu.cs.cs480.camera.Camera;
 import edu.bu.cs.cs480.camera.Resolution;
 import edu.bu.cs.cs480.camera.Viewport;
-import edu.bu.cs.cs480.surfaces.ConcreteSurfaceObject;
 import edu.bu.cs.cs480.surfaces.SurfaceObject;
 
 /**
@@ -212,8 +212,11 @@ public class TracerEnvironment {
   private List<AmbientLight> ambientLights = new ArrayList<AmbientLight>();
 
   private Vector3D shade(final Intercept intercept, final int depth) {
-    // always apply the ambient lighting due to all the ambient lights
-    final Vector3D color = this.ambientColor();
+    // get the material to shade
+    final Material material = intercept.surfaceObject().material();
+
+    // always apply at least the ambient lighting due to all the ambient lights
+    Vector3D resultColor = this.ambientColor();
 
     // get the point of intersection which will be colored
     final Vector3D point = intercept.pointOfIntersection();
@@ -226,9 +229,11 @@ public class TracerEnvironment {
     shadowRay.setPosition(point);
 
     for (final Light light : this.lights) {
-      // set the direction of the ray
-      final Vector3D direction = light.position().difference(point)
-          .normalized();
+      // get the vector from the point to the light
+      final Vector3D pointToLight = light.position().difference(point);
+
+      // set the direction of the ray as a unit vector
+      final Vector3D direction = pointToLight.normalized();
       shadowRay.setDirection(direction);
 
       // compute the cosine of the angle between the normal and the ray
@@ -240,12 +245,77 @@ public class TracerEnvironment {
         // determine if the point is not in shadow
         if (!this.isShadowed(shadowRay)) {
 
-          light.attenuationCoefficients();
+          // coefficient(?) of radial attenuation
+          final double radialAttenuation = light.radialAttenuation(point);
+
+          // coefficient(?) of angular attenuation
+          final double angularAttenuation = light.angularAttenuation(point);
+
+          // get the color of the light
+          final Vector3D lightColor = light.color().toVector();
+
+          // energy from diffuse reflection
+          // NOTE: dot product is guaranteed to be > 0 by conditional execution
+          final double diffuseScale = material.diffuseReflection() * dotProduct;
+          final Vector3D diffuseReflection = lightColor.scaledBy(diffuseScale);
+
+          // determine the energy from specular reflection
+          Vector3D specularReflection = Vector3D.ORIGIN;
+
+          // determine the cosine of the angle between the light's ray reflected
+          // through the normal and the light ray
+          final Vector3D reflected = reflected(direction, normal);
+          final double dotProduct2 = reflected.dotProduct(direction);
+
+          // if the light hits at an angle between -45 and 45
+          if (dotProduct2 > TOLERANCE) {
+            // energy from specular reflection
+            // NOTE: dot product 2 is guaranteed to be > 0 by conditional
+            // execution
+            final double specularScale = material.specularReflection()
+                * Math.pow(dotProduct2, material.specularExponent());
+            specularReflection = lightColor.scaledBy(specularScale);
+          }
+
+          // add the total energy due to this light source to the color of this
+          // point on the surface object
+          resultColor = resultColor.sumWith(diffuseReflection.sumWith(
+              specularReflection).scaledBy(
+              radialAttenuation * angularAttenuation));
         }
       }
     }
 
-    return color;
+    return boundColor(resultColor);
+  }
+
+  /**
+   * Return the component-wise minimum of the specified color and the maximum
+   * color as specified in {@link #MAX_COLOR}.
+   * 
+   * @param color
+   *          The color to bound.
+   * @return The component-wise minimum of the specified color and the maximum
+   *         color as specified in {@link #MAX_COLOR}.
+   */
+  private static Vector3D boundColor(final Vector3D color) {
+    return new Vector3D(Math.min(MAX_COLOR.x(), color.x()), Math.min(
+        MAX_COLOR.y(), color.y()), Math.min(MAX_COLOR.z(), color.z()));
+  }
+
+  public static final Vector3D MAX_COLOR = new Vector3D(1, 1, 1);
+
+  /**
+   * Returns the reflection of the specified ray through the specified normal.
+   * 
+   * @param ray
+   *          The ray to reflect.
+   * @param normal
+   *          A unit vector originating at the same point as the ray.
+   * @return The reflection of the specified ray through the specified normal.
+   */
+  private static Vector3D reflected(final Vector3D ray, final Vector3D normal) {
+    return normal.scaledBy(normal.dotProduct(ray) * 2).difference(ray);
   }
 
   public static final double TOLERANCE = Double.MIN_VALUE;

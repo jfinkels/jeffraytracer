@@ -3,7 +3,7 @@
  */
 package edu.bu.cs.cs480;
 
-import edu.bu.cs.cs480.surfaces.SurfaceObject;
+import edu.bu.cs.cs480.surfaces.ConcreteSurfaceObject;
 
 /**
  * The intercept of a ray with a surface object at a specific time.
@@ -13,7 +13,7 @@ import edu.bu.cs.cs480.surfaces.SurfaceObject;
  */
 public class Intercept implements Comparable<Intercept> {
   /** The surface object which is intercepted by a ray. */
-  private final SurfaceObject surfaceObject;
+  private final ConcreteSurfaceObject surfaceObject;
   /** The time at which the ray intercepts the surface object. */
   private final double time;
   /** The ray which intercepts the surface object at a time. */
@@ -22,8 +22,8 @@ public class Intercept implements Comparable<Intercept> {
   /**
    * Gets the point on the surface object at which this intercept occurs.
    * 
-   * Pre-condition: the {@link #ray} object specified in the constructor of
-   * this class has not changed position or direction.
+   * Pre-condition: the {@link #ray} object specified in the constructor of this
+   * class has not changed position or direction.
    * 
    * @return The point on the surface object at which this intercept occurs.
    */
@@ -52,17 +52,17 @@ public class Intercept implements Comparable<Intercept> {
    * specified time.
    * 
    * @param ray
-   *          The ray which intercepts the surface object at the specified
-   *          time.
+   *          The ray which intercepts the surface object at the specified time.
    * @param time
    *          The time at which a ray intercepts the surface object.
    * @param surfaceObject
    *          The surface object which a ray intercepts.
    * @param normal
-   *          The unit vector normal to the surface at the point of intersection.
+   *          The unit vector normal to the surface at the point of
+   *          intersection.
    */
   public Intercept(final Ray ray, final double time,
-      final SurfaceObject surfaceObject, final Vector3D normal) {
+      final ConcreteSurfaceObject surfaceObject, final Vector3D normal) {
     this.ray = ray;
     this.time = time;
     this.surfaceObject = surfaceObject;
@@ -88,7 +88,7 @@ public class Intercept implements Comparable<Intercept> {
    * 
    * @return The surface object which a ray intercepts.
    */
-  public SurfaceObject surfaceObject() {
+  public ConcreteSurfaceObject surfaceObject() {
     return this.surfaceObject;
   }
 

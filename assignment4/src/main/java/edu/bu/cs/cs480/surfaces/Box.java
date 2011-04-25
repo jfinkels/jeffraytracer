@@ -73,7 +73,7 @@ public class Box extends ConcreteSurfaceObject {
   private Plane backwardPlane(final Vector3D normal, final double length) {
     final Vector3D pointOnPlane = this.position().sumWith(
         normal.scaledBy(-length / 2));
-    return new Plane(normal.scaledBy(-1), normal.dotProduct(pointOnPlane));
+    return new Plane(normal.scaledBy(-1), normal.dotProduct(pointOnPlane), this);
   }
 
   /**
@@ -102,8 +102,8 @@ public class Box extends ConcreteSurfaceObject {
     this.front = forwardPlane(w, depth);
     this.back = backwardPlane(w, depth);
 
-    this.allFaces = new Plane[] { this.right, this.left, this.top,
-        this.bottom, this.front, this.back };
+    this.allFaces = new Plane[] { this.right, this.left, this.top, this.bottom,
+        this.front, this.back };
     // compile each of the planes
     // NOTE: planes don't need to be compiled
     // for (final Plane plane : Arrays.asList(this.right, this.left, this.top,
@@ -138,7 +138,7 @@ public class Box extends ConcreteSurfaceObject {
   private Plane forwardPlane(final Vector3D normal, final double length) {
     final Vector3D pointOnPlane = this.position().sumWith(
         normal.scaledBy(length / 2));
-    return new Plane(normal, -normal.dotProduct(pointOnPlane));
+    return new Plane(normal, -normal.dotProduct(pointOnPlane), this);
   }
 
   /**
@@ -152,42 +152,42 @@ public class Box extends ConcreteSurfaceObject {
   @Override
   public Intercept interceptWith(final Ray ray) {
     final List<Intercept> possibleIntercepts = new ArrayList<Intercept>();
-    Intercept intercept = this.front.interceptWith(ray, this);
+    Intercept intercept = this.front.interceptWith(ray);
     Vector3D pointOfIntersection = intercept.pointOfIntersection();
     if (isBetween(pointOfIntersection, this.left, this.right, this.top,
         this.bottom)) {
       possibleIntercepts.add(intercept);
     }
 
-    intercept = this.back.interceptWith(ray, this);
+    intercept = this.back.interceptWith(ray);
     pointOfIntersection = intercept.pointOfIntersection();
     if (isBetween(pointOfIntersection, this.left, this.right, this.top,
         this.bottom)) {
       possibleIntercepts.add(intercept);
     }
 
-    intercept = this.top.interceptWith(ray, this);
+    intercept = this.top.interceptWith(ray);
     pointOfIntersection = intercept.pointOfIntersection();
     if (isBetween(pointOfIntersection, this.left, this.right, this.front,
         this.back)) {
       possibleIntercepts.add(intercept);
     }
 
-    intercept = this.bottom.interceptWith(ray, this);
+    intercept = this.bottom.interceptWith(ray);
     pointOfIntersection = intercept.pointOfIntersection();
     if (isBetween(pointOfIntersection, this.left, this.right, this.front,
         this.back)) {
       possibleIntercepts.add(intercept);
     }
 
-    intercept = this.left.interceptWith(ray, this);
+    intercept = this.left.interceptWith(ray);
     pointOfIntersection = intercept.pointOfIntersection();
     if (isBetween(pointOfIntersection, this.top, this.bottom, this.front,
         this.back)) {
       possibleIntercepts.add(intercept);
     }
 
-    intercept = this.right.interceptWith(ray, this);
+    intercept = this.right.interceptWith(ray);
     pointOfIntersection = intercept.pointOfIntersection();
     if (isBetween(pointOfIntersection, this.top, this.bottom, this.front,
         this.back)) {

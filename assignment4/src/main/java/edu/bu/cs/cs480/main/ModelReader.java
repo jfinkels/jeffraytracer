@@ -127,7 +127,13 @@ public class ModelReader {
       } else if (token.equals(VIEWPORT)) {
         result.setViewport(readViewport(input));
       } else if (token.equals(LIGHT)) {
-        result.addLight(readLight(input));
+        this.isAmbientLight = false;
+        final Light light = readLight(input);
+        if (this.isAmbientLight) {
+          result.addAmbientLight((AmbientLight) light);
+        } else {
+          result.addLight(light);
+        }
       } else if (token.equals(MATERIAL)) {
         materials.add(readMaterial(input));
       } else if (token.equals(OBJECT)) {
@@ -157,6 +163,8 @@ public class ModelReader {
     return result;
   }
 
+  private boolean ambientLight = false;
+  
   /**
    * Iterates over the specified list and returns the object with the specified
    * ID, or {@code null} if no such element exists in the list.
@@ -315,10 +323,10 @@ public class ModelReader {
     if (type.equals(UNION)) {
       result = new Union(leftObject, rightObject);
     } else if (type.equals(INTERSECTION)) {
-      //result = new Intersection(leftObject, rightObject);
+      // result = new Intersection(leftObject, rightObject);
       result = null;
     } else if (type.equals(SYMMETRIC_DIFFERENCE)) {
-      //result = new SymmetricDifference(leftObject, rightObject);
+      // result = new SymmetricDifference(leftObject, rightObject);
       result = null;
     } else {
       throw new FileFormatException("Do not understand CSG type \"" + type
@@ -439,10 +447,12 @@ public class ModelReader {
       light = new InfinityLight();
     } else if (lightType.equals(AMBIENT)) {
       light = new AmbientLight();
+      this.ambientLight = true;
     } else if (lightType.equals(POINT)) {
       light = new PointLight();
     } else {
-      throw new RuntimeException();
+      throw new RuntimeException("Do not understand light type " + lightType
+          + ".");
     }
 
     light.setId(id);

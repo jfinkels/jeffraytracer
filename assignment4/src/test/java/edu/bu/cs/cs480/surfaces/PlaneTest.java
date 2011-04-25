@@ -6,7 +6,7 @@ package edu.bu.cs.cs480.surfaces;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -29,7 +29,7 @@ public class PlaneTest {
    */
   @Test
   public void testInterceptWith() {
-    final Plane p = new Plane(new Vector3D(0, 0, 1), -4);
+    final Plane p = new Plane(new Vector3D(0, 0, 1), -4, null);
     final Ray r = new Ray();
     r.setPosition(Vector3D.ORIGIN);
     r.setDirection(new Vector3D(0, 0, 1));
@@ -37,7 +37,7 @@ public class PlaneTest {
     Intercept i = p.interceptWith(r);
     assertNotNull(i);
     assertEquals(4, i.time(), 0);
-    assertSame(p, i.surfaceObject());
+    assertNull(i.surfaceObject());
 
     r.setPosition(new Vector3D(0, 0, 10));
     r.setDirection(new Vector3D(0, 0, -1));
@@ -45,24 +45,23 @@ public class PlaneTest {
     i = p.interceptWith(r);
     assertNotNull(i);
     assertEquals(6, i.time(), 0);
-    assertSame(p, i.surfaceObject());
+    assertNull(i.surfaceObject());
 
     r.setPosition(Vector3D.ORIGIN);
     r.setDirection(new Vector3D(0, 1, 1).normalized());
     i = p.interceptWith(r);
     assertNotNull(i);
     assertEquals(4 * Math.sqrt(2), i.time(), 0);
-    assertSame(p, i.surfaceObject());
+    assertNull(i.surfaceObject());
   }
 
   /**
    * Test method for
-   * {@link edu.bu.cs.cs480.surfaces.Plane#inside(edu.bu.cs.cs480.Vector3D)}
-   * .
+   * {@link edu.bu.cs.cs480.surfaces.Plane#inside(edu.bu.cs.cs480.Vector3D)} .
    */
   @Test
   public void testPointIsBelow() {
-    final Plane p = new Plane(new Vector3D(0, 0, 1), -1);
+    final Plane p = new Plane(new Vector3D(0, 0, 1), -1, null);
     assertTrue(p.inside(Vector3D.ORIGIN));
     assertFalse(p.inside(new Vector3D(0, 0, 2)));
     assertTrue(p.inside(new Vector3D(10, 20, -100)));
@@ -71,12 +70,11 @@ public class PlaneTest {
 
   /**
    * Test method for
-   * {@link edu.bu.cs.cs480.surfaces.Plane#outside(edu.bu.cs.cs480.Vector3D)}
-   * .
+   * {@link edu.bu.cs.cs480.surfaces.Plane#outside(edu.bu.cs.cs480.Vector3D)} .
    */
   @Test
   public void testPointIsAbove() {
-    final Plane p = new Plane(new Vector3D(0, 0, 1), -1);
+    final Plane p = new Plane(new Vector3D(0, 0, 1), -1, null);
     assertFalse(p.outside(Vector3D.ORIGIN));
     assertTrue(p.outside(new Vector3D(0, 0, 2)));
     assertFalse(p.outside(new Vector3D(10, 20, -100)));

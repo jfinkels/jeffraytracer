@@ -22,6 +22,26 @@ public abstract class Light extends PositionableTracerObject implements Directed
   /** Whether this light source casts a shadow. */
   private boolean shadow = false;
   
+  public double angularAttenuation(final double angle) {
+    // TODO Not yet implemented
+    return 1;
+  }
+  
+  public double angularAttenuation(final Vector3D point) {
+    // TODO Not yet implemented
+    return 1;
+  }
+
+  public double radialAttenuation(final Vector3D point) {
+    // TODO Not yet implemented
+    return 1;
+  }
+
+  public double radialAttenuation(final double radius) {
+    // TODO Not yet implemented
+    return 1;
+  }
+  
   /**
    * Gets the attenuation coefficients of this light source.
    * 

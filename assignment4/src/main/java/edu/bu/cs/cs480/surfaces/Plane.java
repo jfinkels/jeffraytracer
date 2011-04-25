@@ -9,7 +9,7 @@ import edu.bu.cs.cs480.Ray;
 import edu.bu.cs.cs480.Vector3D;
 
 /**
- * A plane in three dimensions.
+ * A plane in three dimensions which is component of a larger surface object.
  * 
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
@@ -19,6 +19,8 @@ class Plane extends PositionableTracerObject implements SurfaceObject {
   private final double d;
   /** The normal to the plane. */
   private final Vector3D normal;
+  /** The surface object which contains this plane. */
+  private final ConcreteSurfaceObject containingObject;
 
   /**
    * Instantiates this plane with the specified normal vector and scalar
@@ -28,10 +30,14 @@ class Plane extends PositionableTracerObject implements SurfaceObject {
    *          The unit vector normal to this plane.
    * @param d
    *          The scalar coefficient.
+   * @param containingObject
+   *          The surface object of which this plane is a component.
    */
-  Plane(final Vector3D normal, final double d) {
+  Plane(final Vector3D normal, final double d,
+      final ConcreteSurfaceObject containingObject) {
     this.normal = normal;
     this.d = d;
+    this.containingObject = containingObject;
   }
 
   /**
@@ -45,31 +51,6 @@ class Plane extends PositionableTracerObject implements SurfaceObject {
   }
 
   /**
-   * Similar to the {@link #interceptWith(Ray)} method, but sets the surface
-   * object on the returned Intercept object to be the specified containing
-   * surface object.
-   * 
-   * This method should be used if this plane is a component of a larger
-   * surface object (like a box or a cylinder) so that the returned Intercept
-   * object has a reference to the correct top-level surface object on which
-   * the intercept occurred.
-   * 
-   * @param ray
-   *          The ray which may intercept this object.
-   * @param containingObject
-   *          The top-level surface object of which this plane is a component.
-   * @return The intercept of the specified ray with this object.
-   */
-  Intercept interceptWith(final Ray ray, final SurfaceObject containingObject) {
-    final double temp1 = this.normal.dotProduct(ray.position());
-    final double temp2 = this.normal.dotProduct(ray.direction());
-    final double time = -(this.d + temp1) / (temp2);
-    final Intercept result = new Intercept(ray, time, containingObject,
-        this.normal);
-    return result;
-  }
-
-  /**
    * {@inheritDoc}
    * 
    * @param ray
@@ -79,17 +60,22 @@ class Plane extends PositionableTracerObject implements SurfaceObject {
    */
   @Override
   public Intercept interceptWith(final Ray ray) {
-    return this.interceptWith(ray, this);
+    final double temp1 = this.normal.dotProduct(ray.position());
+    final double temp2 = this.normal.dotProduct(ray.direction());
+    final double time = -(this.d + temp1) / (temp2);
+    final Intercept result = new Intercept(ray, time, this.containingObject,
+        this.normal);
+    return result;
   }
 
   /**
-   * Returns {@code true} if and only if the specified point is above this
-   * plane (with respect to its normal).
+   * Returns {@code true} if and only if the specified point is above this plane
+   * (with respect to its normal).
    * 
    * @param point
    *          The point to test.
-   * @return {@code true} if and only if the specified point is above this
-   *         plane (with respect to its normal).
+   * @return {@code true} if and only if the specified point is above this plane
+   *         (with respect to its normal).
    */
   @Override
   public boolean outside(final Vector3D point) {
@@ -100,13 +86,13 @@ class Plane extends PositionableTracerObject implements SurfaceObject {
   public static final double TOLERANCE = Double.MIN_VALUE;
 
   /**
-   * Returns {@code true} if and only if the specified point is below this
-   * plane (with respect to its normal).
+   * Returns {@code true} if and only if the specified point is below this plane
+   * (with respect to its normal).
    * 
    * @param point
    *          The point to test.
-   * @return {@code true} if and only if the specified point is below this
-   *         plane (with respect to its normal).
+   * @return {@code true} if and only if the specified point is below this plane
+   *         (with respect to its normal).
    */
   @Override
   public boolean inside(final Vector3D point) {

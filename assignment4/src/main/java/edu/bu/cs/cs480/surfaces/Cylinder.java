@@ -59,9 +59,9 @@ public class Cylinder extends SimpleQuadricForm implements Directed {
     final Vector3D pointOnBottomPlane = this.position().sumWith(
         this.direction.scaledBy(-(this.height / 2)));
     this.top = new Plane(this.direction,
-        -this.direction.dotProduct(pointOnTopPlane));
+        -this.direction.dotProduct(pointOnTopPlane), this);
     this.bottom = new Plane(this.direction.scaledBy(-1),
-        this.direction.dotProduct(pointOnBottomPlane));
+        this.direction.dotProduct(pointOnBottomPlane), this);
 
     // NOTE: planes don't need to be compiled
     // this.top.compile();
@@ -117,11 +117,11 @@ public class Cylinder extends SimpleQuadricForm implements Directed {
     }
 
     // get the intercept with the top and bottom planes
-    intercept = this.top.interceptWith(ray, this);
+    intercept = this.top.interceptWith(ray);
     if (intercept != null && super.inside(intercept.pointOfIntersection())) {
       possibleIntercepts.add(intercept);
     }
-    intercept = this.bottom.interceptWith(ray, this);
+    intercept = this.bottom.interceptWith(ray);
     if (intercept != null && super.inside(intercept.pointOfIntersection())) {
       possibleIntercepts.add(intercept);
     }

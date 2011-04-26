@@ -209,6 +209,7 @@ public class TracerEnvironment {
     return FloatColor.toRGB(this.shade(intercept, depth));
   }
 
+  /** The list of all lights in the scene which are ambient lights. */
   private List<AmbientLight> ambientLights = new ArrayList<AmbientLight>();
 
   private Vector3D shade(final Intercept intercept, final int depth) {
@@ -216,7 +217,7 @@ public class TracerEnvironment {
     final Material material = intercept.surfaceObject().material();
 
     // always apply at least the ambient lighting due to all the ambient lights
-    Vector3D resultColor = this.ambientColor();
+    Vector3D resultColor = this.ambientColor(material);
 
     // get the point of intersection which will be colored
     final Vector3D point = intercept.pointOfIntersection();
@@ -286,6 +287,8 @@ public class TracerEnvironment {
       }
     }
 
+    // do reflection and transmission
+    
     return boundColor(resultColor);
   }
 
@@ -333,12 +336,13 @@ public class TracerEnvironment {
     return false;
   }
 
-  private Vector3D ambientColor() {
+  // TODO is this right?
+  private Vector3D ambientColor(final Material material) {
     Vector3D color = new Vector3D(0, 0, 0);
     for (final AmbientLight light : this.ambientLights) {
-      color = color.sumWith(light.ambientColor());
+      color = color.sumWith(light.color().toVector());
     }
-    return color;
+    return color.scaledBy(material.ambientReflection());
   }
 
   /**

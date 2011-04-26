@@ -92,54 +92,53 @@ public class ModelReader {
   public static final String OBJECT = "obj";
   /** The identifier for a render list definition in the model file format. */
   public static final String RENDER = "render";
-
+  /** The tracer environment which can render the scene read by this class. */
+  private final TracerEnvironment environment = new TracerEnvironment();
+  /** The scanner which reads the model file. */
+  private final Scanner scanner;
+  
   /**
-   * Reads a complete tracer environment from the model file at the specified
+   * Instantiates this reader with the model at the specified filename.
    * location.
    * 
    * @param filename
    *          The name of the file containing the description of the tracer
    *          model.
-   * @return A tracer environment which can render the scene as described in the
-   *         model file.
    * @throws FileNotFoundException
    *           If no file exists at the specified location.
    * @throws FileFormatException
    *           If the file is not in the correct format, as specified by
    *           "model_file_format.txt".
    */
-  public static TracerEnvironment fromFile(final String filename)
-      throws FileNotFoundException, FileFormatException {
-    final TracerEnvironment result = new TracerEnvironment();
-    final Scanner input = new Scanner(new File(filename));
+  public ModelReader(final String filename) throws FileNotFoundException, FileFormatException {
+    this.scanner = new Scanner(new File(filename));
 
     // TODO use hashmap so we don't have to iterate to find objects by id
     final List<Material> materials = new ArrayList<Material>();
     final List<SurfaceObject> surfaceObjects = new ArrayList<SurfaceObject>();
     List<Integer> toRender = null;
 
-    while (input.hasNext()) {
-      final String token = input.next();
+    while (this.scanner.hasNext()) {
+      final String token = this.scanner.next();
       if (token.equals(CAMERA)) {
-        result.setCamera(readCamera(input));
+        this.environment.setCamera(readCamera());
       } else if (token.equals(RESOLUTION)) {
-        result.setResolution(readResolution(input));
+        this.environment.setResolution(readResolution());
       } else if (token.equals(VIEWPORT)) {
-        result.setViewport(readViewport(input));
+        this.environment.setViewport(readViewport());
       } else if (token.equals(LIGHT)) {
         this.isAmbientLight = false;
-        final Light light = readLight(input);
+        final Light light = readLight();
         if (this.isAmbientLight) {
-          result.addAmbientLight((AmbientLight) light);
-        } else {
-          result.addLight(light);
+          this.environment.addAmbientLight((AmbientLight) light);
         }
+        this.environment.addLight(light);
       } else if (token.equals(MATERIAL)) {
-        materials.add(readMaterial(input));
+        materials.add(readMaterial());
       } else if (token.equals(OBJECT)) {
-        surfaceObjects.add(readSurfaceObject(input, materials, surfaceObjects));
+        surfaceObjects.add(readSurfaceObject(materials, surfaceObjects));
       } else if (token.equals(RENDER)) {
-        toRender = readIntegerList(input);
+        toRender = readIntegerList();
       } else {
         throw new FileFormatException("Do not understand declaration \""
             + token + "\".");
@@ -157,13 +156,12 @@ public class ModelReader {
     }
 
     for (final SurfaceObject surfaceObject : toAdd) {
-      result.addSurfaceObject(surfaceObject);
+      this.environment.addSurfaceObject(surfaceObject);
     }
-
-    return result;
   }
 
-  private boolean ambientLight = false;
+  /** Whether the current light being read is an ambient light. */
+  private boolean isAmbientLight = false;
   
   /**
    * Iterates over the specified list and returns the object with the specified
@@ -193,31 +191,29 @@ public class ModelReader {
    * Creates a box with the properties specified on the current line of the
    * scanner.
    * 
-   * @param input
-   *          The scanner from which to read the properties of the box.
    * @param materials
    *          The list of known materials which the input will reference when
    *          describing the material of the box by its ID number.
    * @return A box with the properties specified on the current line of the
    *         scanner.
    */
-  protected static Box readBox(final Scanner input,
+  protected Box readBox(
       final List<Material> materials) {
     final Box box = new Box();
 
-    input.next(); // throw away the string "ID"
-    final int id = input.nextInt();
+    this.scanner.next(); // throw away the string "ID"
+    final int id = this.scanner.nextInt();
     box.setId(id);
 
     // throw away the strings "mat" and "ID"
-    input.next();
-    input.next();
-    final int materialID = input.nextInt();
+    this.scanner.next();
+    this.scanner.next();
+    final int materialID = this.scanner.nextInt();
     box.setMaterial(getObjectWithID(materials, materialID));
 
-    box.setPosition(readTriple(input));
-    box.setOrientation(readOrientation(input));
-    box.setDimensions(readTriple(input));
+    box.setPosition(readTriple());
+    box.setOrientation(readOrientation());
+    box.setDimensions(readTriple());
 
     return box;
   }
@@ -226,24 +222,22 @@ public class ModelReader {
    * Creates a camera with the properties specified on the current line of the
    * scanner.
    * 
-   * @param input
-   *          The scanner from which to read the properties of the camera.
    * @return A camera with the properties specified on the current line of the
    *         scanner.
    * @throws FileFormatException
    *           If the projection type is not of a known type.
    */
-  protected static Camera readCamera(final Scanner input)
+  protected Camera readCamera()
       throws FileFormatException {
     final Camera camera;
 
-    final String projectionType = input.next();
+    final String projectionType = this.scanner.next();
 
-    final Vector3D center = readTriple(input);
-    final Vector3D lookAt = readTriple(input);
-    final Vector3D up = readTriple(input);
+    final Vector3D center = readTriple();
+    final Vector3D lookAt = readTriple();
+    final Vector3D up = readTriple();
 
-    double focalLength = input.nextDouble();
+    double focalLength = this.scanner.nextDouble();
     if (projectionType.equals(ORTHOGRAPHIC)) {
       camera = new OrthographicCamera();
     } else if (projectionType.equals(PERSPECTIVE)) {
@@ -260,8 +254,8 @@ public class ModelReader {
     camera.setDirection(lookAt.difference(center).normalized());
     camera.setUp(up.normalized());
 
-    double near = input.nextDouble();
-    double far = input.nextDouble();
+    double near = this.scanner.nextDouble();
+    double far = this.scanner.nextDouble();
     camera.setNear(near);
     camera.setFar(far);
 
@@ -272,14 +266,12 @@ public class ModelReader {
    * Reads the next three float values between 0 and 1 from the Scanner and
    * returns the corresponding color.
    * 
-   * @param input
-   *          The scanner from which to read the component values.
    * @return The color whose component values are read from the specified input.
    */
-  protected static FloatColor readColor(final Scanner input) {
-    final float red = input.nextFloat();
-    final float green = input.nextFloat();
-    final float blue = input.nextFloat();
+  protected FloatColor readColor() {
+    final float red = this.scanner.nextFloat();
+    final float green = this.scanner.nextFloat();
+    final float blue = this.scanner.nextFloat();
     return new FloatColor(red, green, blue);
   }
 
@@ -289,9 +281,6 @@ public class ModelReader {
    * 
    * Post-condition: the list of surface objects is not modified.
    * 
-   * @param input
-   *          The scanner from which to read the properties of this constructive
-   *          solid geometry object.
    * @param surfaceObjects
    *          The list of known surface objects which the input will reference
    *          when describing the two surface objects by ID number which
@@ -302,20 +291,20 @@ public class ModelReader {
    *           If the constructive solid geometry operation is not of a known
    *           type.
    */
-  protected static ConstructiveSolidGeometry readCSG(final Scanner input,
+  protected ConstructiveSolidGeometry readCSG(
       final List<SurfaceObject> surfaceObjects) throws FileFormatException {
     final ConstructiveSolidGeometry result;
 
-    input.next(); // throw away the string "ID"
-    final int id = input.nextInt();
+    this.scanner.next(); // throw away the string "ID"
+    final int id = this.scanner.nextInt();
 
-    final String type = input.next();
+    final String type = this.scanner.next();
 
-    input.next(); // throw away the string "ID"
-    final int leftId = input.nextInt();
+    this.scanner.next(); // throw away the string "ID"
+    final int leftId = this.scanner.nextInt();
 
-    input.next(); // throw away the string "ID"
-    final int rightId = input.nextInt();
+    this.scanner.next(); // throw away the string "ID"
+    final int rightId = this.scanner.nextInt();
 
     final SurfaceObject leftObject = getObjectWithID(surfaceObjects, leftId);
     final SurfaceObject rightObject = getObjectWithID(surfaceObjects, rightId);
@@ -342,33 +331,31 @@ public class ModelReader {
    * Creates a cylinder with the properties specified on the current line of the
    * scanner.
    * 
-   * @param input
-   *          The scanner from which to read the properties of the cylinder.
    * @param materials
    *          The list of known materials which the input will reference when
    *          describing the material of the cylinder by its ID number.
    * @return A cylinder with the properties specified on the current line of the
    *         scanner.
    */
-  protected static Cylinder readCylinder(final Scanner input,
+  protected Cylinder readCylinder(
       final List<Material> materials) {
     final Cylinder cylinder = new Cylinder();
 
-    input.next(); // throw away the string "ID"
-    final int id = input.nextInt();
+    this.scanner.next(); // throw away the string "ID"
+    final int id = this.scanner.nextInt();
     cylinder.setId(id);
 
     // throw away the strings "mat" and "ID"
-    input.next();
-    input.next();
-    final int materialID = input.nextInt();
+    this.scanner.next();
+    this.scanner.next();
+    final int materialID = this.scanner.nextInt();
     cylinder.setMaterial(getObjectWithID(materials, materialID));
 
-    cylinder.setPosition(readTriple(input));
-    cylinder.setDirection(readTriple(input).normalized());
+    cylinder.setPosition(readTriple());
+    cylinder.setDirection(readTriple().normalized());
 
-    final double radius = input.nextDouble();
-    final double length = input.nextDouble();
+    final double radius = this.scanner.nextDouble();
+    final double length = this.scanner.nextDouble();
     cylinder.setRadius(radius);
     cylinder.setLength(length);
 
@@ -379,30 +366,28 @@ public class ModelReader {
    * Creates an ellipsoid with the properties specified on the current line of
    * the scanner.
    * 
-   * @param input
-   *          The scanner from which to read the properties of the ellipsoid.
    * @param materials
    *          The list of known materials which the input will reference when
    *          describing the material of the ellipsoid by its ID number.
    * @return An ellipsoid with the properties specified on the current line of
    *         the scanner.
    */
-  protected static Ellipsoid readEllipsoid(final Scanner input,
+  protected Ellipsoid readEllipsoid(
       final List<Material> materials) {
     final Ellipsoid ellipsoid = new Ellipsoid();
 
-    input.next(); // throw away the string "ID"
-    final int id = input.nextInt();
+    this.scanner.next(); // throw away the string "ID"
+    final int id = this.scanner.nextInt();
     ellipsoid.setId(id);
 
     // throw away the strings "mat" and "ID"
-    input.next();
-    input.next();
-    final int materialID = input.nextInt();
+    this.scanner.next();
+    this.scanner.next();
+    final int materialID = this.scanner.nextInt();
     ellipsoid.setMaterial(getObjectWithID(materials, materialID));
 
-    ellipsoid.setPosition(readTriple(input));
-    ellipsoid.setRadii(readTriple(input));
+    ellipsoid.setPosition(readTriple());
+    ellipsoid.setRadii(readTriple());
 
     return ellipsoid;
   }
@@ -411,15 +396,12 @@ public class ModelReader {
    * Reads a sequence of consecutive integers of arbitrary length from the
    * specified input.
    * 
-   * @param input
-   *          The scanner from which to read the sequence of consecutive
-   *          integers.
    * @return A list of integers read from the input.
    */
-  protected static List<Integer> readIntegerList(final Scanner input) {
+  protected List<Integer> readIntegerList() {
     final List<Integer> result = new ArrayList<Integer>();
-    while (input.hasNextInt()) {
-      result.add(input.nextInt());
+    while (this.scanner.hasNextInt()) {
+      result.add(this.scanner.nextInt());
     }
     return result;
   }
@@ -428,26 +410,24 @@ public class ModelReader {
    * Creates a light with the properties specified on the current line of the
    * scanner.
    * 
-   * @param input
-   *          The scanner from which to read the properties of the light.
    * @return A light with the properties specified on the current line of the
    *         scanner.
    * @throws FileFormatException
    *           If the specified type of light is not recognized.
    */
-  protected static Light readLight(final Scanner input)
+  protected Light readLight()
       throws FileFormatException {
     final Light light;
 
-    input.next(); // throw away the string "ID"
-    final int id = input.nextInt();
-    final String lightType = input.next();
+    this.scanner.next(); // throw away the string "ID"
+    final int id = this.scanner.nextInt();
+    final String lightType = this.scanner.next();
 
     if (lightType.equals(INFINITY)) {
       light = new InfinityLight();
     } else if (lightType.equals(AMBIENT)) {
       light = new AmbientLight();
-      this.ambientLight = true;
+      this.isAmbientLight = true;
     } else if (lightType.equals(POINT)) {
       light = new PointLight();
     } else {
@@ -457,17 +437,17 @@ public class ModelReader {
 
     light.setId(id);
 
-    light.setPosition(readTriple(input));
-    light.setDirection(readTriple(input).normalized());
+    light.setPosition(readTriple());
+    light.setDirection(readTriple().normalized());
 
-    light.setColor(readColor(input));
+    light.setColor(readColor());
 
-    light.setAttenuationCoefficients(readTriple(input));
+    light.setAttenuationCoefficients(readTriple());
 
-    final int exponent = input.nextInt();
+    final int exponent = this.scanner.nextInt();
     light.setAttenuationExponent(exponent);
 
-    final String shadow = input.next();
+    final String shadow = this.scanner.next();
     if (shadow.equals("shadow_on")) {
       light.setShadow(true);
     } else if (shadow.equals("shadow_off")) {
@@ -484,35 +464,33 @@ public class ModelReader {
    * Creates a material with the properties specified on the current line of the
    * scanner.
    * 
-   * @param input
-   *          The scanner from which to read the properties of the material.
    * @return A material with the properties specified on the current line of the
    *         scanner.
    * @throws FileFormatException
    *           If the specified type of material is not recognized.
    */
-  protected static Material readMaterial(final Scanner input) {
+  protected Material readMaterial() {
     final Material material = new Material();
 
-    input.next(); // throw away the string "ID"
-    final int id = input.nextInt();
+    this.scanner.next(); // throw away the string "ID"
+    final int id = this.scanner.nextInt();
     material.setId(id);
 
-    material.setColor(readColor(input));
+    material.setColor(readColor());
 
-    final double ambientCoefficient = input.nextDouble();
-    final double diffuseCoefficient = input.nextDouble();
-    final double specularCoefficient = input.nextDouble();
+    final double ambientCoefficient = this.scanner.nextDouble();
+    final double diffuseCoefficient = this.scanner.nextDouble();
+    final double specularCoefficient = this.scanner.nextDouble();
     material.setAmbientReflection(ambientCoefficient);
     material.setDiffuseReflection(diffuseCoefficient);
     material.setSpecularReflection(specularCoefficient);
 
-    final double specularExponent = input.nextDouble();
+    final double specularExponent = this.scanner.nextDouble();
     material.setSpecularExponent(specularExponent);
 
-    final double transmission = input.nextDouble();
-    final double reflection = input.nextDouble();
-    final double refraction = input.nextDouble();
+    final double transmission = this.scanner.nextDouble();
+    final double reflection = this.scanner.nextDouble();
+    final double refraction = this.scanner.nextDouble();
     material.setTransmission(transmission);
     material.setReflection(reflection);
     material.setRefraction(refraction);
@@ -524,15 +502,13 @@ public class ModelReader {
    * Creates an orientation from the next three triples of double values from
    * the specified scanner.
    * 
-   * @param input
-   *          The scanner from which to read the orientation.
    * @return An orientation whose three vectors have the values read from the
    *         input.
    */
-  protected static Orientation readOrientation(final Scanner input) {
-    final Vector3D v1 = readTriple(input);
-    final Vector3D v2 = readTriple(input);
-    final Vector3D v3 = readTriple(input);
+  protected Orientation readOrientation() {
+    final Vector3D v1 = readTriple();
+    final Vector3D v2 = readTriple();
+    final Vector3D v3 = readTriple();
 
     return new Orientation(v1.normalized(), v2.normalized(), v3.normalized());
   }
@@ -540,14 +516,11 @@ public class ModelReader {
   /**
    * Returns the resolution at which to display the scene in the viewport.
    * 
-   * @param input
-   *          The scanner from which to read the two double values which specify
-   *          the resolution.
    * @return The resolution at which to display the scene in the viewport.
    */
-  protected static Resolution readResolution(final Scanner input) {
-    final double x = input.nextDouble();
-    final double y = input.nextDouble();
+  protected Resolution readResolution() {
+    final double x = this.scanner.nextDouble();
+    final double y = this.scanner.nextDouble();
 
     final Resolution resolution = new Resolution();
     resolution.setxResolution(x);
@@ -560,31 +533,29 @@ public class ModelReader {
    * Creates a sphere with the properties specified on the current line of the
    * scanner.
    * 
-   * @param input
-   *          The scanner from which to read the properties of the sphere.
    * @param materials
    *          The list of known materials which the input will reference when
    *          describing the material of the sphere by its ID number.
    * @return A sphere with the properties specified on the current line of the
    *         scanner.
    */
-  protected static Sphere readSphere(final Scanner input,
+  protected Sphere readSphere(
       final List<Material> materials) {
     final Sphere sphere = new Sphere();
 
-    input.next(); // throw away the string "ID"
-    final int id = input.nextInt();
+    this.scanner.next(); // throw away the string "ID"
+    final int id = this.scanner.nextInt();
     sphere.setId(id);
 
     // throw away the strings "mat" and "ID"
-    input.next();
-    input.next();
-    final int materialID = input.nextInt();
+    this.scanner.next();
+    this.scanner.next();
+    final int materialID = this.scanner.nextInt();
     sphere.setMaterial(getObjectWithID(materials, materialID));
 
-    sphere.setPosition(readTriple(input));
+    sphere.setPosition(readTriple());
 
-    final double radius = input.nextDouble();
+    final double radius = this.scanner.nextDouble();
     sphere.setRadius(radius);
 
     return sphere;
@@ -596,9 +567,6 @@ public class ModelReader {
    * 
    * Post-condition: the list of surface objects is not modified.
    * 
-   * @param input
-   *          The scanner from which to read the properties of the surface
-   *          object.
    * @param materials
    *          The list of known materials which the input will reference when
    *          describing the material of the ellipsoid by its ID number.
@@ -609,22 +577,22 @@ public class ModelReader {
    * @return An surface object with the properties specified on the current line
    *         of the scanner.
    */
-  protected static SurfaceObject readSurfaceObject(final Scanner input,
+  protected SurfaceObject readSurfaceObject(
       final List<Material> materials, final List<SurfaceObject> surfaceObjects)
       throws FileFormatException {
     final SurfaceObject surfaceObject;
 
-    final String type = input.next();
+    final String type = this.scanner.next();
     if (type.equals("sphere")) {
-      surfaceObject = readSphere(input, materials);
+      surfaceObject = readSphere( materials);
     } else if (type.equals("ellipsoid")) {
-      surfaceObject = readEllipsoid(input, materials);
+      surfaceObject = readEllipsoid( materials);
     } else if (type.equals("cylinder")) {
-      surfaceObject = readCylinder(input, materials);
+      surfaceObject = readCylinder( materials);
     } else if (type.equals("box")) {
-      surfaceObject = readBox(input, materials);
+      surfaceObject = readBox( materials);
     } else if (type.equals("CSG")) {
-      surfaceObject = readCSG(input, surfaceObjects);
+      surfaceObject = readCSG( surfaceObjects);
     } else {
       throw new FileFormatException("Do not understand surface object type \""
           + type + "\".");
@@ -637,34 +605,36 @@ public class ModelReader {
    * Returns a three-dimensional vector containing the next three double values
    * from the specified scanner.
    * 
-   * @param input
-   *          The scanner from which to read the three double values.
    * @return The vector containing the three double values read from the
    *         specified input.
    */
-  protected static Vector3D readTriple(final Scanner input) {
-    double x = input.nextDouble();
-    double y = input.nextDouble();
-    double z = input.nextDouble();
+  protected Vector3D readTriple() {
+    double x = this.scanner.nextDouble();
+    double y = this.scanner.nextDouble();
+    double z = this.scanner.nextDouble();
     return new Vector3D(x, y, z);
   }
 
   /**
    * Returns the dimensions of the viewport as defined in the input.
    * 
-   * @param input
-   *          The scanner from which to read the two integer values which
-   *          specify the dimensions of the viewport.
    * @return The dimensions of the viewport on which to display the scene.
    */
-  protected static Viewport readViewport(final Scanner input) {
-    final int width = input.nextInt();
-    final int height = input.nextInt();
+  protected Viewport readViewport() {
+    final int width = this.scanner.nextInt();
+    final int height = this.scanner.nextInt();
 
     final Viewport viewport = new Viewport();
     viewport.setWidth(width);
     viewport.setHeight(height);
 
     return viewport;
+  }
+
+  /**
+   * @return
+   */
+  public TracerEnvironment environment() {
+    return this.environment;
   }
 }

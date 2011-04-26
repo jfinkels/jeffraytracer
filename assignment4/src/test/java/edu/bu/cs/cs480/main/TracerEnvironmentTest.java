@@ -49,8 +49,8 @@ public class TracerEnvironmentTest {
   public void testRender() {
     for (final String dataFile : TEST_FILES) {
       try {
-        final TracerEnvironment e = ModelReader.fromFile(DATA_DIR + dataFile
-            + "." + INPUT_FILE_TYPE);
+        final TracerEnvironment e = new ModelReader(DATA_DIR + dataFile + "."
+            + INPUT_FILE_TYPE).environment();
         final File outputFile = new File(OUTPUT_DIR + dataFile + "."
             + OUTPUT_FILE_TYPE);
         ImageIO.write(e.render(), OUTPUT_FILE_TYPE, outputFile);

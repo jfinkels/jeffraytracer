@@ -10,5 +10,16 @@ package edu.bu.cs.cs480;
  * @since Spring 2011
  */
 public class InfinityLight extends Light {
-  // not yet implemented
+
+  /**
+   * {@inheritDoc}
+   * 
+   * @param point
+   *          {@inheritDoc}
+   * @return {@inheritDoc}
+   */
+  @Override
+  public Vector3D vectorFrom(final Vector3D point) {
+    return this.direction().scaledBy(-1);
+  }
 }

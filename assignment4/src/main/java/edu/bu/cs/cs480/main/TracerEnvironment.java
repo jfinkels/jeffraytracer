@@ -42,6 +42,11 @@ public class TracerEnvironment {
   public static final int MAX_DEPTH = 3;
   /** The tolerance for floating point value comparison to zero. */
   public static final double TOLERANCE = Double.MIN_VALUE;
+  /**
+   * HACK: The tolerance for comparing floating point values to zero when
+   * computing the shadows.
+   */
+  public static final double TOLERANCE2 = 1e-13;
 
   /**
    * Return the component-wise minimum of the specified color and the maximum
@@ -192,7 +197,7 @@ public class TracerEnvironment {
       // TODO don't we need to check if the object in between the point of
       // intersection and the light is not transmissive?
       final Intercept i = surfaceObject.interceptWith(ray);
-      if (i != null && i.time() > TOLERANCE) {
+      if (i != null && i.time() > TOLERANCE2) {
         return true;
       }
     }
@@ -253,7 +258,6 @@ public class TracerEnvironment {
       for (int x = 0; x < width; ++x) {
         final Ray ray = rays[y * width + x];
         final int color = this.trace(intercepts.get(ray), 1);
-        LOG.debug("color " + Integer.toHexString(color));
         result.setRGB(x, y, color);
       }
     }
@@ -334,8 +338,8 @@ public class TracerEnvironment {
         if (!light.castsShadow() || !this.isShadowed(shadowRay)) {
 
           // radial attenuation scale factor
-          final double radialAttenuation = light.radialAttenuation(pointToLight
-              .norm());
+          final double radialAttenuation = light
+              .radialAttenuation(pointToLight.norm());
 
           // angular attenuation scale factor
           final double cosineAngle = shadowRay.direction().scaledBy(-1)
@@ -348,13 +352,15 @@ public class TracerEnvironment {
 
           // energy from diffuse reflection
           // NOTE: dot product is guaranteed to be > 0 by conditional execution
-          final double diffuseScale = material.diffuseReflection() * dotProduct;
+          final double diffuseScale = material.diffuseReflection()
+              * dotProduct;
           final Vector3D diffuseReflection = lightColor.scaledBy(diffuseScale);
 
           // determine the energy from specular reflection
           Vector3D specularReflection = Vector3D.ORIGIN;
 
-          // determine the cosine of the angle between the light's ray reflected
+          // determine the cosine of the angle between the light's ray
+          // reflected
           // through the normal and the vector from the intercept to the
           // intersecting ray's origin
           final Vector3D reflected = reflected(direction, normal);
@@ -375,14 +381,16 @@ public class TracerEnvironment {
           reflection = reflection.sumWith(diffuseReflection.sumWith(
               specularReflection).scaledBy(
               radialAttenuation * angularAttenuation));
-        } else {
-          LOG.debug("in shadow");
         }
+        // else {
+        // LOG.debug("in shadow");
+        // }
       }
     }
 
     // do reflection and transmission
-
+    
+    
     return boundedColor(materialColor.scaledByComponentwise(reflection));
   }
 

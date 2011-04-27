@@ -21,7 +21,7 @@ public abstract class Light extends PositionableTracerObject implements
   private Vector3D direction = null;
   /** Whether this light source casts a shadow. */
   private boolean shadow = false;
-
+  
   /**
    * Attenuation (i.e. weakening) factor of the energy from this light due to
    * angle.

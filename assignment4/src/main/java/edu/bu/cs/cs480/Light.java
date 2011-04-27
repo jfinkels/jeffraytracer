@@ -9,8 +9,8 @@ package edu.bu.cs.cs480;
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
-public abstract class Light extends PositionableTracerObject implements Directed,
-    Colorable {
+public abstract class Light extends PositionableTracerObject implements
+    Directed, Colorable {
   /** The coefficients of attenuation of this light source. */
   private Vector3D attenuationCoefficients = null;
   /** The exponent of attenuation of this light source. */
@@ -21,27 +21,35 @@ public abstract class Light extends PositionableTracerObject implements Directed
   private Vector3D direction = null;
   /** Whether this light source casts a shadow. */
   private boolean shadow = false;
-  
-  public double angularAttenuation(final double angle) {
-    // TODO Not yet implemented
-    return 1;
-  }
-  
-  public double angularAttenuation(final Vector3D point) {
-    // TODO Not yet implemented
-    return 1;
+
+  /**
+   * Attenuation (i.e. weakening) factor of the energy from this light due to
+   * angle.
+   * 
+   * @param cosineAngle
+   *          The cosine of the angle between the object and the direction of
+   *          the light source.
+   * @return The attenuation factor of the energy from this light due to angle.
+   */
+  public double angularAttenuation(final double cosineAngle) {
+    return Math.pow(cosineAngle, this.attenuationExponent);
   }
 
-  public double radialAttenuation(final Vector3D point) {
-    // TODO Not yet implemented
-    return 1;
+  /**
+   * Attenuation (i.e. weakening) factor of the energy from this light due to
+   * distance.
+   * 
+   * @param distance
+   *          The distance from this light.
+   * @return The attenuation factor of the energy from this light due to
+   *         distance.
+   */
+  public double radialAttenuation(final double distance) {
+    return 1.0 / QuadraticSolver.evaluate(this.attenuationCoefficients.z(),
+        this.attenuationCoefficients.y(), this.attenuationCoefficients.x(),
+        distance);
   }
 
-  public double radialAttenuation(final double radius) {
-    // TODO Not yet implemented
-    return 1;
-  }
-  
   /**
    * Gets the attenuation coefficients of this light source.
    * 
@@ -141,7 +149,18 @@ public abstract class Light extends PositionableTracerObject implements Directed
    * 
    * @return Whether this light source casts a shadow.
    */
-  public boolean shadow() {
+  public boolean castsShadow() {
     return this.shadow;
+  }
+
+  /**
+   * Gets the vector from the specified point to this light source.
+   * 
+   * @param point
+   *          The source of the vector.
+   * @return The vector from the specified point to this light source.
+   */
+  public Vector3D vectorFrom(final Vector3D point) {
+    return this.position().difference(point);
   }
 }

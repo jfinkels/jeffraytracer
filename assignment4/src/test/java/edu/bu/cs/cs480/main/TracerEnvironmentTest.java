@@ -39,8 +39,8 @@ public class TracerEnvironmentTest {
   /** The type of output image files. */
   public static final String OUTPUT_FILE_TYPE = "png";
   /** The list of files to test. */
-  public static final List<String> TEST_FILES = Arrays.asList("singlesphere",
-      "singlecylinder", "singleellipsoid", "singlebox", "sphereTest");
+  public static final List<String> TEST_FILES = Arrays.asList(/*"singlesphere",
+      "singlecylinder",*/ "singleellipsoid"/*, "singlebox", "sphereTest"*/);
 
   /**
    * Test method for {@link edu.bu.cs.cs480.main.TracerEnvironment#render()}.

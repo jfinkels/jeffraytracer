@@ -84,6 +84,15 @@ public class Intercept implements Comparable<Intercept> {
   }
 
   /**
+   * Gets the ray which caused the intercept with a surface object.
+   * 
+   * @return The ray which caused the intercept with a surface object.
+   */
+  public Ray ray() {
+    return this.ray;
+  }
+
+  /**
    * Gets the surface object which a ray intercepts.
    * 
    * @return The surface object which a ray intercepts.

@@ -19,22 +19,26 @@ public class FloatColor extends Color {
   public static final FloatColor RED = new FloatColor(1, 0, 0);
   /** Randomly generated serial version UID. */
   private static final long serialVersionUID = 6281360072954213961L;
+  /**
+   * @param shade
+   * @return
+   */
+  public static int toRGB(final Vector3D shade) {
+    return new FloatColor(shade).getRGB();
+  }
   /** The value of the blue component of this color as a float between 0 and 1. */
   private final float blue;
   /**
    * The value of the green component of this color as a float between 0 and 1.
    */
   private final float green;
+
   /** The value of the red component of this color as a float between 0 and 1. */
   private final float red;
 
-  public Vector3D toVector() {
-    return new Vector3D(this.red, this.green, this.blue);
-  }
-
   /**
-   * Creates a FloatColor object with the same component values of the
-   * specified Color object.
+   * Creates a FloatColor object with the same component values of the specified
+   * Color object.
    * 
    * @param color
    *          The color from which to get component values.
@@ -46,28 +50,6 @@ public class FloatColor extends Color {
     this.red = components[0];
     this.green = components[1];
     this.blue = components[2];
-  }
-
-  public FloatColor(final Vector3D components) {
-    this(components.x(), components.y(), components.z());
-  }
-
-  /**
-   * Instantiates this color with the specified red, green, and blue values as
-   * {@code float}s between 0 and 1.
-   * 
-   * @param red
-   *          The value of the red component of this color as a float between 0
-   *          and 1.
-   * @param green
-   *          The value of the green component of this color as a float between
-   *          0 and 1.
-   * @param blue
-   *          The value of the blue component of this color as a float between
-   *          0 and 1.
-   */
-  public FloatColor(final float red, final float green, final float blue) {
-    this(new Color(red, green, blue));
   }
 
   /**
@@ -83,8 +65,30 @@ public class FloatColor extends Color {
   }
 
   /**
-   * Gets the value of the blue component of this color as a float between 0
-   * and 1.
+   * Instantiates this color with the specified red, green, and blue values as
+   * {@code float}s between 0 and 1.
+   * 
+   * @param red
+   *          The value of the red component of this color as a float between 0
+   *          and 1.
+   * @param green
+   *          The value of the green component of this color as a float between
+   *          0 and 1.
+   * @param blue
+   *          The value of the blue component of this color as a float between 0
+   *          and 1.
+   */
+  public FloatColor(final float red, final float green, final float blue) {
+    this(new Color(red, green, blue, 1.0f));
+  }
+
+  public FloatColor(final Vector3D components) {
+    this(components.x(), components.y(), components.z());
+  }
+
+  /**
+   * Gets the value of the blue component of this color as a float between 0 and
+   * 1.
    * 
    * @return The value of the blue component of this color as a float between 0
    *         and 1.
@@ -102,8 +106,8 @@ public class FloatColor extends Color {
    * Gets the value of the green component of this color as a float between 0
    * and 1.
    * 
-   * @return The value of the green component of this color as a float between
-   *         0 and 1.
+   * @return The value of the green component of this color as a float between 0
+   *         and 1.
    */
   public float green() {
     return this.green;
@@ -121,6 +125,46 @@ public class FloatColor extends Color {
   }
 
   /**
+   * Returns a new vector whose components are the component values of this
+   * color scaled by the specified values.
+   * 
+   * For example, if this color is [10, 20, 30] and the specified scale values
+   * are [2, 1, 0.5], then this method would return [20, 20, 15].
+   * 
+   * @param redScale
+   *          The factor by which to scale the red component of this color.
+   * @param greenScale
+   *          The factor by which to scale the green component of this color.
+   * @param blueScale
+   *          The factor by which to scale the blue component of this color.
+   * @return A new vector whose components are the component values of this
+   *         color scaled by the corresponding components of the specified
+   *         vector.
+   */
+  public Vector3D scaledByComponentwise(final double redScale,
+      final double greenScale, final double blueScale) {
+    return new Vector3D(this.red * redScale, this.green * greenScale, this.blue
+        * blueScale);
+  }
+
+  /**
+   * Returns a new vector whose components are the component values of this
+   * color scaled by the corresponding components of the specified vector.
+   * 
+   * For example, if this color is [10, 20, 30] and the specified scale vector
+   * is [2, 1, 0.5], then this method would return [20, 20, 15].
+   * 
+   * @param scale
+   *          The factors by which to scale the components of this color.
+   * @return A new vector whose components are the component values of this
+   *         color scaled by the corresponding components of the specified
+   *         vector.
+   */
+  public Vector3D scaledByComponentwise(final Vector3D scale) {
+    return this.scaledByComponentwise(scale.x(), scale.y(), scale.z());
+  }
+
+  /**
    * @param color
    * @return
    */
@@ -129,11 +173,7 @@ public class FloatColor extends Color {
         this.blue + that.blue);
   }
 
-  /**
-   * @param shade
-   * @return
-   */
-  public static int toRGB(final Vector3D shade) {
-    return new FloatColor(shade).getRGB();
+  public Vector3D toVector() {
+    return new Vector3D(this.red, this.green, this.blue);
   }
 }

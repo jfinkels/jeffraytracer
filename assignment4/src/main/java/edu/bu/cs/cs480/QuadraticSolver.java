@@ -11,6 +11,26 @@ package edu.bu.cs.cs480;
  */
 public class QuadraticSolver {
   /**
+   * Evaluates the quadratic polynomial over the reals with the specified
+   * coefficients at the specified point.
+   * 
+   * @param a
+   *          The coefficient of the quadratic term.
+   * @param b
+   *          The coefficient of the linear term.
+   * @param c
+   *          The constant term.
+   * @param x
+   *          The point at which to evaluate this polynomial.
+   * @return The result of evaluating the specified polynomial at the specified
+   *         point.
+   */
+  public static double evaluate(final double a, final double b, final double c,
+      final double x) {
+    return a * x * x + b * x + c;
+  }
+
+  /**
    * Returns the pair of solutions to the quadratic equation with the specified
    * coefficients, or {@code null} if the solution is imaginary.
    * 
@@ -45,4 +65,5 @@ public class QuadraticSolver {
     final double right = (-b - sqrtDiscriminant) / twoA;
     return new Pair(left, right);
   }
+
 }

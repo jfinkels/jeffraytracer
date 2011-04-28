@@ -213,6 +213,7 @@ public class TracerEnvironment {
     // get the width and height of the viewport
     final int width = this.viewport.width();
     final int height = this.viewport.height();
+    final int halfHeight = height / 2;
 
     // first create the rays and initialize them with the appropriate computed
     // origin and direction based on the camera type and measurements
@@ -251,19 +252,66 @@ public class TracerEnvironment {
     }
 
     // draw the intercept on an image
-    LOG.debug("Casting primary rays...");
+    LOG.debug("Casting primary rays and shading...");
     final BufferedImage result = new BufferedImage(width, height,
         BufferedImage.TYPE_INT_RGB);
-    for (int y = 0; y < height; ++y) {
-      for (int x = 0; x < width; ++x) {
-        final Ray ray = rays[y * width + x];
-        final int color = this.trace(intercepts.get(ray), 1);
-        result.setRGB(x, y, color);
-      }
-    }
+    // for (int y = 0; y < height; ++y) {
+    // for (int x = 0; x < width; ++x) {
+    // final Ray ray = rays[y * width + x];
+    // final int color = TracerEnvironment.this.trace(intercepts.get(ray), 1);
+    // result.setRGB(x, y, color);
+    // }
+    // }
 
+    // mark the threads as not done
+    this.done1 = false;
+    this.done2 = false;
+
+    // create the two runnables which will render the top half and the bottom
+    // half of the result image separately
+    final Renderer r1 = new Renderer(rays, 0, halfHeight, width, this,
+        intercepts, result, 1);
+    final Renderer r2 = new Renderer(rays, halfHeight, height, width, this,
+        intercepts, result, 2);
+
+    // run the two threads
+    new Thread(r1).start();
+    new Thread(r2).start();
+    
+    this.waitForThreads();
+    
     return result;
   }
+
+  private synchronized void waitForThreads() {
+    while (!this.renderersFinished()) {
+      try {
+        LOG.debug("calling wait");
+        this.wait();
+        LOG.debug("done waiting");
+      } catch (final InterruptedException exception) {
+        LOG.error(exception);
+      }
+    }
+  }
+
+  void rendererFinished(final int threadID) {
+    if (threadID == 1) {
+      this.done1 = true;
+    } else if (threadID == 2) {
+      this.done2 = true;
+    } else {
+      LOG.error("Did not understand thread ID " + threadID);
+    }
+  }
+
+  private boolean renderersFinished() {
+    LOG.debug("checking finished");
+    return this.done1 && this.done2;
+  }
+
+  private boolean done1 = false;
+  private boolean done2 = false;
 
   /**
    * Sets the virtual camera through which the scene is viewed.
@@ -333,13 +381,13 @@ public class TracerEnvironment {
       // if the light hits the point at an angle between -90 and 90 and this is
       // not in shadow
       if (dotProduct > TOLERANCE) {
-        
+
         // determine if the point is not in shadow
         if (!light.castsShadow() || !this.isShadowed(shadowRay)) {
 
           // radial attenuation scale factor
-          final double radialAttenuation = light
-              .radialAttenuation(pointToLight.norm());
+          final double radialAttenuation = light.radialAttenuation(pointToLight
+              .norm());
 
           // angular attenuation scale factor
           final double cosineAngle = shadowRay.direction().scaledBy(-1)
@@ -352,8 +400,7 @@ public class TracerEnvironment {
 
           // energy from diffuse reflection
           // NOTE: dot product is guaranteed to be > 0 by conditional execution
-          final double diffuseScale = material.diffuseReflection()
-              * dotProduct;
+          final double diffuseScale = material.diffuseReflection() * dotProduct;
           final Vector3D diffuseReflection = lightColor.scaledBy(diffuseScale);
 
           // determine the energy from specular reflection
@@ -386,8 +433,7 @@ public class TracerEnvironment {
     }
 
     // do reflection and transmission
-    
-    
+
     return boundedColor(materialColor.scaledByComponentwise(reflection));
   }
 
@@ -402,7 +448,7 @@ public class TracerEnvironment {
    *          The current depth of recursion in the ray tree.
    * @return The color at this intercept.
    */
-  private int trace(final Intercept intercept, final int depth) {
+  int trace(final Intercept intercept, final int depth) {
     if (intercept == null) {
       return BACKGROUND_COLOR;
     }

@@ -1,12 +1,16 @@
 /**
  * Matrix4x4Test.java - test class for the Matrix4x4 class
  */
-package edu.bu.cs.cs480;
+package edu.bu.cs.cs480.vectors;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+
+import edu.bu.cs.cs480.TestUtils;
+import edu.bu.cs.cs480.vectors.Matrix4x4;
+import edu.bu.cs.cs480.vectors.Vector4D;
 
 /**
  * Test class for the Matrix4x4 matrix.
@@ -17,7 +21,7 @@ import org.junit.Test;
 public class Matrix4x4Test {
 
   /**
-   * Test method for {@link edu.bu.cs.cs480.Matrix4x4#set(int, int, double)}.
+   * Test method for {@link edu.bu.cs.cs480.vectors.Matrix4x4#set(int, int, double)}.
    */
   @Test
   public void testSet() {
@@ -35,7 +39,7 @@ public class Matrix4x4Test {
 
   /**
    * Test method for
-   * {@link edu.bu.cs.cs480.Matrix4x4#product(edu.bu.cs.cs480.Vector4D)}.
+   * {@link edu.bu.cs.cs480.vectors.Matrix4x4#product(edu.bu.cs.cs480.vectors.Vector4D)}.
    */
   @Test
   public void testProduct() {
@@ -65,7 +69,7 @@ public class Matrix4x4Test {
   }
 
   /**
-   * Test method for {@link edu.bu.cs.cs480.Matrix4x4#transposed()}.
+   * Test method for {@link edu.bu.cs.cs480.vectors.Matrix4x4#transposed()}.
    */
   @Test
   public void testTransposed() {
@@ -83,7 +87,7 @@ public class Matrix4x4Test {
 
   /**
    * Test method for
-   * {@link edu.bu.cs.cs480.Matrix4x4#product(edu.bu.cs.cs480.Matrix4x4)}.
+   * {@link edu.bu.cs.cs480.vectors.Matrix4x4#product(edu.bu.cs.cs480.vectors.Matrix4x4)}.
    */
   @Test
   public void testProductMatrix() {

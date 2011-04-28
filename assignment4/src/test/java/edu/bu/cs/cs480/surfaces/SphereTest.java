@@ -8,9 +8,8 @@ import static org.junit.Assert.assertSame;
 
 import org.junit.Test;
 
-import edu.bu.cs.cs480.Intercept;
-import edu.bu.cs.cs480.Ray;
-import edu.bu.cs.cs480.Vector3D;
+import edu.bu.cs.cs480.vectors.Ray;
+import edu.bu.cs.cs480.vectors.Vector3D;
 
 /**
  * Test for the Sphere class.
@@ -22,7 +21,7 @@ public class SphereTest {
 
   /**
    * Test method for
-   * {@link edu.bu.cs.cs480.surfaces.Sphere#interceptWith(edu.bu.cs.cs480.Ray)}
+   * {@link edu.bu.cs.cs480.surfaces.Sphere#interceptWith(edu.bu.cs.cs480.vectors.Ray)}
    * .
    */
   @Test

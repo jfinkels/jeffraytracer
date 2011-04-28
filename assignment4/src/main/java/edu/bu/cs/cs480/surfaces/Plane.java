@@ -3,10 +3,9 @@
  */
 package edu.bu.cs.cs480.surfaces;
 
-import edu.bu.cs.cs480.Intercept;
 import edu.bu.cs.cs480.PositionableTracerObject;
-import edu.bu.cs.cs480.Ray;
-import edu.bu.cs.cs480.Vector3D;
+import edu.bu.cs.cs480.vectors.Ray;
+import edu.bu.cs.cs480.vectors.Vector3D;
 
 /**
  * A plane in three dimensions which is component of a larger surface object.
@@ -56,7 +55,7 @@ class Plane extends PositionableTracerObject implements SurfaceObject {
    * @param ray
    *          {@inheritDoc}
    * @return {@inheritDoc}
-   * @see edu.bu.cs.cs480.surfaces.SurfaceObject#interceptWith(edu.bu.cs.cs480.Ray)
+   * @see edu.bu.cs.cs480.surfaces.SurfaceObject#interceptWith(edu.bu.cs.cs480.vectors.Ray)
    */
   @Override
   public Intercept interceptWith(final Ray ray) {

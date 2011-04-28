@@ -3,6 +3,8 @@
  */
 package edu.bu.cs.cs480;
 
+import edu.bu.cs.cs480.vectors.Vector3D;
+
 /**
  * An object which has a direction.
  * 

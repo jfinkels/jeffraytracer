@@ -1,7 +1,9 @@
 /**
  * Ray.java - a ray originating from a point and extending in a direction
  */
-package edu.bu.cs.cs480;
+package edu.bu.cs.cs480.vectors;
+
+import edu.bu.cs.cs480.PositionedDirected;
 
 /**
  * A "half line", starting at a point and extending to infinity in a direction.

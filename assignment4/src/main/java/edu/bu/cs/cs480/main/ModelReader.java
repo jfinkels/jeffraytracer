@@ -9,19 +9,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import edu.bu.cs.cs480.AmbientLight;
 import edu.bu.cs.cs480.FloatColor;
 import edu.bu.cs.cs480.Identifiable;
-import edu.bu.cs.cs480.InfinityLight;
-import edu.bu.cs.cs480.Light;
 import edu.bu.cs.cs480.Material;
-import edu.bu.cs.cs480.PointLight;
-import edu.bu.cs.cs480.Vector3D;
 import edu.bu.cs.cs480.camera.Camera;
 import edu.bu.cs.cs480.camera.OrthographicCamera;
 import edu.bu.cs.cs480.camera.PerspectiveCamera;
 import edu.bu.cs.cs480.camera.Resolution;
 import edu.bu.cs.cs480.camera.Viewport;
+import edu.bu.cs.cs480.lights.AmbientLight;
+import edu.bu.cs.cs480.lights.InfinityLight;
+import edu.bu.cs.cs480.lights.Light;
+import edu.bu.cs.cs480.lights.PointLight;
 import edu.bu.cs.cs480.surfaces.Box;
 import edu.bu.cs.cs480.surfaces.ConstructiveSolidGeometry;
 import edu.bu.cs.cs480.surfaces.Cylinder;
@@ -30,6 +29,7 @@ import edu.bu.cs.cs480.surfaces.Orientation;
 import edu.bu.cs.cs480.surfaces.Sphere;
 import edu.bu.cs.cs480.surfaces.SurfaceObject;
 import edu.bu.cs.cs480.surfaces.Union;
+import edu.bu.cs.cs480.vectors.Vector3D;
 
 /**
  * Reads a TracerEnvironment model from a file.
@@ -41,6 +41,28 @@ import edu.bu.cs.cs480.surfaces.Union;
  */
 public class ModelReader {
   /**
+   * The identifier for an ambient light source in the model file format.
+   */
+  public static final String AMBIENT = "amb";
+  /** The identifier for the camera definition in the model file format. */
+  public static final String CAMERA = "camera";
+  /**
+   * The identifier for a light source at distance infinity in the model file
+   * format.
+   */
+  public static final String INFINITY = "inf";
+  /**
+   * The identifier for the intersection operation on surface objects in the
+   * model file format.
+   */
+  public static final String INTERSECTION = "intersect";
+  /** The identifier for a light definition in the model file format. */
+  public static final String LIGHT = "light";
+  /** The identifier for a material definition in the model file format. */
+  public static final String MATERIAL = "mat";
+  /** The identifier for an object definition in the model file format. */
+  public static final String OBJECT = "obj";
+  /**
    * The identifier in the model file format for an orthographic projection
    * camera.
    */
@@ -51,118 +73,26 @@ public class ModelReader {
    */
   public static final String PERSPECTIVE = "perspective";
   /**
-   * The identifier for the union operation on surface objects in the model file
-   * format.
+   * The identifier for a point light source in the model file format.
    */
-  public static final String UNION = "union";
-  /**
-   * The identifier for the intersection operation on surface objects in the
-   * model file format.
-   */
-  public static final String INTERSECTION = "intersect";
+  public static final String POINT = "pnt";
+  /** The identifier for a render list definition in the model file format. */
+  public static final String RENDER = "render";
+  /** The identifier for the resolution definition in the model file format. */
+  public static final String RESOLUTION = "resolution";
   /**
    * The identifier for the symmetric difference operation on surface objects in
    * the model file format.
    */
   public static final String SYMMETRIC_DIFFERENCE = "difference";
   /**
-   * The identifier for a light source at distance infinity in the model file
+   * The identifier for the union operation on surface objects in the model file
    * format.
    */
-  public static final String INFINITY = "inf";
-  /**
-   * The identifier for an ambient light source in the model file format.
-   */
-  public static final String AMBIENT = "amb";
-  /**
-   * The identifier for a point light source in the model file format.
-   */
-  public static final String POINT = "pnt";
-  /** The identifier for the camera definition in the model file format. */
-  public static final String CAMERA = "camera";
-  /** The identifier for the resolution definition in the model file format. */
-  public static final String RESOLUTION = "resolution";
+  public static final String UNION = "union";
   /** The identifier for the viewport definition in the model file format. */
   public static final String VIEWPORT = "viewport";
-  /** The identifier for a light definition in the model file format. */
-  public static final String LIGHT = "light";
-  /** The identifier for a material definition in the model file format. */
-  public static final String MATERIAL = "mat";
-  /** The identifier for an object definition in the model file format. */
-  public static final String OBJECT = "obj";
-  /** The identifier for a render list definition in the model file format. */
-  public static final String RENDER = "render";
-  /** The tracer environment which can render the scene read by this class. */
-  private final TracerEnvironment environment = new TracerEnvironment();
-  /** The scanner which reads the model file. */
-  private final Scanner scanner;
-  
-  /**
-   * Instantiates this reader with the model at the specified filename.
-   * location.
-   * 
-   * @param filename
-   *          The name of the file containing the description of the tracer
-   *          model.
-   * @throws FileNotFoundException
-   *           If no file exists at the specified location.
-   * @throws FileFormatException
-   *           If the file is not in the correct format, as specified by
-   *           "model_file_format.txt".
-   */
-  public ModelReader(final String filename) throws FileNotFoundException, FileFormatException {
-    this.scanner = new Scanner(new File(filename));
 
-    // TODO use hashmap so we don't have to iterate to find objects by id
-    final List<Material> materials = new ArrayList<Material>();
-    final List<SurfaceObject> surfaceObjects = new ArrayList<SurfaceObject>();
-    List<Integer> toRender = null;
-
-    while (this.scanner.hasNext()) {
-      final String token = this.scanner.next();
-      if (token.equals(CAMERA)) {
-        this.environment.setCamera(readCamera());
-      } else if (token.equals(RESOLUTION)) {
-        this.environment.setResolution(readResolution());
-      } else if (token.equals(VIEWPORT)) {
-        this.environment.setViewport(readViewport());
-      } else if (token.equals(LIGHT)) {
-        this.isAmbientLight = false;
-        final Light light = readLight();
-        if (this.isAmbientLight) {
-          this.environment.addAmbientLight((AmbientLight) light);
-        }
-        this.environment.addLight(light);
-      } else if (token.equals(MATERIAL)) {
-        materials.add(readMaterial());
-      } else if (token.equals(OBJECT)) {
-        surfaceObjects.add(readSurfaceObject(materials, surfaceObjects));
-      } else if (token.equals(RENDER)) {
-        toRender = readIntegerList();
-      } else {
-        throw new FileFormatException("Do not understand declaration \""
-            + token + "\".");
-      }
-    }
-
-    final List<SurfaceObject> toAdd;
-    if (toRender.contains(0)) {
-      toAdd = surfaceObjects;
-    } else {
-      toAdd = new ArrayList<SurfaceObject>();
-      for (final int id : toRender) {
-        toAdd.add(getObjectWithID(surfaceObjects, id));
-      }
-    }
-
-    for (final SurfaceObject surfaceObject : toAdd) {
-      this.environment.addSurfaceObject(surfaceObject);
-    }
-  }
-
-  /** Whether the current light being read is an ambient light. */
-  private boolean isAmbientLight = false;
-  
   /**
    * Iterates over the specified list and returns the object with the specified
    * ID, or {@code null} if no such element exists in the list.
@@ -187,6 +117,101 @@ public class ModelReader {
     return null;
   }
 
+  /** The tracer environment which can render the scene read by this class. */
+  private final TracerEnvironment environment = new TracerEnvironment();
+
+  /** Whether the current light being read is an ambient light. */
+  private boolean isAmbientLight = false;
+
+  /** The scanner which reads the model file. */
+  private final Scanner scanner;
+
+  /**
+   * Instantiates this reader with the model at the specified filename.
+   * location.
+   * 
+   * @param filename
+   *          The name of the file containing the description of the tracer
+   *          model.
+   * @throws FileNotFoundException
+   *           If no file exists at the specified location.
+   * @throws FileFormatException
+   *           If the file is not in the correct format, as specified by
+   *           "model_file_format.txt".
+   */
+  public ModelReader(final String filename) throws FileNotFoundException,
+      FileFormatException {
+    this.scanner = new Scanner(new File(filename));
+
+    // TODO use hashmap so we don't have to iterate to find objects by id
+    final List<Material> materials = new ArrayList<Material>();
+    final List<SurfaceObject> surfaceObjects = new ArrayList<SurfaceObject>();
+    List<Integer> toRender = null;
+
+    // parse the file!
+    while (this.scanner.hasNext()) {
+      final String token = this.scanner.next();
+
+      // if this line starts with a hash, it is a comment so throw it out
+      if (token.charAt(0) == '#') {
+        this.scanner.nextLine();
+        continue;
+      }
+
+      // otherwise delegate the parsing to the appropriate method
+      if (token.equals(CAMERA)) {
+        this.environment.setCamera(readCamera());
+      } else if (token.equals(RESOLUTION)) {
+        this.environment.setResolution(readResolution());
+      } else if (token.equals(VIEWPORT)) {
+        this.environment.setViewport(readViewport());
+      } else if (token.equals(LIGHT)) {
+        // this boolean value will be set to true in the readLight() method if
+        // the light is an ambient light
+        this.isAmbientLight = false;
+        final Light light = readLight();
+        if (this.isAmbientLight) {
+          this.environment.addAmbientLight((AmbientLight) light);
+        } else {
+          this.environment.addLight(light);
+        }
+      } else if (token.equals(MATERIAL)) {
+        materials.add(readMaterial());
+      } else if (token.equals(OBJECT)) {
+        surfaceObjects.add(readSurfaceObject(materials, surfaceObjects));
+      } else if (token.equals(RENDER)) {
+        toRender = readIntegerList();
+      } else {
+        throw new FileFormatException("Do not understand declaration \""
+            + token + "\".");
+      }
+    }
+
+    // determine which surface objects should be added to the environment based
+    // on the render list
+    final List<SurfaceObject> toAdd;
+    if (toRender.isEmpty()) {
+      toAdd = surfaceObjects;
+    } else {
+      toAdd = new ArrayList<SurfaceObject>();
+      for (final int id : toRender) {
+        toAdd.add(getObjectWithID(surfaceObjects, id));
+      }
+    }
+
+    // add those surface objects to the environment
+    for (final SurfaceObject surfaceObject : toAdd) {
+      this.environment.addSurfaceObject(surfaceObject);
+    }
+  }
+
+  /**
+   * @return
+   */
+  public TracerEnvironment environment() {
+    return this.environment;
+  }
+
   /**
    * Creates a box with the properties specified on the current line of the
    * scanner.
@@ -197,8 +222,7 @@ public class ModelReader {
    * @return A box with the properties specified on the current line of the
    *         scanner.
    */
-  protected Box readBox(
-      final List<Material> materials) {
+  protected Box readBox(final List<Material> materials) {
     final Box box = new Box();
 
     this.scanner.next(); // throw away the string "ID"
@@ -227,8 +251,7 @@ public class ModelReader {
    * @throws FileFormatException
    *           If the projection type is not of a known type.
    */
-  protected Camera readCamera()
-      throws FileFormatException {
+  protected Camera readCamera() throws FileFormatException {
     final Camera camera;
 
     final String projectionType = this.scanner.next();
@@ -337,8 +360,7 @@ public class ModelReader {
    * @return A cylinder with the properties specified on the current line of the
    *         scanner.
    */
-  protected Cylinder readCylinder(
-      final List<Material> materials) {
+  protected Cylinder readCylinder(final List<Material> materials) {
     final Cylinder cylinder = new Cylinder();
 
     this.scanner.next(); // throw away the string "ID"
@@ -372,8 +394,7 @@ public class ModelReader {
    * @return An ellipsoid with the properties specified on the current line of
    *         the scanner.
    */
-  protected Ellipsoid readEllipsoid(
-      final List<Material> materials) {
+  protected Ellipsoid readEllipsoid(final List<Material> materials) {
     final Ellipsoid ellipsoid = new Ellipsoid();
 
     this.scanner.next(); // throw away the string "ID"
@@ -393,16 +414,20 @@ public class ModelReader {
   }
 
   /**
-   * Reads a sequence of consecutive integers of arbitrary length from the
+   * Reads a sequence of consecutive integers IDS of arbitrary length from the
    * specified input.
    * 
    * @return A list of integers read from the input.
    */
   protected List<Integer> readIntegerList() {
     final List<Integer> result = new ArrayList<Integer>();
-    while (this.scanner.hasNextInt()) {
+    // read the first number, which is the number of IDs to read
+    for (int numToRead = this.scanner.nextInt(); numToRead > 0; numToRead--) {
+      // throw away the "ID" token
+      this.scanner.next();
       result.add(this.scanner.nextInt());
     }
+
     return result;
   }
 
@@ -415,8 +440,7 @@ public class ModelReader {
    * @throws FileFormatException
    *           If the specified type of light is not recognized.
    */
-  protected Light readLight()
-      throws FileFormatException {
+  protected Light readLight() throws FileFormatException {
     final Light light;
 
     this.scanner.next(); // throw away the string "ID"
@@ -539,8 +563,7 @@ public class ModelReader {
    * @return A sphere with the properties specified on the current line of the
    *         scanner.
    */
-  protected Sphere readSphere(
-      final List<Material> materials) {
+  protected Sphere readSphere(final List<Material> materials) {
     final Sphere sphere = new Sphere();
 
     this.scanner.next(); // throw away the string "ID"
@@ -577,22 +600,21 @@ public class ModelReader {
    * @return An surface object with the properties specified on the current line
    *         of the scanner.
    */
-  protected SurfaceObject readSurfaceObject(
-      final List<Material> materials, final List<SurfaceObject> surfaceObjects)
-      throws FileFormatException {
+  protected SurfaceObject readSurfaceObject(final List<Material> materials,
+      final List<SurfaceObject> surfaceObjects) throws FileFormatException {
     final SurfaceObject surfaceObject;
 
     final String type = this.scanner.next();
     if (type.equals("sphere")) {
-      surfaceObject = readSphere( materials);
+      surfaceObject = readSphere(materials);
     } else if (type.equals("ellipsoid")) {
-      surfaceObject = readEllipsoid( materials);
+      surfaceObject = readEllipsoid(materials);
     } else if (type.equals("cylinder")) {
-      surfaceObject = readCylinder( materials);
+      surfaceObject = readCylinder(materials);
     } else if (type.equals("box")) {
-      surfaceObject = readBox( materials);
+      surfaceObject = readBox(materials);
     } else if (type.equals("CSG")) {
-      surfaceObject = readCSG( surfaceObjects);
+      surfaceObject = readCSG(surfaceObjects);
     } else {
       throw new FileFormatException("Do not understand surface object type \""
           + type + "\".");
@@ -629,12 +651,5 @@ public class ModelReader {
     viewport.setHeight(height);
 
     return viewport;
-  }
-
-  /**
-   * @return
-   */
-  public TracerEnvironment environment() {
-    return this.environment;
   }
 }

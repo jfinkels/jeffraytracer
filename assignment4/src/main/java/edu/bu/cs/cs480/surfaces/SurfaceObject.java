@@ -4,9 +4,8 @@
 package edu.bu.cs.cs480.surfaces;
 
 import edu.bu.cs.cs480.Identifiable;
-import edu.bu.cs.cs480.Intercept;
-import edu.bu.cs.cs480.Ray;
-import edu.bu.cs.cs480.Vector3D;
+import edu.bu.cs.cs480.vectors.Ray;
+import edu.bu.cs.cs480.vectors.Vector3D;
 
 /**
  * A marker interface for surface objects which can be rendered in a scene.

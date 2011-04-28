@@ -4,7 +4,7 @@
 package edu.bu.cs.cs480.surfaces;
 
 import edu.bu.cs.cs480.Immutable;
-import edu.bu.cs.cs480.Vector3D;
+import edu.bu.cs.cs480.vectors.Vector3D;
 
 /**
  * A three dimensional vector basis defining an orientation.

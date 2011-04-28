@@ -7,8 +7,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import edu.bu.cs.cs480.Matrix4x4;
-import edu.bu.cs.cs480.Vector3D;
+import edu.bu.cs.cs480.vectors.Matrix4x4;
+import edu.bu.cs.cs480.vectors.Vector3D;
 
 /**
  * Test for the Ellipsoid class.

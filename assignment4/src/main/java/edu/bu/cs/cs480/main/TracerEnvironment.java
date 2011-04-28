@@ -13,17 +13,17 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import edu.bu.cs.cs480.AmbientLight;
 import edu.bu.cs.cs480.FloatColor;
-import edu.bu.cs.cs480.Intercept;
-import edu.bu.cs.cs480.Light;
 import edu.bu.cs.cs480.Material;
-import edu.bu.cs.cs480.Ray;
-import edu.bu.cs.cs480.Vector3D;
 import edu.bu.cs.cs480.camera.Camera;
 import edu.bu.cs.cs480.camera.Resolution;
 import edu.bu.cs.cs480.camera.Viewport;
+import edu.bu.cs.cs480.lights.AmbientLight;
+import edu.bu.cs.cs480.lights.Light;
+import edu.bu.cs.cs480.surfaces.Intercept;
 import edu.bu.cs.cs480.surfaces.SurfaceObject;
+import edu.bu.cs.cs480.vectors.Ray;
+import edu.bu.cs.cs480.vectors.Vector3D;
 
 /**
  * An environment which aggregates all the objects necessary to trace a scene.
@@ -333,7 +333,7 @@ public class TracerEnvironment {
       // if the light hits the point at an angle between -90 and 90 and this is
       // not in shadow
       if (dotProduct > TOLERANCE) {
-
+        
         // determine if the point is not in shadow
         if (!light.castsShadow() || !this.isShadowed(shadowRay)) {
 
@@ -382,9 +382,6 @@ public class TracerEnvironment {
               specularReflection).scaledBy(
               radialAttenuation * angularAttenuation));
         }
-        // else {
-        // LOG.debug("in shadow");
-        // }
       }
     }
 

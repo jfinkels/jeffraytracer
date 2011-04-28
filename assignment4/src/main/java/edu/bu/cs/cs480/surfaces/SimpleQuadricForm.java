@@ -3,13 +3,12 @@
  */
 package edu.bu.cs.cs480.surfaces;
 
-import edu.bu.cs.cs480.Intercept;
-import edu.bu.cs.cs480.Matrix4x4;
 import edu.bu.cs.cs480.Pair;
 import edu.bu.cs.cs480.QuadraticSolver;
-import edu.bu.cs.cs480.Ray;
-import edu.bu.cs.cs480.Vector3D;
-import edu.bu.cs.cs480.Vector4D;
+import edu.bu.cs.cs480.vectors.Matrix4x4;
+import edu.bu.cs.cs480.vectors.Ray;
+import edu.bu.cs.cs480.vectors.Vector3D;
+import edu.bu.cs.cs480.vectors.Vector4D;
 
 /**
  * A surface object which can be described by a quadric matrix.
@@ -45,7 +44,7 @@ public abstract class SimpleQuadricForm extends ConcreteSurfaceObject {
    * method.
    * 
    * This method must only be called AFTER the
-   * {@link #setPosition(edu.bu.cs.cs480.Vector3D)} method has been called, in
+   * {@link #setPosition(edu.bu.cs.cs480.vectors.Vector3D)} method has been called, in
    * order to create the translation matrix.
    * 
    * This method will overwrite the contents of the {@link #matrix} field.
@@ -99,7 +98,7 @@ public abstract class SimpleQuadricForm extends ConcreteSurfaceObject {
    * @param ray
    *          {@inheritDoc}
    * @return {@inheritDoc}
-   * @see edu.bu.cs.cs480.surfaces.SurfaceObject#interceptWith(edu.bu.cs.cs480.Ray)
+   * @see edu.bu.cs.cs480.surfaces.SurfaceObject#interceptWith(edu.bu.cs.cs480.vectors.Ray)
    */
   @Override
   public Intercept interceptWith(final Ray ray) {

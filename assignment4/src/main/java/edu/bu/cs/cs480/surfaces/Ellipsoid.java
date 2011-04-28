@@ -3,8 +3,8 @@
  */
 package edu.bu.cs.cs480.surfaces;
 
-import edu.bu.cs.cs480.Matrix4x4;
-import edu.bu.cs.cs480.Vector3D;
+import edu.bu.cs.cs480.vectors.Matrix4x4;
+import edu.bu.cs.cs480.vectors.Vector3D;
 
 /**
  * An ellipsoid surface object.

@@ -10,10 +10,9 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import edu.bu.cs.cs480.Intercept;
-import edu.bu.cs.cs480.Matrix4x4;
-import edu.bu.cs.cs480.Ray;
-import edu.bu.cs.cs480.Vector3D;
+import edu.bu.cs.cs480.vectors.Matrix4x4;
+import edu.bu.cs.cs480.vectors.Ray;
+import edu.bu.cs.cs480.vectors.Vector3D;
 
 /**
  * Test for the SimpleQuadricForm class.
@@ -44,7 +43,7 @@ public class SimpleQuadricFormTest {
 
   /**
    * Test method for
-   * {@link edu.bu.cs.cs480.surfaces.SimpleQuadricForm#interceptWith(edu.bu.cs.cs480.Ray)}
+   * {@link edu.bu.cs.cs480.surfaces.SimpleQuadricForm#interceptWith(edu.bu.cs.cs480.vectors.Ray)}
    * .
    */
   @Test

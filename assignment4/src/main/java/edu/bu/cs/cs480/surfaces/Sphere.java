@@ -3,7 +3,7 @@
  */
 package edu.bu.cs.cs480.surfaces;
 
-import edu.bu.cs.cs480.Matrix4x4;
+import edu.bu.cs.cs480.vectors.Matrix4x4;
 
 /**
  * A sphere surface object.

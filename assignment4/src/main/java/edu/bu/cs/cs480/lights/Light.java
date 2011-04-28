@@ -1,7 +1,13 @@
 /**
  * Light.java - a light source
  */
-package edu.bu.cs.cs480;
+package edu.bu.cs.cs480.lights;
+
+import edu.bu.cs.cs480.Colorable;
+import edu.bu.cs.cs480.Directed;
+import edu.bu.cs.cs480.FloatColor;
+import edu.bu.cs.cs480.PositionableTracerObject;
+import edu.bu.cs.cs480.vectors.Vector3D;
 
 /**
  * A light source.
@@ -31,24 +37,7 @@ public abstract class Light extends PositionableTracerObject implements
    *          the light source.
    * @return The attenuation factor of the energy from this light due to angle.
    */
-  public double angularAttenuation(final double cosineAngle) {
-    return Math.pow(cosineAngle, this.attenuationExponent);
-  }
-
-  /**
-   * Attenuation (i.e. weakening) factor of the energy from this light due to
-   * distance.
-   * 
-   * @param distance
-   *          The distance from this light.
-   * @return The attenuation factor of the energy from this light due to
-   *         distance.
-   */
-  public double radialAttenuation(final double distance) {
-    return 1.0 / QuadraticSolver.evaluate(this.attenuationCoefficients.z(),
-        this.attenuationCoefficients.y(), this.attenuationCoefficients.x(),
-        distance);
-  }
+  public abstract double angularAttenuation(final double cosineAngle);
 
   /**
    * Gets the attenuation coefficients of this light source.
@@ -66,6 +55,15 @@ public abstract class Light extends PositionableTracerObject implements
    */
   public int attenuationExponent() {
     return this.attenuationExponent;
+  }
+
+  /**
+   * Gets whether this light source casts a shadow.
+   * 
+   * @return Whether this light source casts a shadow.
+   */
+  public boolean castsShadow() {
+    return this.shadow;
   }
 
   /**
@@ -89,6 +87,17 @@ public abstract class Light extends PositionableTracerObject implements
   public Vector3D direction() {
     return this.direction;
   }
+
+  /**
+   * Attenuation (i.e. weakening) factor of the energy from this light due to
+   * distance.
+   * 
+   * @param distance
+   *          The distance from this light.
+   * @return The attenuation factor of the energy from this light due to
+   *         distance.
+   */
+  public abstract double radialAttenuation(final double distance);
 
   /**
    * Sets the attenuation coefficients of this light source.
@@ -127,7 +136,7 @@ public abstract class Light extends PositionableTracerObject implements
    * 
    * @param direction
    *          {@inheritDoc}
-   * @see edu.bu.cs.cs480.Directed#setDirection(edu.bu.cs.cs480.Vector3D)
+   * @see edu.bu.cs.cs480.Directed#setDirection(edu.bu.cs.cs480.vectors.Vector3D)
    */
   @Override
   public void setDirection(final Vector3D direction) {
@@ -142,15 +151,6 @@ public abstract class Light extends PositionableTracerObject implements
    */
   public void setShadow(final boolean shadow) {
     this.shadow = shadow;
-  }
-
-  /**
-   * Gets whether this light source casts a shadow.
-   * 
-   * @return Whether this light source casts a shadow.
-   */
-  public boolean castsShadow() {
-    return this.shadow;
   }
 
   /**

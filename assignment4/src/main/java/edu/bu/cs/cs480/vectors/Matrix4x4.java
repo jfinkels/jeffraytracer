@@ -1,7 +1,7 @@
 /**
  * Matrix4x4.java - a 4x4 matrix with real-valued entries
  */
-package edu.bu.cs.cs480;
+package edu.bu.cs.cs480.vectors;
 
 import java.util.Arrays;
 

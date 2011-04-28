@@ -1,7 +1,9 @@
 /**
  * Vector4D.java - a four-dimensional vector
  */
-package edu.bu.cs.cs480;
+package edu.bu.cs.cs480.vectors;
+
+import edu.bu.cs.cs480.Immutable;
 
 /**
  * A four-dimensional vector.

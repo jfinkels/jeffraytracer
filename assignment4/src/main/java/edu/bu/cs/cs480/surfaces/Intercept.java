@@ -1,9 +1,10 @@
 /**
  * Intercept.java - the intercept of a ray with a surface object at a time
  */
-package edu.bu.cs.cs480;
+package edu.bu.cs.cs480.surfaces;
 
-import edu.bu.cs.cs480.surfaces.ConcreteSurfaceObject;
+import edu.bu.cs.cs480.vectors.Ray;
+import edu.bu.cs.cs480.vectors.Vector3D;
 
 /**
  * The intercept of a ray with a surface object at a specific time.

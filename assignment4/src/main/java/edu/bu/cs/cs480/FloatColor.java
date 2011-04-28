@@ -5,6 +5,8 @@ package edu.bu.cs.cs480;
 
 import java.awt.Color;
 
+import edu.bu.cs.cs480.vectors.Vector3D;
+
 /**
  * A Color object which allows getting the component values as floats.
  * 

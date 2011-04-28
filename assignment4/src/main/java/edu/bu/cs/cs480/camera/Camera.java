@@ -4,7 +4,7 @@
 package edu.bu.cs.cs480.camera;
 
 import edu.bu.cs.cs480.PositionedDirected;
-import edu.bu.cs.cs480.Vector3D;
+import edu.bu.cs.cs480.vectors.Vector3D;
 
 /**
  * A camera which has a position, a direction, an orientation, and near and far

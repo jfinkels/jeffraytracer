@@ -18,40 +18,47 @@ import edu.bu.cs.cs480.vectors.Ray;
  * @since Spring 2011
  */
 class Renderer implements Runnable {
-  /** The primary rays to use to trace the image. */
-  private final Ray[] rays;
-  /** The row in the {@link #rays} array row at which to start rendering. */
-  private final int startRow;
+  /** The logger for this class. */
+  private static final transient Logger LOG = Logger.getLogger(Renderer.class);
   /** The row in the {@link #rays} array row at which to stop rendering. */
   private final int endRow;
-  /**
-   * The width of the output image (and therefore the dimension of a row in the
-   * {@link #rays} array).
-   */
-  private final int width;
   /** The environment to use to trace the scene. */
   private final TracerEnvironment environment;
+  /** The primary rays to use to trace the image. */
+  private final Ray[] rays;
   /** The image to which to write the traced pixels. */
   private final BufferedImage result;
+  /** The row in the {@link #rays} array row at which to start rendering. */
+  private final int startRow;
   /**
    * The ID number of this thread, used to identify which thread has finished in
    * the tracer environment.
    */
   private final int threadID;
-  /** The logger for this class. */
-  private static final transient Logger LOG = Logger.getLogger(Renderer.class);
+  /**
+   * The width of the output image (and therefore the dimension of a row in the
+   * {@link #rays} array).
+   */
+  private final int width;
 
   /**
    * Instantiates this renderer with access to all the necessary information
    * from the tracer environment.
    * 
    * @param rays
+   *          An array containing (as a sublist) the primary rays to trace.
    * @param startRow
+   *          The row at which to start tracing.
    * @param endRow
+   *          The row at which to end tracing.
    * @param width
+   *          The width of the output image.
    * @param environment
+   *          The tracer environment to use to trace the scene.
    * @param result
+   *          The output image to which to write the traced scene.
    * @param threadID
+   *          The ID of this rendering thread.
    */
   public Renderer(final Ray[] rays, final int startRow, final int endRow,
       final int width, final TracerEnvironment environment,
@@ -67,7 +74,7 @@ class Renderer implements Runnable {
 
   /**
    * Traces rays from the {@link #rays} array starting at position (0,
-   * {@link #startRow}) and ending at (this.width - 1, {@link #endRow}).
+   * {@link #startRow}) and ending at (this.width - 1, {@link #endRow} - 1).
    */
   @Override
   public void run() {

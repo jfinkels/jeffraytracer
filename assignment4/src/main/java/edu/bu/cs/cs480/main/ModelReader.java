@@ -161,7 +161,7 @@ public class ModelReader {
         this.scanner.nextLine();
         continue;
       }
-      LOG.debug(token);
+
       // otherwise delegate the parsing to the appropriate method
       if (token.equals(CAMERA)) {
         this.environment.setCamera(readCamera());

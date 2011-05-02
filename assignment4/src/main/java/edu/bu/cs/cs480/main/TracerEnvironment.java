@@ -7,9 +7,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -33,13 +31,14 @@ import edu.bu.cs.cs480.vectors.Vector3D;
  */
 public class TracerEnvironment {
   /** The color of the background for rendered images. */
-  public static final int BACKGROUND_COLOR = 0xFF101010;
+  public static final Vector3D BACKGROUND_COLOR = new Vector3D(0x10 / 255.0,
+      0x10 / 255.0, 0x10 / 255.0);
   /** The logger for this class. */
   private static final Logger LOG = Logger.getLogger(TracerEnvironment.class);
   /** The maximum value by which to bound colors in the rendered scene. */
   public static final Vector3D MAX_COLOR = new Vector3D(1, 1, 1);
   /** The maximum depth in the ray tree. */
-  public static final int MAX_DEPTH = 3;
+  public static final int MAX_DEPTH = 2;
   /** The tolerance for floating point value comparison to zero. */
   public static final double TOLERANCE = Double.MIN_VALUE;
   /**
@@ -58,8 +57,8 @@ public class TracerEnvironment {
    *         color as specified in {@link #MAX_COLOR}.
    */
   private static Vector3D boundedColor(final Vector3D color) {
-    return new Vector3D(Math.min(MAX_COLOR.x(), color.x()), Math.min(
-        MAX_COLOR.y(), color.y()), Math.min(MAX_COLOR.z(), color.z()));
+    return new Vector3D(Math.min(MAX_COLOR.x(), color.x()), Math.min(MAX_COLOR
+        .y(), color.y()), Math.min(MAX_COLOR.z(), color.z()));
   }
 
   /**
@@ -227,28 +226,9 @@ public class TracerEnvironment {
 
     // compile all the surface objects so that we only compute their quadratic
     // form matrices one time
+    LOG.debug("Compiling quadric form matrices...");
     for (final SurfaceObject surfaceObject : this.surfaceObjects) {
       surfaceObject.compile();
-    }
-
-    // compute the min intercept for each ray
-    LOG.debug("Computing min intercepts for each ray...");
-    final Map<Ray, Intercept> intercepts = new HashMap<Ray, Intercept>();
-    for (final Ray ray : rays) {
-      // compute all intersections with surface objects
-      final List<Intercept> candidates = new ArrayList<Intercept>();
-      for (final SurfaceObject surfaceObject : this.surfaceObjects) {
-        final Intercept intercept = surfaceObject.interceptWith(ray);
-        if (intercept != null) {
-          candidates.add(intercept);
-        }
-      }
-
-      if (candidates.isEmpty()) {
-        intercepts.put(ray, null);
-      } else {
-        intercepts.put(ray, Collections.min(candidates));
-      }
     }
 
     // draw the intercept on an image
@@ -269,20 +249,21 @@ public class TracerEnvironment {
 
     // create the two runnables which will render the top half and the bottom
     // half of the result image separately
-    final Renderer r1 = new Renderer(rays, 0, halfHeight, width, this,
-        intercepts, result, 1);
+    final Renderer r1 = new Renderer(rays, 0, halfHeight, width, this, result,
+        1);
     final Renderer r2 = new Renderer(rays, halfHeight, height, width, this,
-        intercepts, result, 2);
+        result, 2);
 
     // run the two threads
     new Thread(r1).start();
     new Thread(r2).start();
-    
+
     this.waitForThreads();
-    
+
     return result;
   }
 
+  /** Waits for the rendering threads to complete. */
   private synchronized void waitForThreads() {
     while (!this.renderersFinished()) {
       try {
@@ -295,6 +276,12 @@ public class TracerEnvironment {
     }
   }
 
+  /**
+   * Marks the rendering thread with the specified ID completed.
+   * 
+   * @param threadID
+   *          The ID of the thread to be marked completed.
+   */
   void rendererFinished(final int threadID) {
     if (threadID == 1) {
       this.done1 = true;
@@ -305,12 +292,20 @@ public class TracerEnvironment {
     }
   }
 
+  /**
+   * Returns {@code true} if and only if both threads have finished rendering
+   * their respective halves of the image.
+   * 
+   * @return {@code true} if and only if both threads have rendered their
+   *         halves of the image.
+   */
   private boolean renderersFinished() {
-    LOG.debug("checking finished");
     return this.done1 && this.done2;
   }
 
+  /** Whether the first thread is done. */
   private boolean done1 = false;
+  /** Whether the second thread is done. */
   private boolean done2 = false;
 
   /**
@@ -359,9 +354,12 @@ public class TracerEnvironment {
     // get the normal to the surface at the point of intersection
     final Vector3D normal = intercept.normal();
 
+    // the primary ray which intercepted this point
+    final Ray ray = intercept.ray();
+
     // get the vector from the point of intersection to the origin of the ray
     // which caused the intercept
-    final Vector3D viewPlaneVector = intercept.ray().direction().scaledBy(-1);
+    final Vector3D viewPlaneVector = ray.direction().scaledBy(-1);
 
     // create a ray from the point of intersection to the light
     final Ray shadowRay = new Ray();
@@ -384,10 +382,9 @@ public class TracerEnvironment {
 
         // determine if the point is not in shadow
         if (!light.castsShadow() || !this.isShadowed(shadowRay)) {
-
           // radial attenuation scale factor
-          final double radialAttenuation = light.radialAttenuation(pointToLight
-              .norm());
+          final double radialAttenuation = light
+              .radialAttenuation(pointToLight.norm());
 
           // angular attenuation scale factor
           final double cosineAngle = shadowRay.direction().scaledBy(-1)
@@ -400,7 +397,8 @@ public class TracerEnvironment {
 
           // energy from diffuse reflection
           // NOTE: dot product is guaranteed to be > 0 by conditional execution
-          final double diffuseScale = material.diffuseReflection() * dotProduct;
+          final double diffuseScale = material.diffuseReflection()
+              * dotProduct;
           final Vector3D diffuseReflection = lightColor.scaledBy(diffuseScale);
 
           // determine the energy from specular reflection
@@ -433,6 +431,40 @@ public class TracerEnvironment {
     }
 
     // do reflection and transmission
+    if (depth < MAX_DEPTH) {
+      if (material.reflection() > 0) {
+        final Ray reflectionRay = new Ray();
+        reflectionRay.setPosition(point);
+        reflectionRay.setDirection(reflected(ray.direction().scaledBy(-1),
+            normal).normalized());
+
+        final Vector3D reflectionColor = this.trace(reflectionRay, depth + 1);
+        reflectionColor.scaledBy(material.reflection());
+
+        reflection = reflection.sumWith(reflectionColor);
+      }
+
+      if (material.transmission() > 0) {
+        final Ray transmissionRay = new Ray();
+        transmissionRay.setPosition(point);
+        final double cosAngle1 = normal.dotProduct(ray.direction()
+            .scaledBy(-1));
+        final double cosAngle2 = Math.sqrt(1
+            - Math.pow(material.refraction(), 2)
+            * (1 - Math.pow(cosAngle1, 2)));
+        // TODO need to do 1 / refraction if going from inside to outside
+        final double factor = cosAngle1 < 0 ? 1 : -1;
+        transmissionRay.setDirection(ray.direction().scaledBy(
+            material.refraction()).sumWith(
+            normal.scaledBy(material.refraction() * cosAngle1 + factor
+                * cosAngle2)).normalized());
+        final Vector3D transmissionColor = this.trace(transmissionRay,
+            depth + 1);
+        transmissionColor.scaledBy(material.transmission());
+
+        reflection = reflection.sumWith(transmissionColor);
+      }
+    }
 
     return boundedColor(materialColor.scaledByComponentwise(reflection));
   }
@@ -448,10 +480,19 @@ public class TracerEnvironment {
    *          The current depth of recursion in the ray tree.
    * @return The color at this intercept.
    */
-  int trace(final Intercept intercept, final int depth) {
-    if (intercept == null) {
+  Vector3D trace(final Ray ray, final int depth) {
+    final List<Intercept> candidates = new ArrayList<Intercept>();
+    for (final SurfaceObject surfaceObject : this.surfaceObjects) {
+      final Intercept intercept = surfaceObject.interceptWith(ray);
+      if (intercept != null) {
+        candidates.add(intercept);
+      }
+    }
+
+    if (candidates.isEmpty()) {
       return BACKGROUND_COLOR;
     }
-    return FloatColor.toRGB(this.shade(intercept, depth));
+
+    return this.shade(Collections.min(candidates), depth);
   }
 }

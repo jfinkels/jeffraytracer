@@ -49,10 +49,10 @@ public class TracerEnvironmentTest {
   // , "singlecylinder"
   // , "singleellipsoid"
   // , "singlebox"
-  // , "sphereTest"
-  "model1"
-  //, "model2"
-  //, "model3"
+  "sphereTest"
+  , "model1"
+  , "model2"
+  , "model3"
       );
 
   /**

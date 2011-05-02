@@ -3,6 +3,8 @@
  */
 package edu.bu.cs.cs480.surfaces;
 
+import org.apache.log4j.Logger;
+
 import edu.bu.cs.cs480.Pair;
 import edu.bu.cs.cs480.QuadraticSolver;
 import edu.bu.cs.cs480.vectors.Matrix4x4;
@@ -17,6 +19,10 @@ import edu.bu.cs.cs480.vectors.Vector4D;
  * @since Spring 2011
  */
 public abstract class SimpleQuadricForm extends ConcreteSurfaceObject {
+  /** The logger for this class. */
+  private static final transient Logger LOG = Logger
+      .getLogger(SimpleQuadricForm.class);
+
   /** The tolerance for testing equality of double values. */
   public static final double TOLERANCE = Double.MIN_VALUE;
 
@@ -44,8 +50,8 @@ public abstract class SimpleQuadricForm extends ConcreteSurfaceObject {
    * method.
    * 
    * This method must only be called AFTER the
-   * {@link #setPosition(edu.bu.cs.cs480.vectors.Vector3D)} method has been called, in
-   * order to create the translation matrix.
+   * {@link #setPosition(edu.bu.cs.cs480.vectors.Vector3D)} method has been
+   * called, in order to create the translation matrix.
    * 
    * This method will overwrite the contents of the {@link #matrix} field.
    * 
@@ -114,25 +120,11 @@ public abstract class SimpleQuadricForm extends ConcreteSurfaceObject {
     if (pair == null) {
       return null;
     }
+    // TODO assumes that both are positive
     final double time = Math.min(pair.left(), pair.right());
 
     return new Intercept(ray, time, this, this.normal(Intercept
         .pointOfIntersection(ray, time)));
-  }
-
-  /**
-   * Returns the unit vector normal to the surface at the specified point.
-   * 
-   * Pre-condition: the quadratic matrix which defines this surface object has
-   * already been built by a call to the {@link #compile()} method.
-   * 
-   * @param point
-   * 
-   * @return
-   */
-  private Vector3D normal(final Vector3D point) {
-    return this.matrix.product(new Vector4D(point, 1)).homogeneized()
-        .normalized();
   }
 
   /**
@@ -161,6 +153,21 @@ public abstract class SimpleQuadricForm extends ConcreteSurfaceObject {
    */
   protected Matrix4x4 matrix() {
     return this.matrix;
+  }
+
+  /**
+   * Returns the unit vector normal to the surface at the specified point.
+   * 
+   * Pre-condition: the quadratic matrix which defines this surface object has
+   * already been built by a call to the {@link #compile()} method.
+   * 
+   * @param point
+   * 
+   * @return
+   */
+  private Vector3D normal(final Vector3D point) {
+    return this.matrix.product(new Vector4D(point, 1)).homogeneized()
+        .normalized();
   }
 
   /**

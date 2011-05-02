@@ -1,0 +1,46 @@
+
+camera orthographic   7 -7 7  0 1 1   0 0 1   5 1 20
+resolution    0.0185 0.0185
+viewport    400 300
+
+light ID 0 inf  -2 10 10  0 -1 -1  1 1 1   1 0 0   10  shadow_on
+#light ID 1 inf  10 10 10  -1 -1 -1  1 0 0   1 0 0 10  shadow_on
+light ID 2 amb  0 0 8   0 0 -1    0 0 1   1 0 0.000002 1  shadow_on
+
+mat ID 0  1 1 1   0.1 0.1 0.1 5   0.8 0.1 1.25 
+mat ID 1  1 1 1   0.01 0.01 0.01 5   0.999 0.0001 1 
+mat ID 2  1 1 1   0.9 0.9 0.9 5   0 0 1
+mat ID 6  0.82 0.72 0.12  0.6 1 2 50    0 0 0
+
+render 0
+
+obj sphere ID 0 mat ID 0    2    2 0.7   0.85
+obj sphere ID 1 mat ID 1    0.25 1 0.7   0.85
+obj sphere ID 2 mat ID 2    -1.50   0 0.7   0.85
+obj box ID 6 mat ID 6 1 1 -1 1 0 0 0 1 0 0 0 1 12 12 1
+
+
+
+
+
+
+
+
+
+#camera perspective 	0 0 -5 	0 0 0 	0 0 1 	5  0.1 20
+#resolution  	0.025 0.025
+#viewport  	400 400
+
+#light ID 1 inf 	-1 10 10		0 -0.7071067811865476 0.7071067811865476 1 1 1 	1 0 0.0025 5 shadow_on
+#light ID 4 amb  8 8 8		0 0 0   0.1 0.1 0.1	1 0 0 0 shadow_off
+
+#mat ID 1  1.0 1.0 1.0   0.01 0.01 0.02  10 1 0.5 1.25
+#mat ID 2  1.0 1.0 1.0   0.0 0.0 0.0  10 1 0.01 1
+#mat ID 3  1.0 1.0 1.0   1 1 1 2 0 0 1
+
+#render 0
+
+#obj sphere ID 1 mat ID 1 -1.25 0 0 .5
+#obj sphere ID 2 mat ID 2 0 0 0 .5
+#obj sphere ID 3 mat ID 3 1.25 0 0 .5
+#obj box ID 4 mat ID 1 0 0 -1.5  1 0 0 0 1 0 0 0 1 10 6 2

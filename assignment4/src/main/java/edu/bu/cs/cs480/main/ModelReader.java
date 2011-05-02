@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import org.apache.log4j.Logger;
+
 import edu.bu.cs.cs480.FloatColor;
 import edu.bu.cs.cs480.Identifiable;
 import edu.bu.cs.cs480.Material;
@@ -81,13 +83,13 @@ public class ModelReader {
   /** The identifier for the resolution definition in the model file format. */
   public static final String RESOLUTION = "resolution";
   /**
-   * The identifier for the symmetric difference operation on surface objects in
-   * the model file format.
+   * The identifier for the symmetric difference operation on surface objects
+   * in the model file format.
    */
   public static final String SYMMETRIC_DIFFERENCE = "difference";
   /**
-   * The identifier for the union operation on surface objects in the model file
-   * format.
+   * The identifier for the union operation on surface objects in the model
+   * file format.
    */
   public static final String UNION = "union";
   /** The identifier for the viewport definition in the model file format. */
@@ -103,8 +105,8 @@ public class ModelReader {
    *          The list of elements through which to search.
    * @param id
    *          The ID of the element to find in the list.
-   * @return The object in the list with the specified ID number, or
-   *         {@code null} if no such element exists.
+   * @return The object in the list with the specified ID number, or {@code
+   *         null} if no such element exists.
    */
   protected static <E extends Identifiable> E getObjectWithID(
       final List<E> list, final int id) {
@@ -119,7 +121,9 @@ public class ModelReader {
 
   /** The tracer environment which can render the scene read by this class. */
   private final TracerEnvironment environment = new TracerEnvironment();
-
+  /** The logger for this class. */
+  private static final transient Logger LOG = Logger
+      .getLogger(ModelReader.class);
   /** Whether the current light being read is an ambient light. */
   private boolean isAmbientLight = false;
 
@@ -157,7 +161,7 @@ public class ModelReader {
         this.scanner.nextLine();
         continue;
       }
-
+      LOG.debug(token);
       // otherwise delegate the parsing to the appropriate method
       if (token.equals(CAMERA)) {
         this.environment.setCamera(readCamera());
@@ -289,7 +293,8 @@ public class ModelReader {
    * Reads the next three float values between 0 and 1 from the Scanner and
    * returns the corresponding color.
    * 
-   * @return The color whose component values are read from the specified input.
+   * @return The color whose component values are read from the specified
+   *         input.
    */
   protected FloatColor readColor() {
     final float red = this.scanner.nextFloat();
@@ -351,14 +356,14 @@ public class ModelReader {
   }
 
   /**
-   * Creates a cylinder with the properties specified on the current line of the
-   * scanner.
+   * Creates a cylinder with the properties specified on the current line of
+   * the scanner.
    * 
    * @param materials
    *          The list of known materials which the input will reference when
    *          describing the material of the cylinder by its ID number.
-   * @return A cylinder with the properties specified on the current line of the
-   *         scanner.
+   * @return A cylinder with the properties specified on the current line of
+   *         the scanner.
    */
   protected Cylinder readCylinder(final List<Material> materials) {
     final Cylinder cylinder = new Cylinder();
@@ -485,11 +490,11 @@ public class ModelReader {
   }
 
   /**
-   * Creates a material with the properties specified on the current line of the
-   * scanner.
+   * Creates a material with the properties specified on the current line of
+   * the scanner.
    * 
-   * @return A material with the properties specified on the current line of the
-   *         scanner.
+   * @return A material with the properties specified on the current line of
+   *         the scanner.
    * @throws FileFormatException
    *           If the specified type of material is not recognized.
    */
@@ -597,8 +602,8 @@ public class ModelReader {
    *          The list of known surface objects which the input will reference
    *          when describing the two surface objects which comprise a
    *          constructive solid geometry object by ID number.
-   * @return An surface object with the properties specified on the current line
-   *         of the scanner.
+   * @return An surface object with the properties specified on the current
+   *         line of the scanner.
    */
   protected SurfaceObject readSurfaceObject(final List<Material> materials,
       final List<SurfaceObject> surfaceObjects) throws FileFormatException {

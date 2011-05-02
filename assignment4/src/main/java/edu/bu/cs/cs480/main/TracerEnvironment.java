@@ -38,7 +38,7 @@ public class TracerEnvironment {
   /** The maximum value by which to bound colors in the rendered scene. */
   public static final Vector3D MAX_COLOR = new Vector3D(1, 1, 1);
   /** The maximum depth in the ray tree. */
-  public static final int MAX_DEPTH = 2;
+  public static final int MAX_DEPTH = 3;
   /** The tolerance for floating point value comparison to zero. */
   public static final double TOLERANCE = Double.MIN_VALUE;
   /**
@@ -445,19 +445,23 @@ public class TracerEnvironment {
       }
 
       if (material.transmission() > 0) {
+        // determine if we are entering or exiting
+        final Vector3D midPoint = ray.position().sumWith(
+            ray.direction().scaledBy(ray.position().distanceTo(point) / 2.0));
+        double power = intercept.surfaceObject().outside(midPoint) ? 1 : -1;
+        final double refraction = Math.pow(material.refraction(), power);
         final Ray transmissionRay = new Ray();
         transmissionRay.setPosition(point);
         final double cosAngle1 = normal.dotProduct(ray.direction()
             .scaledBy(-1));
-        final double cosAngle2 = Math.sqrt(1
-            - Math.pow(material.refraction(), 2)
+        final double cosAngle2 = Math.sqrt(1 - Math.pow(refraction, 2)
             * (1 - Math.pow(cosAngle1, 2)));
         // TODO need to do 1 / refraction if going from inside to outside
         final double factor = cosAngle1 < 0 ? 1 : -1;
-        transmissionRay.setDirection(ray.direction().scaledBy(
-            material.refraction()).sumWith(
-            normal.scaledBy(material.refraction() * cosAngle1 + factor
-                * cosAngle2)).normalized());
+        transmissionRay.setDirection(ray.direction().scaledBy(refraction)
+            .sumWith(
+                normal.scaledBy(refraction * cosAngle1 + factor * cosAngle2))
+            .normalized());
         final Vector3D transmissionColor = this.trace(transmissionRay,
             depth + 1);
         transmissionColor.scaledBy(material.transmission());
@@ -484,7 +488,9 @@ public class TracerEnvironment {
     final List<Intercept> candidates = new ArrayList<Intercept>();
     for (final SurfaceObject surfaceObject : this.surfaceObjects) {
       final Intercept intercept = surfaceObject.interceptWith(ray);
-      if (intercept != null) {
+      if (intercept != null
+          && (intercept.time() <= this.camera.far() && intercept.time() >= this.camera
+              .near())) {
         candidates.add(intercept);
       }
     }

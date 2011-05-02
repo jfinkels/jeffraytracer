@@ -267,9 +267,7 @@ public class TracerEnvironment {
   private synchronized void waitForThreads() {
     while (!this.renderersFinished()) {
       try {
-        LOG.debug("calling wait");
         this.wait();
-        LOG.debug("done waiting");
       } catch (final InterruptedException exception) {
         LOG.error(exception);
       }

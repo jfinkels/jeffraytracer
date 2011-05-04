@@ -84,8 +84,8 @@ class Renderer implements Runnable {
       for (int x = 0; x < this.width; ++x) {
         final Ray ray = this.rays[y * this.width + x];
         final int color = FloatColor.toRGB(this.environment.trace(ray, 1));
-        // HACK for some reason, my scenes are all reflected in the x direction
-        this.result.setRGB(this.width - 1 - x, y, color);
+        // TODO for some reason, my scenes are all reflected in the x direction
+        this.result.setRGB(x, y, color);
       }
     }
     LOG.debug("Completed tracing rays from row " + this.startRow + " to row "

@@ -1,0 +1,7 @@
+TODO
+====
+
+* add build plugins to pom.xml from jfcommon-pom 
+    ( https://github.com/jfinkels/jfcommon-pom )
+* improve test coverage
+* CSG objects are completely untested

@@ -23,11 +23,14 @@ public class FloatColor extends Color {
   private static final long serialVersionUID = 6281360072954213961L;
 
   /**
-   * @param shade
-   * @return
+   * Returns the integer representation of the specified color.
+   * 
+   * @param color
+   *          The color to convert to integer form.
+   * @return The integer representation of the specified color.
    */
-  public static int toRGB(final Vector3D shade) {
-    return new FloatColor(shade).getRGB();
+  public static int toRGB(final Vector3D color) {
+    return new FloatColor(color).getRGB();
   }
 
   /** The value of the blue component of this color as a float between 0 and 1. */
@@ -36,13 +39,12 @@ public class FloatColor extends Color {
    * The value of the green component of this color as a float between 0 and 1.
    */
   private final float green;
-
   /** The value of the red component of this color as a float between 0 and 1. */
   private final float red;
 
   /**
-   * Creates a FloatColor object with the same component values of the specified
-   * Color object.
+   * Creates a FloatColor object with the same component values of the
+   * specified Color object.
    * 
    * @param color
    *          The color from which to get component values.
@@ -57,15 +59,24 @@ public class FloatColor extends Color {
   }
 
   /**
-   * Warning: double values will be cast to floats, so loss of precision is
-   * possible.
+   * Instantiates this color with the specified red, green, and blue values as
+   * {@code float}s between 0 and 1.
    * 
-   * @param x
-   * @param y
-   * @param z
+   * Warning: double values will be cast to floats, so loss of precision is
+   * probable.
+   * 
+   * @param red
+   *          The value of the red component of this color as a double between
+   *          0 and 1.
+   * @param green
+   *          The value of the green component of this color as a double
+   *          between 0 and 1.
+   * @param blue
+   *          The value of the blue component of this color as a double between
+   *          0 and 1.
    */
-  public FloatColor(double x, double y, double z) {
-    this((float) x, (float) y, (float) z);
+  public FloatColor(final double red, final double green, final double blue) {
+    this((float) red, (float) green, (float) blue);
   }
 
   /**
@@ -79,20 +90,27 @@ public class FloatColor extends Color {
    *          The value of the green component of this color as a float between
    *          0 and 1.
    * @param blue
-   *          The value of the blue component of this color as a float between 0
-   *          and 1.
+   *          The value of the blue component of this color as a float between
+   *          0 and 1.
    */
   public FloatColor(final float red, final float green, final float blue) {
     this(new Color(red, green, blue, 1.0f));
   }
 
+  /**
+   * Instantiates this color with red, green, and blue components corresponding
+   * to the x, y, and z components of the specified vector, respectively.
+   * 
+   * @param components
+   *          The red, green, and blue components of the color.
+   */
   public FloatColor(final Vector3D components) {
     this(components.x(), components.y(), components.z());
   }
 
   /**
-   * Gets the value of the blue component of this color as a float between 0 and
-   * 1.
+   * Gets the value of the blue component of this color as a float between 0
+   * and 1.
    * 
    * @return The value of the blue component of this color as a float between 0
    *         and 1.
@@ -101,17 +119,33 @@ public class FloatColor extends Color {
     return this.blue;
   }
 
-  public boolean equals(final FloatColor that) {
-    return this.red == that.red && this.green == that.green
-        && this.blue == that.blue;
+  /**
+   * Returns {@code true} if and only if the specified other color is an
+   * instance of FloatColor and its components match the components of this
+   * color.
+   * 
+   * Pre-condition: the specified other object is not {@code null}.
+   * 
+   * @param that
+   *          The other color with which to compare.
+   * @return {@code true} if and only if the colors match.
+   */
+  @Override
+  public boolean equals(final Object that) {
+    if (!(that instanceof FloatColor)) {
+      return false;
+    }
+    final FloatColor other = (FloatColor) that;
+    return this.red == other.red && this.green == other.green
+        && this.blue == other.blue;
   }
 
   /**
    * Gets the value of the green component of this color as a float between 0
    * and 1.
    * 
-   * @return The value of the green component of this color as a float between 0
-   *         and 1.
+   * @return The value of the green component of this color as a float between
+   *         0 and 1.
    */
   public float green() {
     return this.green;
@@ -182,9 +216,13 @@ public class FloatColor extends Color {
   }
 
   /**
+   * Returns a new color which is the componentwise sum of this and the
+   * specified other color.
    * 
    * @param color
-   * @return
+   *          The other color with which to sum.
+   * @return A new color which is the componentwise sum of this and the
+   *         specified other color.
    */
   public FloatColor sumWith(final FloatColor that) {
     return new FloatColor(this.red + that.red, this.green + that.green,

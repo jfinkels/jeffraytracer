@@ -1,0 +1,40 @@
+Jeffrey's Ray Tracer
+====================
+
+This package contains a ray tracer which supports quadric surfaces (spheres and
+ellipses), linear surfaces (planes and boxes) and combinations of the two
+(cylinders).
+
+This file was last updated on 6 May 2011.
+
+Getting started
+===============
+
+This project uses Maven (http://maven.apache.org/) for build management.
+
+To package this project into a JAR file, run
+
+  mvn package
+
+To compile this project, run
+
+  mvn compile
+
+To test this project, run
+
+  mvn test
+
+To get project reports and development information, run
+
+  mvn site
+
+Writing models
+==============
+
+The model file format is specified in model_file_format.txt. Example files are
+provided in the "src/test/resources/" directory.
+
+Contact
+=======
+
+Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>

@@ -8,9 +8,9 @@ import java.util.Collections;
 import java.util.List;
 
 import edu.bu.cs.cs480.Directed;
-import edu.bu.cs.cs480.vectors.Matrix4x4;
-import edu.bu.cs.cs480.vectors.Ray;
-import edu.bu.cs.cs480.vectors.Vector3D;
+import edu.bu.cs.cs480.Matrix4x4;
+import edu.bu.cs.cs480.Ray;
+import edu.bu.cs.cs480.Vector3D;
 
 /**
  * A right circular cylinder.
@@ -201,7 +201,7 @@ public class Cylinder extends SimpleQuadricForm implements Directed {
    * 
    * @param direction
    *          {@inheritDoc}
-   * @see edu.bu.cs.cs480.Directed#setDirection(edu.bu.cs.cs480.vectors.Vector3D)
+   * @see edu.bu.cs.cs480.Directed#setDirection(edu.bu.cs.cs480.Vector3D)
    */
   @Override
   public void setDirection(final Vector3D direction) {

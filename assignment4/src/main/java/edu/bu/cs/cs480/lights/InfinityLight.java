@@ -3,7 +3,7 @@
  */
 package edu.bu.cs.cs480.lights;
 
-import edu.bu.cs.cs480.vectors.Vector3D;
+import edu.bu.cs.cs480.Vector3D;
 
 /**
  * A light source at distance infinity.

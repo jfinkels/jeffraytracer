@@ -8,7 +8,7 @@ import java.awt.image.BufferedImage;
 import org.apache.log4j.Logger;
 
 import edu.bu.cs.cs480.FloatColor;
-import edu.bu.cs.cs480.vectors.Ray;
+import edu.bu.cs.cs480.Ray;
 
 /**
  * A runnable which renders some number of rows of the image specified by the

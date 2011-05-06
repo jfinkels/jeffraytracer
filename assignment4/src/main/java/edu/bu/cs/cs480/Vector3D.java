@@ -19,7 +19,7 @@
  * 
  * (Tai-Peng Tian <tiantp@gmail.com>)
  */
-package edu.bu.cs.cs480.vectors;
+package edu.bu.cs.cs480;
 
 /**
  * A three-dimensional point with double values.

@@ -11,8 +11,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import edu.bu.cs.cs480.vectors.Ray;
-import edu.bu.cs.cs480.vectors.Vector3D;
+import edu.bu.cs.cs480.Ray;
+import edu.bu.cs.cs480.Vector3D;
 
 /**
  * Test for the Plane class.
@@ -24,7 +24,7 @@ public class PlaneTest {
 
   /**
    * Test method for
-   * {@link edu.bu.cs.cs480.surfaces.Plane#interceptWith(edu.bu.cs.cs480.vectors.Ray)}.
+   * {@link edu.bu.cs.cs480.surfaces.Plane#interceptWith(edu.bu.cs.cs480.Ray)}.
    */
   @Test
   public void testInterceptWith() {
@@ -56,7 +56,7 @@ public class PlaneTest {
 
   /**
    * Test method for
-   * {@link edu.bu.cs.cs480.surfaces.Plane#inside(edu.bu.cs.cs480.vectors.Vector3D)} .
+   * {@link edu.bu.cs.cs480.surfaces.Plane#inside(edu.bu.cs.cs480.Vector3D)} .
    */
   @Test
   public void testPointIsBelow() {
@@ -69,7 +69,7 @@ public class PlaneTest {
 
   /**
    * Test method for
-   * {@link edu.bu.cs.cs480.surfaces.Plane#outside(edu.bu.cs.cs480.vectors.Vector3D)} .
+   * {@link edu.bu.cs.cs480.surfaces.Plane#outside(edu.bu.cs.cs480.Vector3D)} .
    */
   @Test
   public void testPointIsAbove() {

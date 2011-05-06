@@ -1,13 +1,13 @@
 /**
  * Vector4DTest.java - test for the Vector4D class
  */
-package edu.bu.cs.cs480.vectors;
+package edu.bu.cs.cs480;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import edu.bu.cs.cs480.vectors.Vector4D;
+import edu.bu.cs.cs480.Vector4D;
 
 /**
  * Test for the Vector4D class.
@@ -19,7 +19,7 @@ public class Vector4DTest {
 
   /**
    * Test method for
-   * {@link edu.bu.cs.cs480.vectors.Vector4D#dotProduct(edu.bu.cs.cs480.vectors.Vector4D)}.
+   * {@link edu.bu.cs.cs480.Vector4D#dotProduct(edu.bu.cs.cs480.Vector4D)}.
    */
   @Test
   public void testDotProduct() {

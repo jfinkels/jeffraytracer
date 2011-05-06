@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import edu.bu.cs.cs480.vectors.Ray;
-import edu.bu.cs.cs480.vectors.Vector3D;
+import edu.bu.cs.cs480.Ray;
+import edu.bu.cs.cs480.Vector3D;
 
 /**
  * A rectangular prism.
@@ -146,7 +146,7 @@ public class Box extends ConcreteSurfaceObject {
    * @param ray
    *          {@inheritDoc}
    * @return {@inheritDoc}
-   * @see edu.bu.cs.cs480.surfaces.SurfaceObject#interceptWith(edu.bu.cs.cs480.vectors.Ray)
+   * @see edu.bu.cs.cs480.surfaces.SurfaceObject#interceptWith(edu.bu.cs.cs480.Ray)
    */
   @Override
   public Intercept interceptWith(final Ray ray) {

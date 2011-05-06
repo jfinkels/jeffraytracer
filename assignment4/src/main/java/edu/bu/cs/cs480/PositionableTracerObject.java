@@ -3,7 +3,6 @@
  */
 package edu.bu.cs.cs480;
 
-import edu.bu.cs.cs480.vectors.Vector3D;
 
 /**
  * An object in a tracer scene which has a position.
@@ -32,7 +31,7 @@ public class PositionableTracerObject extends TracerObject implements
    * 
    * @param position
    *          {@inheritDoc}
-   * @see edu.bu.cs.cs480.Positionable#setPosition(edu.bu.cs.cs480.vectors.Vector3D)
+   * @see edu.bu.cs.cs480.Positionable#setPosition(edu.bu.cs.cs480.Vector3D)
    */
   @Override
   public void setPosition(Vector3D position) {

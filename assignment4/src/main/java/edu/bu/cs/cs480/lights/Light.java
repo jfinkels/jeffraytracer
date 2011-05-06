@@ -7,7 +7,7 @@ import edu.bu.cs.cs480.Colorable;
 import edu.bu.cs.cs480.Directed;
 import edu.bu.cs.cs480.FloatColor;
 import edu.bu.cs.cs480.PositionableTracerObject;
-import edu.bu.cs.cs480.vectors.Vector3D;
+import edu.bu.cs.cs480.Vector3D;
 
 /**
  * A light source.
@@ -136,7 +136,7 @@ public abstract class Light extends PositionableTracerObject implements
    * 
    * @param direction
    *          {@inheritDoc}
-   * @see edu.bu.cs.cs480.Directed#setDirection(edu.bu.cs.cs480.vectors.Vector3D)
+   * @see edu.bu.cs.cs480.Directed#setDirection(edu.bu.cs.cs480.Vector3D)
    */
   @Override
   public void setDirection(final Vector3D direction) {

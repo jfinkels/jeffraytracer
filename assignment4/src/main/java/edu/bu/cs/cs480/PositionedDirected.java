@@ -3,7 +3,6 @@
  */
 package edu.bu.cs.cs480;
 
-import edu.bu.cs.cs480.vectors.Vector3D;
 
 /**
  * An object with a position and a direction.
@@ -34,7 +33,7 @@ public class PositionedDirected implements Positionable, Directed {
    * 
    * @param direction
    *          {@inheritDoc}
-   * @see edu.bu.cs.cs480.Directed#setDirection(edu.bu.cs.cs480.vectors.Vector3D)
+   * @see edu.bu.cs.cs480.Directed#setDirection(edu.bu.cs.cs480.Vector3D)
    */
   @Override
   public void setDirection(final Vector3D direction) {
@@ -57,7 +56,7 @@ public class PositionedDirected implements Positionable, Directed {
    * 
    * @param positio
    *          {@inheritDoc}
-   * @see edu.bu.cs.cs480.Positionable#setPosition(edu.bu.cs.cs480.vectors.Vector3D)
+   * @see edu.bu.cs.cs480.Positionable#setPosition(edu.bu.cs.cs480.Vector3D)
    */
   @Override
   public void setPosition(final Vector3D position) {

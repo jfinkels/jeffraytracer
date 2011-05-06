@@ -3,8 +3,8 @@
  */
 package edu.bu.cs.cs480.surfaces;
 
-import edu.bu.cs.cs480.vectors.Ray;
-import edu.bu.cs.cs480.vectors.Vector3D;
+import edu.bu.cs.cs480.Ray;
+import edu.bu.cs.cs480.Vector3D;
 
 /**
  * The intersection of two surface objects.
@@ -35,7 +35,7 @@ public class Intersection extends ConstructiveSolidGeometry {
    * @param point
    *          {@inheritDoc}
    * @return {@inheritDoc}
-   * @see edu.bu.cs.cs480.surfaces.SurfaceObject#inside(edu.bu.cs.cs480.vectors.Vector3D)
+   * @see edu.bu.cs.cs480.surfaces.SurfaceObject#inside(edu.bu.cs.cs480.Vector3D)
    */
   @Override
   public boolean inside(final Vector3D point) {
@@ -48,7 +48,7 @@ public class Intersection extends ConstructiveSolidGeometry {
    * @param ray
    *          {@inheritDoc}
    * @return {@inheritDoc}
-   * @see edu.bu.cs.cs480.surfaces.SurfaceObject#interceptWith(edu.bu.cs.cs480.vectors.Ray)
+   * @see edu.bu.cs.cs480.surfaces.SurfaceObject#interceptWith(edu.bu.cs.cs480.Ray)
    */
   @Override
   public Intercept interceptWith(final Ray ray) {
@@ -78,8 +78,7 @@ public class Intersection extends ConstructiveSolidGeometry {
    * @param point
    *          {@inheritDoc}
    * @return {@inheritDoc}
-   * @see edu.bu.cs.cs480.surfaces.SurfaceObject#outside(edu.bu.cs.cs480.vectors
-   *      .Vector3D)
+   * @see edu.bu.cs.cs480.surfaces.SurfaceObject#outside(edu.bu.cs.cs480.Vector3D)
    */
   @Override
   public boolean outside(final Vector3D point) {

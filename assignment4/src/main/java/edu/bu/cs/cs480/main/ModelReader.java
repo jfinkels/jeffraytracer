@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import edu.bu.cs.cs480.FloatColor;
 import edu.bu.cs.cs480.Identifiable;
 import edu.bu.cs.cs480.Material;
+import edu.bu.cs.cs480.Vector3D;
 import edu.bu.cs.cs480.camera.Camera;
 import edu.bu.cs.cs480.camera.OrthographicCamera;
 import edu.bu.cs.cs480.camera.PerspectiveCamera;
@@ -33,7 +34,6 @@ import edu.bu.cs.cs480.surfaces.Sphere;
 import edu.bu.cs.cs480.surfaces.SurfaceObject;
 import edu.bu.cs.cs480.surfaces.SymmetricDifference;
 import edu.bu.cs.cs480.surfaces.Union;
-import edu.bu.cs.cs480.vectors.Vector3D;
 
 /**
  * Reads a TracerEnvironment model from a file.

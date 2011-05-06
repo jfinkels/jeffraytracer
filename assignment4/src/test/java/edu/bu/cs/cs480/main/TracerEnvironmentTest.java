@@ -16,12 +16,12 @@ import javax.imageio.ImageIO;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 
+import edu.bu.cs.cs480.Ray;
 import edu.bu.cs.cs480.TestUtils;
+import edu.bu.cs.cs480.Vector3D;
 import edu.bu.cs.cs480.camera.PerspectiveCamera;
 import edu.bu.cs.cs480.camera.Resolution;
 import edu.bu.cs.cs480.camera.Viewport;
-import edu.bu.cs.cs480.vectors.Ray;
-import edu.bu.cs.cs480.vectors.Vector3D;
 
 /**
  * Test for the TracerEnvironment class.

@@ -13,6 +13,8 @@ import org.apache.log4j.Logger;
 
 import edu.bu.cs.cs480.FloatColor;
 import edu.bu.cs.cs480.Material;
+import edu.bu.cs.cs480.Ray;
+import edu.bu.cs.cs480.Vector3D;
 import edu.bu.cs.cs480.camera.Camera;
 import edu.bu.cs.cs480.camera.Resolution;
 import edu.bu.cs.cs480.camera.Viewport;
@@ -21,8 +23,6 @@ import edu.bu.cs.cs480.lights.Light;
 import edu.bu.cs.cs480.surfaces.Intercept;
 import edu.bu.cs.cs480.surfaces.SurfaceObject;
 import edu.bu.cs.cs480.surfaces.TimeComparator;
-import edu.bu.cs.cs480.vectors.Ray;
-import edu.bu.cs.cs480.vectors.Vector3D;
 
 /**
  * An environment which aggregates all the objects necessary to trace a scene.

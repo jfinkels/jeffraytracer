@@ -5,7 +5,6 @@ package edu.bu.cs.cs480;
 
 import java.util.Random;
 
-import edu.bu.cs.cs480.vectors.Matrix4x4;
 
 /**
  * Utilities for JUnit tests.

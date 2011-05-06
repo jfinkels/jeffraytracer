@@ -13,9 +13,9 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import edu.bu.cs.cs480.vectors.Matrix4x4;
-import edu.bu.cs.cs480.vectors.Ray;
-import edu.bu.cs.cs480.vectors.Vector3D;
+import edu.bu.cs.cs480.Matrix4x4;
+import edu.bu.cs.cs480.Ray;
+import edu.bu.cs.cs480.Vector3D;
 
 /**
  * Test for the Cylinder class.
@@ -62,7 +62,7 @@ public class CylinderTest {
 
   /**
    * Test method for
-   * {@link edu.bu.cs.cs480.surfaces.Cylinder#inside(edu.bu.cs.cs480.vectors.Vector3D)}
+   * {@link edu.bu.cs.cs480.surfaces.Cylinder#inside(edu.bu.cs.cs480.Vector3D)}
    * .
    */
   @Test
@@ -82,7 +82,7 @@ public class CylinderTest {
 
   /**
    * Test method for
-   * {@link edu.bu.cs.cs480.surfaces.Cylinder#interceptWith(edu.bu.cs.cs480.vectors.Ray)}
+   * {@link edu.bu.cs.cs480.surfaces.Cylinder#interceptWith(edu.bu.cs.cs480.Ray)}
    * .
    */
   @Test
@@ -141,7 +141,7 @@ public class CylinderTest {
 
   /**
    * Test method for
-   * {@link edu.bu.cs.cs480.surfaces.Cylinder#outside(edu.bu.cs.cs480.vectors.Vector3D)}
+   * {@link edu.bu.cs.cs480.surfaces.Cylinder#outside(edu.bu.cs.cs480.Vector3D)}
    * .
    */
   @Test

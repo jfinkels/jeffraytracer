@@ -51,10 +51,10 @@ public class TracerEnvironmentTest {
   // , "singlebox"
   //"sphereTest"
   "model1"
-  , "model2"
-  , "model3"
-  , "model4"
-  , "model5"
+  //, "model2"
+  //, "model3"
+  //, "model4"
+  //, "model5"
       );
 
   /**

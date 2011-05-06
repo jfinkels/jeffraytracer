@@ -28,7 +28,7 @@ public class Union extends ConstructiveSolidGeometry {
    *          Another surface object which makes up this constructive solid
    *          geometry object.
    */
-  public Union(SurfaceObject object1, SurfaceObject object2) {
+  public Union(final SurfaceObject object1, final SurfaceObject object2) {
     super(object1, object2);
   }
 

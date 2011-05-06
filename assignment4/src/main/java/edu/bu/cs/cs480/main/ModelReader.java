@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import org.apache.log4j.Logger;
+
 import edu.bu.cs.cs480.FloatColor;
 import edu.bu.cs.cs480.Identifiable;
 import edu.bu.cs.cs480.Material;
@@ -25,9 +27,11 @@ import edu.bu.cs.cs480.surfaces.Box;
 import edu.bu.cs.cs480.surfaces.ConstructiveSolidGeometry;
 import edu.bu.cs.cs480.surfaces.Cylinder;
 import edu.bu.cs.cs480.surfaces.Ellipsoid;
+import edu.bu.cs.cs480.surfaces.Intersection;
 import edu.bu.cs.cs480.surfaces.Orientation;
 import edu.bu.cs.cs480.surfaces.Sphere;
 import edu.bu.cs.cs480.surfaces.SurfaceObject;
+import edu.bu.cs.cs480.surfaces.SymmetricDifference;
 import edu.bu.cs.cs480.surfaces.Union;
 import edu.bu.cs.cs480.vectors.Vector3D;
 
@@ -56,6 +60,9 @@ public class ModelReader {
    * model file format.
    */
   public static final String INTERSECTION = "intersect";
+  /** The logger for this class. */
+  private static final transient Logger LOG = Logger
+      .getLogger(ModelReader.class);
   /** The identifier for a light definition in the model file format. */
   public static final String LIGHT = "light";
   /** The identifier for a material definition in the model file format. */
@@ -103,8 +110,8 @@ public class ModelReader {
    *          The list of elements through which to search.
    * @param id
    *          The ID of the element to find in the list.
-   * @return The object in the list with the specified ID number, or {@code
-   *         null} if no such element exists.
+   * @return The object in the list with the specified ID number, or
+   *         {@code null} if no such element exists.
    */
   protected static <E extends Identifiable> E getObjectWithID(
       final List<E> list, final int id) {
@@ -334,11 +341,9 @@ public class ModelReader {
     if (type.equals(UNION)) {
       result = new Union(leftObject, rightObject);
     } else if (type.equals(INTERSECTION)) {
-      // result = new Intersection(leftObject, rightObject);
-      result = null;
+      result = new Intersection(leftObject, rightObject);
     } else if (type.equals(SYMMETRIC_DIFFERENCE)) {
-      // result = new SymmetricDifference(leftObject, rightObject);
-      result = null;
+      result = new SymmetricDifference(leftObject, rightObject);
     } else {
       throw new FileFormatException("Do not understand CSG type \"" + type
           + "\".");
@@ -613,6 +618,8 @@ public class ModelReader {
     } else if (type.equals("box")) {
       surfaceObject = readBox(materials);
     } else if (type.equals("CSG")) {
+      LOG.warn("Constructive solid geometry objects not yet implemented.");
+      LOG.warn("Model may not render as expected.");
       surfaceObject = readCSG(surfaceObjects);
     } else {
       throw new FileFormatException("Do not understand surface object type \""

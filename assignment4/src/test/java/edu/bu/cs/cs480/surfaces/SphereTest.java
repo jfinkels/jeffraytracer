@@ -7,7 +7,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import edu.bu.cs.cs480.vectors.Ray;

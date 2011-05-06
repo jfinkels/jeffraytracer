@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import org.apache.log4j.Logger;
-
 import edu.bu.cs.cs480.FloatColor;
 import edu.bu.cs.cs480.Identifiable;
 import edu.bu.cs.cs480.Material;
@@ -121,12 +119,8 @@ public class ModelReader {
 
   /** The tracer environment which can render the scene read by this class. */
   private final TracerEnvironment environment = new TracerEnvironment();
-  /** The logger for this class. */
-  private static final transient Logger LOG = Logger
-      .getLogger(ModelReader.class);
   /** Whether the current light being read is an ambient light. */
   private boolean isAmbientLight = false;
-
   /** The scanner which reads the model file. */
   private final Scanner scanner;
 

@@ -39,13 +39,31 @@ public class TracerEnvironment {
   public static final Vector3D MAX_COLOR = new Vector3D(1, 1, 1);
   /** The maximum depth in the ray tree. */
   public static final int MAX_DEPTH = 3;
-  /** The tolerance for floating point value comparison to zero. */
-  public static final double TOLERANCE = Double.MIN_VALUE;
+  /** The number of threads to use when rendering. */
+  public static final int NUM_THREADS = 2;
   /**
    * HACK: The tolerance for comparing floating point values to zero when
    * computing the shadows.
    */
-  public static final double SHADOW_TOLERANCE = 1e-13;
+  public static final double SHADOW_TOLERANCE = Double.MIN_VALUE;
+
+  /**
+   * Returns {@code true} if and only if all of the elements of the specified
+   * array are {@code true}.
+   * 
+   * @param array
+   *          The array to check.
+   * @return {@code true} if and only if all of the elements of the specified
+   *         array are {@code true}.
+   */
+  private static boolean all(final boolean[] array) {
+    for (int i = 0; i < array.length; ++i) {
+      if (!array[i]) {
+        return false;
+      }
+    }
+    return true;
+  }
 
   /**
    * Return the component-wise minimum of the specified color and the maximum
@@ -62,6 +80,25 @@ public class TracerEnvironment {
   }
 
   /**
+   * Returns the point halfway between the origin of the specified ray and the
+   * point specified by the given time, using the parametric equation of the
+   * half line described by the ray.
+   * 
+   * @param ray
+   *          The ray on which the midpoint lies.
+   * @param time
+   *          The time of the far endpoint using the parametric equation of the
+   *          half line described by the ray.
+   * @return The point halfway between the origin of the ray and the point at
+   *         the specified time along the ray.
+   */
+  private static Vector3D halfwayBetween(final Ray ray, final double time) {
+    final Vector3D origin = ray.position();
+    final Vector3D direction = ray.direction();
+    return origin.sumWith(direction.scaledBy(time / 2.0));
+  }
+
+  /**
    * Returns the reflection of the specified ray through the specified normal.
    * 
    * @param ray
@@ -73,17 +110,32 @@ public class TracerEnvironment {
   private static Vector3D reflected(final Vector3D ray, final Vector3D normal) {
     return normal.scaledBy(normal.dotProduct(ray) * 2).difference(ray);
   }
-
+  /**
+   * Resets the value of each element of the specified array to {@code false}.
+   * 
+   * @param array
+   *          The array to reset to false.
+   */
+  private static void resetBooleans(final boolean[] array) {
+    for (int i = 0; i < array.length; ++i) {
+      array[i] = false;
+    }
+  }
   /** The list of all lights in the scene which are ambient lights. */
   private List<AmbientLight> ambientLights = new ArrayList<AmbientLight>();
   /** The virtual camera through which the scene is viewed. */
   private Camera camera = null;
   /** The list of light sources for the scene. */
   private List<Light> lights = new ArrayList<Light>();
+  /** Stores whether each of the rendering threads has finished. */
+  private boolean[] renderersFinished = new boolean[NUM_THREADS];
+
   /** The resolution of the scene when displayed in the viewport. */
   private Resolution resolution = null;
+
   /** The list of surface objects to be rendered. */
   private List<SurfaceObject> surfaceObjects = new ArrayList<SurfaceObject>();
+
   /** The dimensions of the viewport in which the scene is displayed. */
   private Viewport viewport = null;
 
@@ -139,6 +191,40 @@ public class TracerEnvironment {
   }
 
   /**
+   * Returns the color due to diffuse reflection from the specified light at
+   * the specified intercept.
+   * 
+   * @param intercept
+   *          The intercept to color.
+   * @param light
+   *          The light with which to compute diffuse reflection.
+   * @return The color due to diffuse reflection from the specified light at
+   *         the specified intercept.
+   */
+  private Vector3D diffuseColor(final Intercept intercept, final Light light) {
+    // get the vector from the point of intersection to the light source (L)
+    final Vector3D point = intercept.pointOfIntersection();
+    final Vector3D lightPoint = light.position();
+    final Vector3D pointToLight = lightPoint.difference(point).normalized();
+
+    // get the normal to the surface (N)
+    final Vector3D normal = intercept.normal();
+
+    // get the dot product between the normal and the light ray
+    final double dotProduct = pointToLight.dotProduct(normal);
+
+    // get the coefficient of diffuse reflection due to the material (k_d)
+    final Material material = intercept.surfaceObject().material();
+    final double diffuseCoefficient = material.diffuseReflection();
+
+    // get the total scaling factor due to diffuse reflection
+    final double diffuseScale = diffuseCoefficient * Math.max(dotProduct, 0);
+
+    // return the color due to the specified light scaled by the diffuse scale
+    return light.color().scaledBy(diffuseScale);
+  }
+
+  /**
    * Generates the ray which would start at pixel location (row, column) in the
    * viewport based on the resolution, the viewport size, and the camera's
    * measurements.
@@ -185,30 +271,69 @@ public class TracerEnvironment {
   }
 
   /**
-   * Returns a number between 0 and 1 inclusive representing how much the
-   * origin of the specified ray is in shadow (0 means not at all in shadow and
-   * 1 means entirely in shadow).
+   * Returns the intercept of the specified ray with the surface objects in the
+   * scene (between the near and far clip planes) at the minimum time.
    * 
    * @param ray
-   *          The ray to check for intercepts with surface objects.
-   * @param light
-   * @return A number between 0 and 1 inclusive representing how much the
-   *         origin of the specified ray is in shadow (0 means not at all in
-   *         shadow and 1 means entirely in shadow).
+   *          The ray to intercept with the surface objects in the scene.
+   * @return The intercept at the minimum time within the clipping planes.
    */
-  // TODO for now, this only returns 0 or 1, no intermediate values
-  private double shadowAmount(final Ray ray, final Light light) {
-    if (!light.castsShadow()) {
-      return 0;
-    }
+  private Intercept minimumIntercept(final Ray ray) {
+    final List<Intercept> candidates = new ArrayList<Intercept>();
     for (final SurfaceObject surfaceObject : this.surfaceObjects) {
-      final Intercept i = surfaceObject.interceptWith(ray);
-      if (i != null && i.time() > SHADOW_TOLERANCE) {
-        // TODO should be doing result += this.shadowAmount(ray, surfaceObject)
-        return 1;
+      final Intercept intercept = surfaceObject.interceptWith(ray);
+      if (intercept != null
+          && (intercept.time() <= this.camera.far() && intercept.time() >= this.camera
+              .near())) {
+        candidates.add(intercept);
       }
     }
-    return 0;
+
+    return candidates.isEmpty() ? null : Collections.min(candidates);
+  }
+
+  /**
+   * Returns the color due to reflection at the specified intercept.
+   * 
+   * The depth parameter specifies the depth in the ray recursion tree.
+   * 
+   * @param intercept
+   *          The intercept at which to compute the color due to reflection.
+   * @param depth
+   *          The depth in the ray recursion tree.
+   * @return The color due to reflection at the specified intercept.
+   */
+  private Vector3D reflectionColor(final Intercept intercept, final int depth) {
+    // get the reflectivity of the material at the point of intersection
+    final Material material = intercept.surfaceObject().material();
+    final double reflection = material.reflection();
+
+    // if there is no reflection, the color is (0, 0, 0)
+    if (reflection <= 0) {
+      return Vector3D.ORIGIN;
+    }
+
+    // get the normal to the surface at the point of intersection
+    final Vector3D normal = intercept.normal();
+
+    // get the inverse of the direction of the primary ray
+    final Vector3D direction = intercept.ray().direction();
+    final Vector3D inverseDirection = direction.scaledBy(-1);
+
+    // create the direction of the reflected ray
+    final Vector3D reflectedDir = reflected(inverseDirection, normal);
+
+    // create the reflected ray
+    final Ray reflectionRay = new Ray();
+    reflectionRay.setPosition(intercept.pointOfIntersection());
+    reflectionRay.setDirection(reflectedDir);
+
+    // make the recursive call with the reflected ray as the primary ray
+    Vector3D reflectionColor = this.trace(reflectionRay, depth + 1);
+
+    // scale the reflected color by the coefficient of reflection of the
+    // material at the point of intersection
+    return reflectionColor.scaledBy(reflection);
   }
 
   /**
@@ -220,7 +345,6 @@ public class TracerEnvironment {
     // get the width and height of the viewport
     final int width = this.viewport.width();
     final int height = this.viewport.height();
-    final int halfHeight = height / 2;
 
     // first create the rays and initialize them with the appropriate computed
     // origin and direction based on the camera type and measurements
@@ -243,76 +367,40 @@ public class TracerEnvironment {
     LOG.debug("Casting primary rays and shading...");
     final BufferedImage result = new BufferedImage(width, height,
         BufferedImage.TYPE_INT_RGB);
-    // for (int y = 0; y < height; ++y) {
-    // for (int x = 0; x < width; ++x) {
-    // final Ray ray = rays[y * width + x];
-    // final int color = TracerEnvironment.this.trace(intercepts.get(ray), 1);
-    // result.setRGB(x, y, color);
-    // }
-    // }
 
-    // mark the threads as not done
-    this.done1 = false;
-    this.done2 = false;
+    // create the rendering runnables which will render the scene in chunks of
+    // rows
+    resetBooleans(this.renderersFinished);
+    final Renderer[] renderers = new Renderer[NUM_THREADS];
+    final int deltaRow = height / NUM_THREADS;
+    // TODO what if NUM_THREADS is not a divisor of height?
+    for (int i = 0; i < NUM_THREADS; ++i) {
+      renderers[i] = new Renderer(rays, i * deltaRow, (i + 1) * deltaRow,
+          width, this, result, i);
+    }
 
-    // create the two runnables which will render the top half and the bottom
-    // half of the result image separately
-    final Renderer r1 = new Renderer(rays, 0, halfHeight, width, this, result,
-        1);
-    final Renderer r2 = new Renderer(rays, halfHeight, height, width, this,
-        result, 2);
+    // run the threads
+    for (int i = 0; i < renderers.length; ++i) {
+      new Thread(renderers[i]).start();
+    }
 
-    // run the two threads
-    new Thread(r1).start();
-    new Thread(r2).start();
-
+    // wait until all the threads have notified us that they are finished
     this.waitForThreads();
 
     return result;
   }
 
-  /** Waits for the rendering threads to complete. */
-  private synchronized void waitForThreads() {
-    while (!this.renderersFinished()) {
-      try {
-        this.wait();
-      } catch (final InterruptedException exception) {
-        LOG.error(exception);
-      }
-    }
-  }
-
   /**
    * Marks the rendering thread with the specified ID completed.
+   * 
+   * Pre-condition: threadID is between 0 and the number of threads.
    * 
    * @param threadID
    *          The ID of the thread to be marked completed.
    */
   void rendererFinished(final int threadID) {
-    if (threadID == 1) {
-      this.done1 = true;
-    } else if (threadID == 2) {
-      this.done2 = true;
-    } else {
-      LOG.error("Did not understand thread ID " + threadID);
-    }
+    this.renderersFinished[threadID] = true;
   }
-
-  /**
-   * Returns {@code true} if and only if both threads have finished rendering
-   * their respective halves of the image.
-   * 
-   * @return {@code true} if and only if both threads have rendered their
-   *         halves of the image.
-   */
-  private boolean renderersFinished() {
-    return this.done1 && this.done2;
-  }
-
-  /** Whether the first thread is done. */
-  private boolean done1 = false;
-  /** Whether the second thread is done. */
-  private boolean done2 = false;
 
   /**
    * Sets the virtual camera through which the scene is viewed.
@@ -344,6 +432,17 @@ public class TracerEnvironment {
     this.viewport = viewport;
   }
 
+  /**
+   * Returns the color at the specified intercept.
+   * 
+   * The depth specifies the current depth in the ray recursion tree.
+   * 
+   * @param intercept
+   *          The intercept at which to compute color.
+   * @param depth
+   *          The current depth in the ray recursion tree.
+   * @return The color at the specified intercept.
+   */
   private Vector3D shade(final Intercept intercept, final int depth) {
     Vector3D result = Vector3D.ORIGIN;
 
@@ -418,39 +517,97 @@ public class TracerEnvironment {
     return boundedColor(illuminatedColor);
   }
 
-  private Vector3D reflectionColor(final Intercept intercept, final int depth) {
-    // get the reflectivity of the material at the point of intersection
-    final Material material = intercept.surfaceObject().material();
-    final double reflection = material.reflection();
-
-    // if there is no reflection, the color is (0, 0, 0)
-    if (reflection <= 0) {
-      return Vector3D.ORIGIN;
+  /**
+   * Returns a number between 0 and 1 inclusive representing how much the
+   * origin of the specified ray is in shadow (0 means not at all in shadow and
+   * 1 means entirely in shadow).
+   * 
+   * @param ray
+   *          The ray to check for intercepts with surface objects.
+   * @param light
+   * @return A number between 0 and 1 inclusive representing how much the
+   *         origin of the specified ray is in shadow (0 means not at all in
+   *         shadow and 1 means entirely in shadow).
+   */
+  // TODO for now, this only returns 0 or 1, no intermediate values
+  private double shadowAmount(final Ray ray, final Light light) {
+    if (!light.castsShadow()) {
+      return 0;
     }
-
-    // get the normal to the surface at the point of intersection
-    final Vector3D normal = intercept.normal();
-
-    // get the inverse of the direction of the primary ray
-    final Vector3D direction = intercept.ray().direction();
-    final Vector3D inverseDirection = direction.scaledBy(-1);
-
-    // create the direction of the reflected ray
-    final Vector3D reflectedDir = reflected(inverseDirection, normal);
-
-    // create the reflected ray
-    final Ray reflectionRay = new Ray();
-    reflectionRay.setPosition(intercept.pointOfIntersection());
-    reflectionRay.setDirection(reflectedDir);
-
-    // make the recursive call with the reflected ray as the primary ray
-    Vector3D reflectionColor = this.trace(reflectionRay, depth + 1);
-
-    // scale the reflected color by the coefficient of reflection of the
-    // material at the point of intersection
-    return reflectionColor.scaledBy(reflection);
+    for (final SurfaceObject surfaceObject : this.surfaceObjects) {
+      final Intercept i = surfaceObject.interceptWith(ray);
+      if (i != null && i.time() > SHADOW_TOLERANCE) {
+        // TODO should be doing result += this.shadowAmount(ray, surfaceObject)
+        return 1;
+      }
+    }
+    return 0;
   }
 
+  /**
+   * Returns the color due to specular reflection from the specified light at
+   * the specified intercept.
+   * 
+   * @param intercept
+   *          The intercept to color.
+   * @param light
+   *          The light with which to compute specular reflection.
+   * @return The color due to specular reflection from the specified light at
+   *         the specified intercept.
+   */
+  private Vector3D specularColor(final Intercept intercept, final Light light) {
+    // reflect the light vector through the normal (R)
+    final Vector3D reflectedLight = reflected(light.direction(),
+        intercept.normal());
+
+    // get the view plane vector (V)
+    final Vector3D viewPlaneVector = intercept.ray().direction();
+
+    // get the dot product between the view plane vector and the reflected vec
+    final double dotProduct = reflectedLight.dotProduct(viewPlaneVector);
+
+    // get the coefficient and exponent of specular reflection
+    final Material material = intercept.surfaceObject().material();
+    final double specularCoefficient = material.specularReflection();
+    final double specularExponent = material.specularExponent();
+
+    // get the total scaling factor due to specular reflection
+    final double specularScale = specularCoefficient
+        * Math.pow(Math.max(0, dotProduct), specularExponent);
+
+    // return color due to the specified light scaled by the specular scale
+    return light.color().scaledBy(specularScale);
+  }
+
+  /**
+   * Returns the color at this intercept.
+   * 
+   * Note: in the provided pseudocode this was called RT_trace.
+   * 
+   * @param intercept
+   *          The intercept for which to compute the color.
+   * @param depth
+   *          The current depth of recursion in the ray tree.
+   * @return The color at this intercept.
+   */
+  // TODO combine trace() and shade()
+  Vector3D trace(final Ray ray, final int depth) {
+    final Intercept minIntercept = this.minimumIntercept(ray);
+    return minIntercept == null ? BACKGROUND_COLOR : this.shade(minIntercept,
+        depth);
+  }
+
+  /**
+   * Returns the color due to transmission at the specified intercept.
+   * 
+   * The depth parameter specifies the depth in the ray recursion tree.
+   * 
+   * @param intercept
+   *          The intercept at which to compute the color due to transmission.
+   * @param depth
+   *          The depth in the ray recursion tree.
+   * @return The color due to transmission at the specified intercept.
+   */
   private Vector3D transmissionColor(final Intercept intercept, final int depth) {
     // get the transmission of the material at the point of intersection
     final Material material = intercept.surfaceObject().material();
@@ -510,96 +667,14 @@ public class TracerEnvironment {
     return transmissionColor.scaledBy(transmission);
   }
 
-  private static Vector3D halfwayBetween(final Ray ray, final double time) {
-    final Vector3D origin = ray.position();
-    final Vector3D direction = ray.direction();
-    return origin.sumWith(direction.scaledBy(time / 2.0));
-  }
-
-  private Vector3D diffuseColor(final Intercept intercept, final Light light) {
-    // get the vector from the point of intersection to the light source (L)
-    final Vector3D point = intercept.pointOfIntersection();
-    final Vector3D lightPoint = light.position();
-    final Vector3D pointToLight = lightPoint.difference(point).normalized();
-
-    // get the normal to the surface (N)
-    final Vector3D normal = intercept.normal();
-
-    // get the dot product between the normal and the light ray
-    final double dotProduct = pointToLight.dotProduct(normal);
-
-    // get the coefficient of diffuse reflection due to the material (k_d)
-    final Material material = intercept.surfaceObject().material();
-    final double diffuseCoefficient = material.diffuseReflection();
-
-    // get the total scaling factor due to diffuse reflection
-    final double diffuseScale = diffuseCoefficient * Math.max(dotProduct, 0);
-
-    // return the color due to the specified light scaled by the diffuse scale
-    return light.color().scaledBy(diffuseScale);
-  }
-
-  private Vector3D specularColor(final Intercept intercept, final Light light) {
-    // reflect the light vector through the normal (R)
-    final Vector3D reflectedLight = reflected(light.direction(),
-        intercept.normal());
-
-    // get the view plane vector (V)
-    final Vector3D viewPlaneVector = intercept.ray().direction();
-
-    // get the dot product between the view plane vector and the reflected vec
-    final double dotProduct = reflectedLight.dotProduct(viewPlaneVector);
-
-    // get the coefficient and exponent of specular reflection
-    final Material material = intercept.surfaceObject().material();
-    final double specularCoefficient = material.specularReflection();
-    final double specularExponent = material.specularExponent();
-
-    // get the total scaling factor due to specular reflection
-    final double specularScale = specularCoefficient
-        * Math.pow(Math.max(0, dotProduct), specularExponent);
-
-    // return color due to the specified light scaled by the specular scale
-    return light.color().scaledBy(specularScale);
-  }
-
-  /**
-   * Computes the color at this intercept.
-   * 
-   * Note: in the provided pseudocode this was called RT_trace.
-   * 
-   * @param intercept
-   *          The intercept for which to compute the color.
-   * @param depth
-   *          The current depth of recursion in the ray tree.
-   * @return The color at this intercept.
-   */
-  // TODO combine trace() and shade()
-  Vector3D trace(final Ray ray, final int depth) {
-    final Intercept minIntercept = this.minimumIntercept(ray);
-    return minIntercept == null ? BACKGROUND_COLOR : this.shade(minIntercept,
-        depth);
-  }
-
-  /**
-   * Returns the intercept of the specified ray with the surface objects in the
-   * scene (between the near and far clip planes) at the minimum time.
-   * 
-   * @param ray
-   *          The ray to intercept with the surface objects in the scene.
-   * @return The intercept at the minimum time within the clipping planes.
-   */
-  private Intercept minimumIntercept(final Ray ray) {
-    final List<Intercept> candidates = new ArrayList<Intercept>();
-    for (final SurfaceObject surfaceObject : this.surfaceObjects) {
-      final Intercept intercept = surfaceObject.interceptWith(ray);
-      if (intercept != null
-          && (intercept.time() <= this.camera.far() && intercept.time() >= this.camera
-              .near())) {
-        candidates.add(intercept);
+  /** Waits for the rendering threads to complete. */
+  private synchronized void waitForThreads() {
+    while (!all(this.renderersFinished)) {
+      try {
+        this.wait();
+      } catch (final InterruptedException exception) {
+        LOG.error(exception);
       }
     }
-
-    return candidates.isEmpty() ? null : Collections.min(candidates);
   }
 }

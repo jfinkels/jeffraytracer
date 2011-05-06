@@ -32,7 +32,8 @@ public class Matrix4x4 {
   final double[][] m = new double[4][4];
 
   /**
-   * Gets the value of the entry at the specified row and column in this matrix.
+   * Gets the value of the entry at the specified row and column in this
+   * matrix.
    * 
    * @param row
    *          The row of the entry to get.
@@ -42,6 +43,17 @@ public class Matrix4x4 {
    */
   public double get(final int row, final int column) {
     return this.m[row][column];
+  }
+
+  /**
+   * Not implemented: always returns -1.
+   * 
+   * @return -1.
+   */
+  @Override
+  public int hashCode() {
+    assert false : "hashCode() not implemented";
+    return -1;
   }
 
   /**
@@ -66,8 +78,8 @@ public class Matrix4x4 {
   }
 
   /**
-   * Computes the product of this matrix (on the left) with the specified vector
-   * (on the right).
+   * Computes the product of this matrix (on the left) with the specified
+   * vector (on the right).
    * 
    * @param right
    *          The vector with which to multiply (on the right).
@@ -86,7 +98,8 @@ public class Matrix4x4 {
   }
 
   /**
-   * Sets the value of the entry at the specified row and column in this matrix.
+   * Sets the value of the entry at the specified row and column in this
+   * matrix.
    * 
    * @param row
    *          The row of the entry to set.
@@ -113,10 +126,31 @@ public class Matrix4x4 {
     return result;
   }
 
-  public boolean equals(final Matrix4x4 that) {
-    return this.equals(that.m);
+  /**
+   * {@inheritDoc}
+   * 
+   * @param that
+   *          {@inheritDoc}
+   * @return {@inheritDoc}
+   */
+  @Override
+  public boolean equals(final Object that) {
+    if (!(that instanceof Matrix4x4)) {
+      return false;
+    }
+    return this.equals(((Matrix4x4) that).m);
   }
 
+  /**
+   * Return {@code true} if and only if the entries of this matrix match the
+   * entries of the specified two dimensional array.
+   * 
+   * @param matrix
+   *          The array containing the entries to check against the entries of
+   *          this matrix.
+   * @return {@code true} if and only if the entries of this matrix match the
+   *         entries of the specified two dimensional array.
+   */
   public boolean equals(final double[][] matrix) {
     for (int i = 0; i < 4; ++i) {
       for (int j = 0; j < 4; ++j) {

@@ -152,6 +152,17 @@ public class FloatColor extends Color {
   }
 
   /**
+   * Not implemented: always returns -1.
+   * 
+   * @return -1.
+   */
+  @Override
+  public int hashCode() {
+    assert false : "hashCode() not implemented";
+    return -1;
+  }
+
+  /**
    * Gets the value of the red component of this color as a float between 0 and
    * 1.
    * 

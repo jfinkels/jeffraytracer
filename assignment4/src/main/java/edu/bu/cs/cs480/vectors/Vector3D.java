@@ -140,10 +140,25 @@ public class Vector3D {
    * @return {@code true} if and only if the components of this vector are
    *         exactly equal to the components of the specified other vector.
    */
-  public boolean equals(final Vector3D that) {
-    return this.x == that.x && this.y == that.y && this.z == that.z;
+  public boolean equals(final Object that) {
+    if (!(that instanceof Vector3D)) {
+      return false;
+    }
+    final Vector3D other = (Vector3D) that;
+    return this.x == other.x && this.y == other.y && this.z == other.z;
   }
 
+  /**
+   * Not implemented: always returns -1.
+   * 
+   * @return -1.
+   */
+  @Override
+  public int hashCode() {
+    assert false : "hashCode() not implemented";
+    return -1;
+  }
+  
   /**
    * Computes the norm of this vector.
    * 

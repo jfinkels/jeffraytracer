@@ -197,7 +197,7 @@ public class Box extends ConcreteSurfaceObject {
       return null;
     }
 
-    return Collections.min(possibleIntercepts);
+    return Collections.min(possibleIntercepts, TimeComparator.INSTANCE);
   }
 
   /**

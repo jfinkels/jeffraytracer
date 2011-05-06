@@ -44,7 +44,8 @@ public class Union extends ConstructiveSolidGeometry {
   public Intercept interceptWith(final Ray ray) {
     final Intercept intercept1 = this.object1().interceptWith(ray);
     final Intercept intercept2 = this.object2().interceptWith(ray);
-    return Collections.min(Arrays.asList(intercept1, intercept2));
+    return Collections.min(Arrays.asList(intercept1, intercept2),
+        TimeComparator.INSTANCE);
   }
 
   /**

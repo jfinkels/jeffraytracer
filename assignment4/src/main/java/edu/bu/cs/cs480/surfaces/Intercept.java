@@ -12,7 +12,7 @@ import edu.bu.cs.cs480.vectors.Vector3D;
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
-public class Intercept implements Comparable<Intercept> {
+public class Intercept {
   /** The surface object which is intercepted by a ray. */
   private final ConcreteSurfaceObject surfaceObject;
   /** The time at which the ray intercepts the surface object. */
@@ -77,20 +77,6 @@ public class Intercept implements Comparable<Intercept> {
     this.time = time;
     this.surfaceObject = surfaceObject;
     this.normal = normal;
-  }
-
-  /**
-   * Compares the intercept times of this and the specified other intercept.
-   * 
-   * @param that
-   *          The other intercept.
-   * @return The result of comparing the intercept times of this and the
-   *         specified other intercept.
-   * @see java.lang.Comparable#compareTo(java.lang.Object)
-   */
-  @Override
-  public int compareTo(final Intercept that) {
-    return Double.compare(this.time, that.time);
   }
 
   /**

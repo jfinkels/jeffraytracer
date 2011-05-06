@@ -130,7 +130,7 @@ public class Cylinder extends SimpleQuadricForm implements Directed {
       return null;
     }
 
-    return Collections.min(possibleIntercepts);
+    return Collections.min(possibleIntercepts, TimeComparator.INSTANCE);
   }
 
   /**

@@ -3,6 +3,9 @@
  */
 package edu.bu.cs.cs480.surfaces;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import edu.bu.cs.cs480.vectors.Ray;
 import edu.bu.cs.cs480.vectors.Vector3D;
 
@@ -72,14 +75,8 @@ public class SymmetricDifference extends ConstructiveSolidGeometry {
       return intercept1;
     }
 
-    // at this point we know that the ray intersects both objects
-    final double time1 = intercept1.time();
-    final double time2 = intercept2.time();
-
-    if (time1 < time2) {
-      return intercept1;
-    }
-    return intercept2;
+    return Collections.min(Arrays.asList(intercept1, intercept2),
+        TimeComparator.INSTANCE);
   }
 
   /**

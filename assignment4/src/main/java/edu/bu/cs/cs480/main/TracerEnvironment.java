@@ -20,6 +20,7 @@ import edu.bu.cs.cs480.lights.AmbientLight;
 import edu.bu.cs.cs480.lights.Light;
 import edu.bu.cs.cs480.surfaces.Intercept;
 import edu.bu.cs.cs480.surfaces.SurfaceObject;
+import edu.bu.cs.cs480.surfaces.TimeComparator;
 import edu.bu.cs.cs480.vectors.Ray;
 import edu.bu.cs.cs480.vectors.Vector3D;
 
@@ -288,8 +289,12 @@ public class TracerEnvironment {
         candidates.add(intercept);
       }
     }
+    
+    if (candidates.isEmpty()) {
+      return null;
+    }
 
-    return candidates.isEmpty() ? null : Collections.min(candidates);
+    return Collections.min(candidates, TimeComparator.INSTANCE);
   }
 
   /**

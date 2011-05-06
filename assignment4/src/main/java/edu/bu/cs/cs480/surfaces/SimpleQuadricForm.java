@@ -3,8 +3,6 @@
  */
 package edu.bu.cs.cs480.surfaces;
 
-import org.apache.log4j.Logger;
-
 import edu.bu.cs.cs480.Pair;
 import edu.bu.cs.cs480.QuadraticSolver;
 import edu.bu.cs.cs480.vectors.Matrix4x4;
@@ -19,10 +17,6 @@ import edu.bu.cs.cs480.vectors.Vector4D;
  * @since Spring 2011
  */
 public abstract class SimpleQuadricForm extends ConcreteSurfaceObject {
-  /** The logger for this class. */
-  private static final transient Logger LOG = Logger
-      .getLogger(SimpleQuadricForm.class);
-
   /** The tolerance for testing equality of double values. */
   public static final double TOLERANCE = Double.MIN_VALUE;
 
@@ -162,8 +156,8 @@ public abstract class SimpleQuadricForm extends ConcreteSurfaceObject {
    * already been built by a call to the {@link #compile()} method.
    * 
    * @param point
-   * 
-   * @return
+   *          The point at which to compute the normal.
+   * @return The normal to this surface at the specified point.
    */
   private Vector3D normal(final Vector3D point) {
     return this.matrix.product(new Vector4D(point, 1)).homogeneized()

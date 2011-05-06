@@ -21,6 +21,7 @@ public class FloatColor extends Color {
   public static final FloatColor RED = new FloatColor(1, 0, 0);
   /** Randomly generated serial version UID. */
   private static final long serialVersionUID = 6281360072954213961L;
+
   /**
    * @param shade
    * @return
@@ -28,6 +29,7 @@ public class FloatColor extends Color {
   public static int toRGB(final Vector3D shade) {
     return new FloatColor(shade).getRGB();
   }
+
   /** The value of the blue component of this color as a float between 0 and 1. */
   private final float blue;
   /**
@@ -128,6 +130,19 @@ public class FloatColor extends Color {
 
   /**
    * Returns a new vector whose components are the component values of this
+   * color each scaled by the specified value.
+   * 
+   * @param scale
+   *          The amount by which to scale each component.
+   * @return A new vector whose components are the component values of this
+   *         color each scaled by the specified value.
+   */
+  public Vector3D scaledBy(final double scale) {
+    return this.scaledByComponentwise(scale, scale, scale);
+  }
+
+  /**
+   * Returns a new vector whose components are the component values of this
    * color scaled by the specified values.
    * 
    * For example, if this color is [10, 20, 30] and the specified scale values
@@ -145,8 +160,8 @@ public class FloatColor extends Color {
    */
   public Vector3D scaledByComponentwise(final double redScale,
       final double greenScale, final double blueScale) {
-    return new Vector3D(this.red * redScale, this.green * greenScale, this.blue
-        * blueScale);
+    return new Vector3D(this.red * redScale, this.green * greenScale,
+        this.blue * blueScale);
   }
 
   /**
@@ -167,6 +182,7 @@ public class FloatColor extends Color {
   }
 
   /**
+   * 
    * @param color
    * @return
    */
@@ -175,6 +191,13 @@ public class FloatColor extends Color {
         this.blue + that.blue);
   }
 
+  /**
+   * Returns a vector whose components are the red, green, and blue values of
+   * this color, in that order.
+   * 
+   * @return A vector whose components are the red, green, and blue values of
+   *         this color, in that order.
+   */
   public Vector3D toVector() {
     return new Vector3D(this.red, this.green, this.blue);
   }

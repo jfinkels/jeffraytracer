@@ -23,8 +23,8 @@ public class Intercept implements Comparable<Intercept> {
   /**
    * Gets the point on the surface object at which this intercept occurs.
    * 
-   * Pre-condition: the {@link #ray} object specified in the constructor of this
-   * class has not changed position or direction.
+   * Pre-condition: the {@link #ray} object specified in the constructor of
+   * this class has not changed position or direction.
    * 
    * @return The point on the surface object at which this intercept occurs.
    */
@@ -42,10 +42,18 @@ public class Intercept implements Comparable<Intercept> {
     return ray.position().sumWith(ray.direction().scaledBy(time));
   }
 
+  /**
+   * Gets the normal to the surface at the point at which this intercept
+   * occurs.
+   * 
+   * @return The normal to the surface at the point at which this intercept
+   *         occurs.
+   */
   public Vector3D normal() {
     return this.normal;
   }
 
+  /** The normal to the surface at the point at which this intercept occurs. */
   private final Vector3D normal;
 
   /**
@@ -53,7 +61,8 @@ public class Intercept implements Comparable<Intercept> {
    * specified time.
    * 
    * @param ray
-   *          The ray which intercepts the surface object at the specified time.
+   *          The ray which intercepts the surface object at the specified
+   *          time.
    * @param time
    *          The time at which a ray intercepts the surface object.
    * @param surfaceObject

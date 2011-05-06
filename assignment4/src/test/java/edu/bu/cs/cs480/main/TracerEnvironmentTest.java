@@ -54,7 +54,7 @@ public class TracerEnvironmentTest {
   , "model2"
   , "model3"
   , "model4"
-  ,  "model5"
+  , "model5"
       );
 
   /**

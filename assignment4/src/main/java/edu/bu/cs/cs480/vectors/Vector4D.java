@@ -30,10 +30,17 @@ public class Vector4D {
     this.w = w;
   }
 
+  /**
+   * Returns a new vector which is the homogeneization of this vector (that is,
+   * all the components are divided by the fourth component).
+   * 
+   * @return The homogoneized form of this vector.
+   */
   public Vector3D homogeneized() {
-    return new Vector3D(this.x / this.w, this.y / this.w, this.z / this.w);
+    final double divisor = Math.abs(this.w);
+    return new Vector3D(this.x / divisor, this.y / divisor, this.z / divisor);
   }
-  
+
   public Vector4D(final Vector3D vector, final double w) {
     this(vector.x(), vector.y(), vector.z(), w);
   }
@@ -58,8 +65,8 @@ public class Vector4D {
   }
 
   /**
-   * Returns a new Vector4D object which is the component-wise sum of this
-   * point with the specified other point.
+   * Returns a new Vector4D object which is the component-wise sum of this point
+   * with the specified other point.
    * 
    * @param that
    *          The point with which to sum this one.

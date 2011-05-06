@@ -119,7 +119,7 @@ public class Vector3D {
   public double distanceTo(final Vector3D that) {
     return this.difference(that).norm();
   }
-
+  
   /**
    * Returns the dot product of this vector and the specified other vector.
    * 

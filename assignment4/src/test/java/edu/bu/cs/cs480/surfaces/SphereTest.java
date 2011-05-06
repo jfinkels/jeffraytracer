@@ -5,7 +5,9 @@ package edu.bu.cs.cs480.surfaces;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
+import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import edu.bu.cs.cs480.vectors.Ray;
@@ -38,6 +40,8 @@ public class SphereTest {
     Intercept intercept = s.interceptWith(r);
     assertEquals(5, intercept.time(), 0);
     assertSame(intercept.surfaceObject(), s);
+    assertSame(r, intercept.ray());
+    assertTrue(intercept.normal().equals(new Vector3D(0, 0, -1)));
 
     s = new Sphere();
     s.setPosition(new Vector3D(0, 0, 10));
@@ -47,6 +51,8 @@ public class SphereTest {
     intercept = s.interceptWith(r);
     assertEquals(15, intercept.time(), 0);
     assertSame(intercept.surfaceObject(), s);
+    assertSame(r, intercept.ray());
+    assertTrue(intercept.normal().equals(new Vector3D(0, 0, -1)));
 
     s = new Sphere();
     s.setPosition(new Vector3D(0, 5, 0));
@@ -57,7 +63,8 @@ public class SphereTest {
     intercept = s.interceptWith(r);
     assertEquals(5, intercept.time(), 0);
     assertSame(intercept.surfaceObject(), s);
-
+    assertSame(r, intercept.ray());
+    assertTrue(intercept.normal().equals(new Vector3D(0, 0, -1)));
   }
 
   /**

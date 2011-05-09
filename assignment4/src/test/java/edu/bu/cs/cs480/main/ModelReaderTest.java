@@ -29,7 +29,7 @@ public class ModelReaderTest {
 
   /**
    * Test method for
-   * {@link edu.bu.cs.cs480.main.ModelReader#fromFile(java.lang.String)}.
+   * {@link edu.bu.cs.cs480.main.ModelReader#ModelReader(java.lang.String)}.
    */
   @Test
   public void testFromFile() {

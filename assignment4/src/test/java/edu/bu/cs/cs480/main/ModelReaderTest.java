@@ -4,14 +4,11 @@
 package edu.bu.cs.cs480.main;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
 
 import java.io.FileNotFoundException;
-import java.util.Arrays;
 
 import org.junit.Test;
 
-import edu.bu.cs.cs480.Material;
 import edu.bu.cs.cs480.TestUtils;
 
 /**
@@ -45,25 +42,6 @@ public class ModelReaderTest {
     assertNotNull(e);
   }
 
-  /**
-   * Test method for
-   * {@link edu.bu.cs.cs480.main.ModelReader#getObjectWithID(java.util.List, int)}
-   * .
-   */
-  @Test
-  public void testGetObjectWithID() {
-    final Material m1 = new Material();
-    final Material m2 = new Material();
-    final Material m3 = new Material();
-    m1.setId(1);
-    m2.setId(2);
-    m3.setId(3);
-
-    Material m = ModelReader.getObjectWithID(Arrays.asList(m1, m2, m3), 2);
-    assertSame(m, m2);
-    m = ModelReader.getObjectWithID(Arrays.asList(m1, m2, m3), 1);
-    assertSame(m, m1);
-  }
 //
 //  /**
 //   * Test method for

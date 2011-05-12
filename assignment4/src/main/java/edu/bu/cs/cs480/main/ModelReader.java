@@ -6,13 +6,15 @@ package edu.bu.cs.cs480.main;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import org.apache.log4j.Logger;
 
 import edu.bu.cs.cs480.FloatColor;
-import edu.bu.cs.cs480.Identifiable;
 import edu.bu.cs.cs480.Material;
 import edu.bu.cs.cs480.Vector3D;
 import edu.bu.cs.cs480.camera.Camera;
@@ -100,36 +102,16 @@ public class ModelReader {
   /** The identifier for the viewport definition in the model file format. */
   public static final String VIEWPORT = "viewport";
 
-  /**
-   * Iterates over the specified list and returns the object with the specified
-   * ID, or {@code null} if no such element exists in the list.
-   * 
-   * @param <E>
-   *          The type of element in the list.
-   * @param list
-   *          The list of elements through which to search.
-   * @param id
-   *          The ID of the element to find in the list.
-   * @return The object in the list with the specified ID number, or
-   *         {@code null} if no such element exists.
-   */
-  protected static <E extends Identifiable> E getObjectWithID(
-      final List<E> list, final int id) {
-    for (final E element : list) {
-      if (element.id() == id) {
-        return element;
-      }
-    }
-
-    return null;
-  }
-
   /** The tracer environment which can render the scene read by this class. */
   private final TracerEnvironment environment = new TracerEnvironment();
   /** Whether the current light being read is an ambient light. */
   private boolean isAmbientLight = false;
   /** The scanner which reads the model file. */
   private final Scanner scanner;
+  /** The map from ID number to material being read from the file. */
+  private final Map<Integer, Material> materials = new HashMap<Integer, Material>();
+  /** The map from ID number to surface object being read from the file. */
+  private final Map<Integer, SurfaceObject> surfaceObjects = new HashMap<Integer, SurfaceObject>();
 
   /**
    * Instantiates this reader with the model at the specified filename.
@@ -146,11 +128,9 @@ public class ModelReader {
    */
   public ModelReader(final String filename) throws FileNotFoundException,
       FileFormatException {
+    // create the scanner which reads tokens from the file
     this.scanner = new Scanner(new File(filename));
 
-    // TODO use hashmap so we don't have to iterate to find objects by id
-    final List<Material> materials = new ArrayList<Material>();
-    final List<SurfaceObject> surfaceObjects = new ArrayList<SurfaceObject>();
     List<Integer> toRender = null;
 
     // parse the file!
@@ -181,9 +161,11 @@ public class ModelReader {
           this.environment.addLight(light);
         }
       } else if (token.equals(MATERIAL)) {
-        materials.add(readMaterial());
+        final Material material = readMaterial();
+        this.materials.put(material.id(), material);
       } else if (token.equals(OBJECT)) {
-        surfaceObjects.add(readSurfaceObject(materials, surfaceObjects));
+        final SurfaceObject surfaceObject = readSurfaceObject();
+        this.surfaceObjects.put(surfaceObject.id(), surfaceObject);
       } else if (token.equals(RENDER)) {
         toRender = readIntegerList();
       } else {
@@ -192,22 +174,51 @@ public class ModelReader {
       }
     }
 
+    if (toRender == null) {
+      throw new FileFormatException("File \"" + filename
+          + "\"does not specify a render list.");
+    }
+
     // determine which surface objects should be added to the environment based
     // on the render list
-    final List<SurfaceObject> toAdd;
+    final Collection<SurfaceObject> toAdd;
     if (toRender.isEmpty()) {
-      toAdd = surfaceObjects;
+      toAdd = this.surfaceObjects.values();
     } else {
-      toAdd = new ArrayList<SurfaceObject>();
-      for (final int id : toRender) {
-        toAdd.add(getObjectWithID(surfaceObjects, id));
-      }
+      toAdd = filterValuesByKey(toRender, this.surfaceObjects);
     }
 
     // add those surface objects to the environment
     for (final SurfaceObject surfaceObject : toAdd) {
       this.environment.addSurfaceObject(surfaceObject);
     }
+  }
+
+  /**
+   * Returns a the subset of values from the specified map whose corresponding
+   * keys are specified by filter.
+   * 
+   * @param <K>
+   *          The type of key in the map.
+   * @param <V>
+   *          The type of value in the map.
+   * @param filter
+   *          The values of these keys will be included in the returned
+   *          collection.
+   * @param map
+   *          The map to filter.
+   * @return The subset of values from the specified map whose corresponding
+   *         keys are specified by filter.
+   */
+  private static <K, V> Collection<V> filterValuesByKey(
+      final Collection<K> filter, final Map<K, V> map) {
+    final List<V> values = new ArrayList<V>();
+    for (final K key : filter) {
+      if (map.containsKey(key)) {
+        values.add(map.get(key));
+      }
+    }
+    return values;
   }
 
   /**
@@ -225,13 +236,10 @@ public class ModelReader {
    * Creates a box with the properties specified on the current line of the
    * scanner.
    * 
-   * @param materials
-   *          The list of known materials which the input will reference when
-   *          describing the material of the box by its ID number.
    * @return A box with the properties specified on the current line of the
    *         scanner.
    */
-  protected Box readBox(final List<Material> materials) {
+  protected Box readBox() {
     final Box box = new Box();
 
     this.scanner.next(); // throw away the string "ID"
@@ -242,7 +250,7 @@ public class ModelReader {
     this.scanner.next();
     this.scanner.next();
     final int materialID = this.scanner.nextInt();
-    box.setMaterial(getObjectWithID(materials, materialID));
+    box.setMaterial(this.materials.get(materialID));
 
     box.setPosition(readTriple());
     box.setOrientation(readOrientation());
@@ -314,18 +322,13 @@ public class ModelReader {
    * 
    * Post-condition: the list of surface objects is not modified.
    * 
-   * @param surfaceObjects
-   *          The list of known surface objects which the input will reference
-   *          when describing the two surface objects by ID number which
-   *          comprise this constructive solid geometry object.
    * @return A union, intersection, or symmetric difference object of two other
    *         surface objects, as specified by the input.
    * @throws FileFormatException
    *           If the constructive solid geometry operation is not of a known
    *           type.
    */
-  protected ConstructiveSolidGeometry readCSG(
-      final List<SurfaceObject> surfaceObjects) throws FileFormatException {
+  protected ConstructiveSolidGeometry readCSG() throws FileFormatException {
     final ConstructiveSolidGeometry result;
 
     this.scanner.next(); // throw away the string "ID"
@@ -339,8 +342,8 @@ public class ModelReader {
     this.scanner.next(); // throw away the string "ID"
     final int rightId = this.scanner.nextInt();
 
-    final SurfaceObject leftObject = getObjectWithID(surfaceObjects, leftId);
-    final SurfaceObject rightObject = getObjectWithID(surfaceObjects, rightId);
+    final SurfaceObject leftObject = this.surfaceObjects.get(leftId);
+    final SurfaceObject rightObject = this.surfaceObjects.get(rightId);
 
     if (type.equals(UNION)) {
       result = new Union(leftObject, rightObject);
@@ -362,13 +365,10 @@ public class ModelReader {
    * Creates a cylinder with the properties specified on the current line of
    * the scanner.
    * 
-   * @param materials
-   *          The list of known materials which the input will reference when
-   *          describing the material of the cylinder by its ID number.
    * @return A cylinder with the properties specified on the current line of
    *         the scanner.
    */
-  protected Cylinder readCylinder(final List<Material> materials) {
+  protected Cylinder readCylinder() {
     final Cylinder cylinder = new Cylinder();
 
     this.scanner.next(); // throw away the string "ID"
@@ -379,7 +379,7 @@ public class ModelReader {
     this.scanner.next();
     this.scanner.next();
     final int materialID = this.scanner.nextInt();
-    cylinder.setMaterial(getObjectWithID(materials, materialID));
+    cylinder.setMaterial(this.materials.get(materialID));
 
     cylinder.setPosition(readTriple());
     cylinder.setDirection(readTriple().normalized());
@@ -396,13 +396,10 @@ public class ModelReader {
    * Creates an ellipsoid with the properties specified on the current line of
    * the scanner.
    * 
-   * @param materials
-   *          The list of known materials which the input will reference when
-   *          describing the material of the ellipsoid by its ID number.
    * @return An ellipsoid with the properties specified on the current line of
    *         the scanner.
    */
-  protected Ellipsoid readEllipsoid(final List<Material> materials) {
+  protected Ellipsoid readEllipsoid() {
     final Ellipsoid ellipsoid = new Ellipsoid();
 
     this.scanner.next(); // throw away the string "ID"
@@ -413,7 +410,7 @@ public class ModelReader {
     this.scanner.next();
     this.scanner.next();
     final int materialID = this.scanner.nextInt();
-    ellipsoid.setMaterial(getObjectWithID(materials, materialID));
+    ellipsoid.setMaterial(this.materials.get(materialID));
 
     ellipsoid.setPosition(readTriple());
     ellipsoid.setRadii(readTriple());
@@ -563,13 +560,10 @@ public class ModelReader {
    * Creates a sphere with the properties specified on the current line of the
    * scanner.
    * 
-   * @param materials
-   *          The list of known materials which the input will reference when
-   *          describing the material of the sphere by its ID number.
    * @return A sphere with the properties specified on the current line of the
    *         scanner.
    */
-  protected Sphere readSphere(final List<Material> materials) {
+  protected Sphere readSphere() {
     final Sphere sphere = new Sphere();
 
     this.scanner.next(); // throw away the string "ID"
@@ -580,7 +574,7 @@ public class ModelReader {
     this.scanner.next();
     this.scanner.next();
     final int materialID = this.scanner.nextInt();
-    sphere.setMaterial(getObjectWithID(materials, materialID));
+    sphere.setMaterial(this.materials.get(materialID));
 
     sphere.setPosition(readTriple());
 
@@ -596,36 +590,30 @@ public class ModelReader {
    * 
    * Post-condition: the list of surface objects is not modified.
    * 
-   * @param materials
-   *          The list of known materials which the input will reference when
-   *          describing the material of the ellipsoid by its ID number.
-   * @param surfaceObjects
-   *          The list of known surface objects which the input will reference
-   *          when describing the two surface objects which comprise a
-   *          constructive solid geometry object by ID number.
    * @return An surface object with the properties specified on the current
    *         line of the scanner.
    * @throws FileFormatException
    *           If the specified type of surface object is not one of the known
    *           types.
    */
-  protected SurfaceObject readSurfaceObject(final List<Material> materials,
-      final List<SurfaceObject> surfaceObjects) throws FileFormatException {
+  protected SurfaceObject readSurfaceObject(
+
+  ) throws FileFormatException {
     final SurfaceObject surfaceObject;
 
     final String type = this.scanner.next();
     if (type.equals("sphere")) {
-      surfaceObject = readSphere(materials);
+      surfaceObject = readSphere();
     } else if (type.equals("ellipsoid")) {
-      surfaceObject = readEllipsoid(materials);
+      surfaceObject = readEllipsoid();
     } else if (type.equals("cylinder")) {
-      surfaceObject = readCylinder(materials);
+      surfaceObject = readCylinder();
     } else if (type.equals("box")) {
-      surfaceObject = readBox(materials);
+      surfaceObject = readBox();
     } else if (type.equals("CSG")) {
       LOG.warn("Constructive solid geometry objects not yet implemented.");
       LOG.warn("Model may not render as expected.");
-      surfaceObject = readCSG(surfaceObjects);
+      surfaceObject = readCSG();
     } else {
       throw new FileFormatException("Do not understand surface object type \""
           + type + "\".");

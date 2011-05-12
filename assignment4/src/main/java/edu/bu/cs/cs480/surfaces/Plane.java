@@ -14,12 +14,15 @@ import edu.bu.cs.cs480.Vector3D;
  * @since Spring 2011
  */
 class Plane extends PositionableTracerObject implements SurfaceObject {
+  /** The tolerance for comparing double values to zero. */
+  // TODO extract this to a superclass
+  public static final double TOLERANCE = Double.MIN_VALUE;
+  /** The surface object which contains this plane. */
+  private final ConcreteSurfaceObject containingObject;
   /** The scalar value in the equation of this plane. */
   private final double d;
   /** The normal to the plane. */
   private final Vector3D normal;
-  /** The surface object which contains this plane. */
-  private final ConcreteSurfaceObject containingObject;
 
   /**
    * Instantiates this plane with the specified normal vector and scalar
@@ -47,6 +50,20 @@ class Plane extends PositionableTracerObject implements SurfaceObject {
   @Override
   public void compile() {
     // intentionally unimplemented; everything is done in the constructor
+  }
+
+  /**
+   * Returns {@code true} if and only if the specified point is below this plane
+   * (with respect to its normal).
+   * 
+   * @param point
+   *          The point to test.
+   * @return {@code true} if and only if the specified point is below this plane
+   *         (with respect to its normal).
+   */
+  @Override
+  public boolean inside(final Vector3D point) {
+    return this.normal.dotProduct(point) + this.d < -TOLERANCE;
   }
 
   /**
@@ -79,23 +96,6 @@ class Plane extends PositionableTracerObject implements SurfaceObject {
   @Override
   public boolean outside(final Vector3D point) {
     return this.normal.dotProduct(point) + this.d > TOLERANCE;
-  }
-
-  // TODO extract this to a superclass
-  public static final double TOLERANCE = Double.MIN_VALUE;
-
-  /**
-   * Returns {@code true} if and only if the specified point is below this plane
-   * (with respect to its normal).
-   * 
-   * @param point
-   *          The point to test.
-   * @return {@code true} if and only if the specified point is below this plane
-   *         (with respect to its normal).
-   */
-  @Override
-  public boolean inside(final Vector3D point) {
-    return this.normal.dotProduct(point) + this.d < -TOLERANCE;
   }
 
   /**

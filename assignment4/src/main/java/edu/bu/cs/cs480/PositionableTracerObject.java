@@ -34,7 +34,7 @@ public class PositionableTracerObject extends TracerObject implements
    * @see edu.bu.cs.cs480.Positionable#setPosition(edu.bu.cs.cs480.Vector3D)
    */
   @Override
-  public void setPosition(Vector3D position) {
+  public void setPosition(final Vector3D position) {
     this.position = position;
   }
 

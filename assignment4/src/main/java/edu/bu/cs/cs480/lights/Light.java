@@ -127,7 +127,7 @@ public abstract class Light extends PositionableTracerObject implements
    * @see edu.bu.cs.cs480.Colorable#setColor(edu.bu.cs.cs480.FloatColor)
    */
   @Override
-  public void setColor(FloatColor color) {
+  public void setColor(final FloatColor color) {
     this.color = color;
   }
 

@@ -19,10 +19,10 @@ public abstract class DistantLight extends Light {
    * @param distance
    *          {@inheritDoc}
    * @return {@inheritDoc}
-   * @see edu.bu.cs.cs480.Light#radialAttenuation(double)
+   * @see edu.bu.cs.cs480.lights.Light#radialAttenuation(double)
    */
   @Override
-  public double radialAttenuation(double distance) {
+  public double radialAttenuation(final double distance) {
     return 1.0 / QuadraticSolver.evaluate(this.attenuationCoefficients().z(),
         this.attenuationCoefficients().y(), this.attenuationCoefficients().x(),
         distance);

@@ -36,6 +36,10 @@ public class Intercept {
    * Gets the point on the surface object at which this intercept occurs given
    * by the specified ray and time of intersection.
    * 
+   * @param ray
+   *          The ray for which to compute the point of intersection.
+   * @param time
+   *          The time at which the point of intersection occurred.
    * @return The point on the surface object at which this intercept occurs.
    */
   public static Vector3D pointOfIntersection(final Ray ray, final double time) {

@@ -229,7 +229,7 @@ public class FloatColor extends Color {
    * Returns a new color which is the componentwise sum of this and the
    * specified other color.
    * 
-   * @param color
+   * @param that
    *          The other color with which to sum.
    * @return A new color which is the componentwise sum of this and the
    *         specified other color.

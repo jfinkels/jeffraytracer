@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
-public class Main {
+public final class Main {
   /** The logger for this class. */
   private static final transient Logger LOG = Logger.getLogger(Main.class);
   /** The type of the image file to output. */
@@ -73,5 +73,10 @@ public class Main {
   private static String outputFilename(final String inputFilename) {
     final int i = inputFilename.lastIndexOf('.');
     return inputFilename.substring(0, i) + "." + OUTPUT_FILE_TYPE;
+  }
+  
+  /** Prevents instantiation. */
+  private Main() {
+    // intentionally unimplemented
   }
 }

@@ -20,6 +20,7 @@ public class Material extends TracerObject implements Colorable {
   private double reflection = 0;
   /** The index of refraction of this material. */
   private double refraction = 0;
+  /** The exponent for the specular reflection of this material. */
   private double specularExponent;
   /** The coefficient of specular reflection of this material. */
   private double specularReflection = 0;
@@ -91,7 +92,7 @@ public class Material extends TracerObject implements Colorable {
    * @see edu.bu.cs.cs480.Colorable#setColor(edu.bu.cs.cs480.FloatColor)
    */
   @Override
-  public void setColor(FloatColor color) {
+  public void setColor(final FloatColor color) {
     this.color = color;
   }
 
@@ -121,7 +122,7 @@ public class Material extends TracerObject implements Colorable {
    * @param refraction
    *          The index of refraction of this material.
    */
-  public void setRefraction(double refraction) {
+  public void setRefraction(final double refraction) {
     this.refraction = refraction;
   }
 

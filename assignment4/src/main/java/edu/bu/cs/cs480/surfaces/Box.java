@@ -40,6 +40,8 @@ public class Box extends ConcreteSurfaceObject {
         && face4.inside(point);
   }
 
+  /** The array of all six faces of this box. */
+  private Plane[] allFaces = null;
   /** The back face of this box. */
   private Plane back = null;
   /** The bottom face of this box. */
@@ -111,8 +113,6 @@ public class Box extends ConcreteSurfaceObject {
     // }
   }
 
-  private Plane[] allFaces = null;
-
   /**
    * Gets the dimensions of this box.
    * 
@@ -138,6 +138,22 @@ public class Box extends ConcreteSurfaceObject {
     final Vector3D pointOnPlane = this.position().sumWith(
         normal.scaledBy(length / 2));
     return new Plane(normal, -normal.dotProduct(pointOnPlane), this);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * edu.bu.cs.cs480.surfaces.SurfaceObject#inside(edu.bu.cs.cs480.Vector3D)
+   */
+  @Override
+  public boolean inside(final Vector3D point) {
+    for (final Plane plane : this.allFaces) {
+      if (!plane.inside(point)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   /**
@@ -209,6 +225,22 @@ public class Box extends ConcreteSurfaceObject {
     return this.orientation;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * edu.bu.cs.cs480.surfaces.SurfaceObject#outside(edu.bu.cs.cs480.Vector3D)
+   */
+  @Override
+  public boolean outside(final Vector3D point) {
+    for (final Plane plane : this.allFaces) {
+      if (!plane.outside(point)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   /**
    * Sets the dimensions of this box.
    * 
@@ -227,37 +259,5 @@ public class Box extends ConcreteSurfaceObject {
    */
   public void setOrientation(final Orientation orientation) {
     this.orientation = orientation;
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * edu.bu.cs.cs480.surfaces.SurfaceObject#inside(edu.bu.cs.cs480.Vector3D)
-   */
-  @Override
-  public boolean inside(final Vector3D point) {
-    for (final Plane plane : this.allFaces) {
-      if (!plane.inside(point)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * edu.bu.cs.cs480.surfaces.SurfaceObject#outside(edu.bu.cs.cs480.Vector3D)
-   */
-  @Override
-  public boolean outside(final Vector3D point) {
-    for (final Plane plane : this.allFaces) {
-      if (!plane.outside(point)) {
-        return false;
-      }
-    }
-    return true;
   }
 }

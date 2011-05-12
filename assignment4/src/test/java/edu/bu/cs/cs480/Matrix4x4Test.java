@@ -3,13 +3,9 @@
  */
 package edu.bu.cs.cs480;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-
-import edu.bu.cs.cs480.Matrix4x4;
-import edu.bu.cs.cs480.Vector4D;
 
 /**
  * Test class for the Matrix4x4 matrix.
@@ -78,7 +74,7 @@ public class Matrix4x4Test {
       final Matrix4x4 transpose = matrix.transposed();
       for (int i = 0; i < 4; ++i) {
         for (int j = 0; j < 4; ++j) {
-          assertEquals(matrix.m[i][j], transpose.m[j][i], 0);
+          assertEquals(matrix.get(i, j), transpose.get(j, i), 0);
         }
       }
     }
@@ -103,9 +99,17 @@ public class Matrix4x4Test {
     matrix2.set(3, 3, 1);
 
     Matrix4x4 result = matrix1.product(matrix2);
-    assertArrayEquals(matrix1.m, result.m);
+    for (int i = 0; i < 4; ++i) {
+      for (int j = 0; j < 4; ++j) {
+        assertEquals(matrix1.get(i, j), result.get(i, j), 0);
+      }
+    }
     result = matrix2.product(matrix1);
-    assertArrayEquals(matrix1.m, result.m);
+    for (int i = 0; i < 4; ++i) {
+      for (int j = 0; j < 4; ++j) {
+        assertEquals(matrix1.get(i, j), result.get(i, j), 0);
+      }
+    }
 
     matrix2.set(0, 3, 1);
     matrix2.set(1, 3, 2);
@@ -114,7 +118,7 @@ public class Matrix4x4Test {
     result = matrix2.product(matrix1);
     for (int i = 0; i < 4; ++i) {
       for (int j = 0; j < 4; ++j) {
-        assertEquals(2 * matrix2.m[i][j], result.m[i][j], 0);
+        assertEquals(2 * matrix2.get(i, j), result.get(i, j), 0);
       }
     }
 

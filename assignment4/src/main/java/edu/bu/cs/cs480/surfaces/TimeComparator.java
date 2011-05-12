@@ -3,6 +3,7 @@
  */
 package edu.bu.cs.cs480.surfaces;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
@@ -11,7 +12,9 @@ import java.util.Comparator;
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
-public class TimeComparator implements Comparator<Intercept> {
+public class TimeComparator implements Comparator<Intercept>, Serializable {
+  /** Generated serial version unique ID. */
+  private static final long serialVersionUID = -7839457362000205223L;
   /** The singleton instance of this comparator. */
   public static final TimeComparator INSTANCE = new TimeComparator();
 

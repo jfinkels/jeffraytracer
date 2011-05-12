@@ -211,7 +211,7 @@ public class Cylinder extends SimpleQuadricForm implements Directed {
   /**
    * Sets the height of this cylinder.
    * 
-   * @param height
+   * @param length
    *          The height of this cylinder.
    */
   public void setLength(final double length) {
@@ -224,7 +224,7 @@ public class Cylinder extends SimpleQuadricForm implements Directed {
    * @param radius
    *          The radius of this cylinder.
    */
-  public void setRadius(double radius) {
+  public void setRadius(final double radius) {
     this.radius = radius;
   }
 }

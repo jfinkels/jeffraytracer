@@ -25,12 +25,14 @@ public class SpotLight extends PointLight {
    * @param cosineAngle
    *          {@inheritDoc}
    * @return {@inheritDoc}
-   * @see edu.bu.cs.cs480.Light#angularAttenuation(double)
+   * @see edu.bu.cs.cs480.lights.Light#angularAttenuation(double)
    */
   @Override
   public double angularAttenuation(final double cosineAngle) {
-    return cosineAngle > COS_MAX_ANGLE ? 0 : super
-        .angularAttenuation(cosineAngle);
+    if (cosineAngle > COS_MAX_ANGLE) {
+      return 0;
+    }
+    return super.angularAttenuation(cosineAngle);
   }
 
 }

@@ -31,7 +31,7 @@ public class PerspectiveCamera extends Camera {
    * @param focalLength
    *          The focal length of this camera.
    */
-  public void setFocalLength(double focalLength) {
+  public void setFocalLength(final double focalLength) {
     this.focalLength = focalLength;
   }
 

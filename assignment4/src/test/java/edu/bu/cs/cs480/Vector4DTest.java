@@ -3,11 +3,9 @@
  */
 package edu.bu.cs.cs480;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-
-import edu.bu.cs.cs480.Vector4D;
 
 /**
  * Test for the Vector4D class.

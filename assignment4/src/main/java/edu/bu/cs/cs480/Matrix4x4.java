@@ -29,7 +29,7 @@ public class Matrix4x4 {
   }
 
   /** The entries of this matrix. */
-  final double[][] m = new double[4][4];
+  private final double[][] m = new double[4][4];
 
   /**
    * Gets the value of the entry at the specified row and column in this

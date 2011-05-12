@@ -24,21 +24,54 @@ public class SimpleQuadricFormTest {
   /** The object under test. */
   private SimpleQuadricForm s = null;
 
+  /**
+   * A "quadric" which is actually just the identity matrix.
+   * 
+   * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
+   * @since Spring 2011
+   */
+  private static class TestQuadric1 extends SimpleQuadricForm {
+    @Override
+    protected Matrix4x4 rotation() {
+      return Matrix4x4.identity();
+    }
+
+    @Override
+    protected Matrix4x4 baseMatrix() {
+      return Matrix4x4.identity();
+    }
+  }
+
+  /**
+   * A quadric which is a sphere of radius 5 with a fixed rotation.
+   * 
+   * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
+   * @since Spring 2011
+   */
+  private static class TestQuadric2 extends SimpleQuadricForm {
+
+    @Override
+    protected Matrix4x4 rotation() {
+      final Matrix4x4 result = new Matrix4x4();
+      result.set(0, 2, 1);
+      result.set(1, 1, 1);
+      result.set(2, 0, 1);
+      result.set(3, 3, 1);
+      return result;
+    }
+
+    @Override
+    protected Matrix4x4 baseMatrix() {
+      final Matrix4x4 result = Matrix4x4.identity();
+      result.set(3, 3, -25);
+      return result;
+    }
+  }
+
   /** Instantiate the object before each test. */
   @Before
   public void setUp() {
-    this.s = new SimpleQuadricForm() {
-      @Override
-      protected Matrix4x4 rotation() {
-        return Matrix4x4.identity();
-      }
-
-      @Override
-      protected Matrix4x4 baseMatrix() {
-        return Matrix4x4.identity();
-      }
-    };
-
+    this.s = new TestQuadric1();
   }
 
   /**
@@ -69,25 +102,7 @@ public class SimpleQuadricFormTest {
    */
   @Test
   public void testCompile() {
-    this.s = new SimpleQuadricForm() {
-
-      @Override
-      protected Matrix4x4 rotation() {
-        final Matrix4x4 result = new Matrix4x4();
-        result.set(0, 2, 1);
-        result.set(1, 1, 1);
-        result.set(2, 0, 1);
-        result.set(3, 3, 1);
-        return result;
-      }
-
-      @Override
-      protected Matrix4x4 baseMatrix() {
-        final Matrix4x4 result = Matrix4x4.identity();
-        result.set(3, 3, -25);
-        return result;
-      }
-    };
+    this.s = new TestQuadric2();
     this.s.setPosition(new Vector3D(1, 2, 3));
 
     this.s.compile();

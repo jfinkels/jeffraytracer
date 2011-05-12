@@ -111,6 +111,7 @@ public class TracerEnvironment {
   private static Vector3D reflected(final Vector3D ray, final Vector3D normal) {
     return normal.scaledBy(normal.dotProduct(ray) * 2).difference(ray);
   }
+
   /**
    * Resets the value of each element of the specified array to {@code false}.
    * 
@@ -122,6 +123,7 @@ public class TracerEnvironment {
       array[i] = false;
     }
   }
+
   /** The list of all lights in the scene which are ambient lights. */
   private List<AmbientLight> ambientLights = new ArrayList<AmbientLight>();
   /** The virtual camera through which the scene is viewed. */
@@ -149,7 +151,7 @@ public class TracerEnvironment {
    * @param light
    *          The ambient light to add.
    */
-  public void addAmbientLight(final AmbientLight light) {
+  void addAmbientLight(final AmbientLight light) {
     this.ambientLights.add(light);
   }
 
@@ -159,7 +161,7 @@ public class TracerEnvironment {
    * @param light
    *          The light to add.
    */
-  public void addLight(final Light light) {
+  void addLight(final Light light) {
     this.lights.add(light);
   }
 
@@ -169,7 +171,7 @@ public class TracerEnvironment {
    * @param surfaceObject
    *          The surface object to add.
    */
-  public void addSurfaceObject(final SurfaceObject surfaceObject) {
+  void addSurfaceObject(final SurfaceObject surfaceObject) {
     this.surfaceObjects.add(surfaceObject);
   }
 
@@ -232,11 +234,11 @@ public class TracerEnvironment {
    * 
    * Algorithm adapted from source code of Zheng Wu.
    * 
-   * @param i
-   *          The horizontal pixel location in the viewport at which the ray
-   *          originates.
-   * @param j
+   * @param row
    *          The vertical pixel location in the viewport at which the ray
+   *          originates.
+   * @param column
+   *          The horizontal pixel location in the viewport at which the ray
    *          originates.
    * @return The ray which would start at pixel location (row, column) in the
    *         viewport.
@@ -289,7 +291,7 @@ public class TracerEnvironment {
         candidates.add(intercept);
       }
     }
-    
+
     if (candidates.isEmpty()) {
       return null;
     }
@@ -413,7 +415,7 @@ public class TracerEnvironment {
    * @param camera
    *          The virtual camera through which the scene is viewed.
    */
-  public void setCamera(final Camera camera) {
+  void setCamera(final Camera camera) {
     this.camera = camera;
   }
 
@@ -423,7 +425,7 @@ public class TracerEnvironment {
    * @param resolution
    *          The resolution of the scene when displayed in the viewport.
    */
-  public void setResolution(final Resolution resolution) {
+  void setResolution(final Resolution resolution) {
     this.resolution = resolution;
   }
 
@@ -433,7 +435,7 @@ public class TracerEnvironment {
    * @param viewport
    *          The dimensions of the viewport in which the scene is displayed.
    */
-  public void setViewport(final Viewport viewport) {
+  void setViewport(final Viewport viewport) {
     this.viewport = viewport;
   }
 
@@ -530,6 +532,7 @@ public class TracerEnvironment {
    * @param ray
    *          The ray to check for intercepts with surface objects.
    * @param light
+   *          The light which may cast a shadow on the specified ray.
    * @return A number between 0 and 1 inclusive representing how much the
    *         origin of the specified ray is in shadow (0 means not at all in
    *         shadow and 1 means entirely in shadow).
@@ -589,8 +592,8 @@ public class TracerEnvironment {
    * 
    * Note: in the provided pseudocode this was called RT_trace.
    * 
-   * @param intercept
-   *          The intercept for which to compute the color.
+   * @param ray
+   *          The ray whose intercept with a surface object will be shaded.
    * @param depth
    *          The current depth of recursion in the ray tree.
    * @return The color at this intercept.
@@ -598,8 +601,10 @@ public class TracerEnvironment {
   // TODO combine trace() and shade()
   Vector3D trace(final Ray ray, final int depth) {
     final Intercept minIntercept = this.minimumIntercept(ray);
-    return minIntercept == null ? BACKGROUND_COLOR : this.shade(minIntercept,
-        depth);
+    if (minIntercept == null) {
+      return BACKGROUND_COLOR;
+    }
+    return this.shade(minIntercept, depth);
   }
 
   /**
@@ -637,8 +642,12 @@ public class TracerEnvironment {
 
     // determine the ratio of the indices of refraction; if we are inside,
     // we need to flip the index of refractions
-    final double power = surfaceObject.outside(midPoint) ? 1 : -1;
-    final double ratio = Math.pow(material.refraction(), power);
+    final double ratio;
+    if (surfaceObject.outside(midPoint)) {
+      ratio = material.refraction();
+    } else {
+      ratio = 1.0 / material.refraction();
+    }
 
     // get the normal to the surface at the point of intersection
     final Vector3D normal = intercept.normal();
@@ -653,8 +662,14 @@ public class TracerEnvironment {
         * (1 - Math.pow(cosAngle1, 2)));
 
     // whether to add or multiply a term in the refracted vector definition
-    final double factor = cosAngle1 < 0 ? 1 : -1;
+    final double factor;
+    if (cosAngle1 < 0) {
+      factor = 1;
+    } else {
+      factor = -1;
+    }
 
+    // compute the direction of the transmitted ray
     final Vector3D transmittedDir = direction.scaledBy(ratio)
         .sumWith(normal.scaledBy(ratio * cosAngle1 + factor * cosAngle2))
         .normalized();

@@ -31,7 +31,7 @@ public class InfinityLight extends DistantLight {
    * @param cosineAngle
    *          {@inheritDoc}
    * @return {@inheritDoc}
-   * @see edu.bu.cs.cs480.Light#angularAttenuation(double)
+   * @see edu.bu.cs.cs480.lights.Light#angularAttenuation(double)
    */
   @Override
   public double angularAttenuation(final double cosineAngle) {

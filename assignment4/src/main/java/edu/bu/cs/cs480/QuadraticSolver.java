@@ -9,7 +9,7 @@ package edu.bu.cs.cs480;
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
-public class QuadraticSolver {
+public final class QuadraticSolver {
   /**
    * Evaluates the quadratic polynomial over the reals with the specified
    * coefficients at the specified point.
@@ -66,4 +66,8 @@ public class QuadraticSolver {
     return new Pair(left, right);
   }
 
+  /** Prevents instantiation. */
+  private QuadraticSolver() {
+    // intentionally unimplemented
+  }
 }

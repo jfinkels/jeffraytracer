@@ -54,7 +54,7 @@ public class PositionedDirected implements Positionable, Directed {
   /**
    * {@inheritDoc}
    * 
-   * @param positio
+   * @param position
    *          {@inheritDoc}
    * @see edu.bu.cs.cs480.Positionable#setPosition(edu.bu.cs.cs480.Vector3D)
    */

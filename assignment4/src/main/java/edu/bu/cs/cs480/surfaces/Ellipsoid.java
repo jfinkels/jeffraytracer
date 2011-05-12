@@ -29,6 +29,9 @@ public class Ellipsoid extends UnrotatedSimpleQuadricForm {
   /**
    * Sets the radii of the x, y, and z axes of this ellipsoid.
    * 
+   * This method must be called with a non-{@code null} argument before the
+   * {@link #compile()} method is called.
+   * 
    * @param radii
    *          The radii of the x, y, and z axes of this ellipsoid.
    */
@@ -38,6 +41,8 @@ public class Ellipsoid extends UnrotatedSimpleQuadricForm {
 
   /**
    * {@inheritDoc}
+   * 
+   * Pre-condition: the radii of this ellipsoid have been set.
    * 
    * @return {@inheritDoc}
    * @see edu.bu.cs.cs480.surfaces.SimpleQuadricForm#baseMatrix()

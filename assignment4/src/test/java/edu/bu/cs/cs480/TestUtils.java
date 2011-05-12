@@ -5,21 +5,20 @@ package edu.bu.cs.cs480;
 
 import java.util.Random;
 
-
 /**
  * Utilities for JUnit tests.
  * 
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
-public class TestUtils {
+public final class TestUtils {
 
   /** A random number generator. */
-  private static final Random random = new Random();
+  private static final Random RANDOM = new Random();
 
   /**
-   * Prints the stack trace of the specified throwable to stderr, then fails the
-   * current test.
+   * Prints the stack trace of the specified throwable to stderr, then fails
+   * the current test.
    * 
    * @param throwable
    *          The throwable which was the cause of the current test failure.
@@ -38,9 +37,14 @@ public class TestUtils {
     final Matrix4x4 result = new Matrix4x4();
     for (int i = 0; i < 4; ++i) {
       for (int j = 0; j < 4; ++j) {
-        result.set(i, j, random.nextDouble());
+        result.set(i, j, RANDOM.nextDouble());
       }
     }
     return result;
+  }
+
+  /** Prevents instantiation of this class. */
+  private TestUtils() {
+    // intentionally unimplemented
   }
 }

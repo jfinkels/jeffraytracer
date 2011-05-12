@@ -211,7 +211,11 @@ public class ModelReader {
   }
 
   /**
-   * @return
+   * Gets the tracer environment which has been parsed from the file specified
+   * in the constructor.
+   * 
+   * @return The tracer environment which has been parsed from the file
+   *         specified in the constructor.
    */
   public TracerEnvironment environment() {
     return this.environment;
@@ -494,8 +498,6 @@ public class ModelReader {
    * 
    * @return A material with the properties specified on the current line of
    *         the scanner.
-   * @throws FileFormatException
-   *           If the specified type of material is not recognized.
    */
   protected Material readMaterial() {
     final Material material = new Material();
@@ -603,6 +605,9 @@ public class ModelReader {
    *          constructive solid geometry object by ID number.
    * @return An surface object with the properties specified on the current
    *         line of the scanner.
+   * @throws FileFormatException
+   *           If the specified type of surface object is not one of the known
+   *           types.
    */
   protected SurfaceObject readSurfaceObject(final List<Material> materials,
       final List<SurfaceObject> surfaceObjects) throws FileFormatException {

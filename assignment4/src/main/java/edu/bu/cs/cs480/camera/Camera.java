@@ -65,7 +65,7 @@ public abstract class Camera extends PositionedDirected {
    * @param far
    *          The distance to the far clip plane.
    */
-  public void setFar(double far) {
+  public void setFar(final double far) {
     this.far = far;
   }
 
@@ -75,7 +75,7 @@ public abstract class Camera extends PositionedDirected {
    * @param near
    *          The distance to the near clip plane.
    */
-  public void setNear(double near) {
+  public void setNear(final double near) {
     this.near = near;
   }
 

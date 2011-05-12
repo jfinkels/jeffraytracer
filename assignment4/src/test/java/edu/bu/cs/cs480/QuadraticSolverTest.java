@@ -3,7 +3,8 @@
  */
 package edu.bu.cs.cs480;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 

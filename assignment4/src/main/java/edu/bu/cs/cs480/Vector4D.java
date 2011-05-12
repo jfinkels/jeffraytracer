@@ -3,7 +3,6 @@
  */
 package edu.bu.cs.cs480;
 
-
 /**
  * A four-dimensional vector.
  * 
@@ -12,17 +11,29 @@ package edu.bu.cs.cs480;
  */
 @Immutable
 public class Vector4D {
+  /** The w coordinate of this vector. */
   private final double w;
+  /** The x coordinate of this vector. */
   private final double x;
+  /** The y coordinate of this vector. */
   private final double y;
+  /** The z coordinate of this vector. */
   private final double z;
 
   /**
+   * Instantiates this vector with the specified four coordinates.
+   * 
    * @param x
+   *          The x coordinate of this vector.
    * @param y
+   *          The y coordinate of this vector.
    * @param z
+   *          The z coordinate of this vector.
+   * @param w
+   *          The w coordinate of this vector.
    */
-  public Vector4D(double x, double y, double z, final double w) {
+  public Vector4D(final double x, final double y, final double z,
+      final double w) {
     this.x = x;
     this.y = y;
     this.z = z;
@@ -40,10 +51,27 @@ public class Vector4D {
     return new Vector3D(this.x / divisor, this.y / divisor, this.z / divisor);
   }
 
+  /**
+   * Instantiates this vector using the three coordinates of the specified
+   * three-dimensional vector as its x, y, and z coordinates, along with the
+   * specified w coordinate.
+   * 
+   * @param vector
+   *          The vector specifying the first three components of this vector.
+   * @param w
+   *          The fourth component of this vector.
+   */
   public Vector4D(final Vector3D vector, final double w) {
     this(vector.x(), vector.y(), vector.z(), w);
   }
 
+  /**
+   * Returns the dot product of this vector with the specified other vector.
+   * 
+   * @param that
+   *          The other vector with which to compute the dot product.
+   * @return The dot product of this vector with the specified other vector.
+   */
   public double dotProduct(final Vector4D that) {
     return this.x * that.x + this.y * that.y + this.z * that.z + this.w
         * that.w;
@@ -64,8 +92,8 @@ public class Vector4D {
   }
 
   /**
-   * Returns a new Vector4D object which is the component-wise sum of this point
-   * with the specified other point.
+   * Returns a new Vector4D object which is the component-wise sum of this
+   * point with the specified other point.
    * 
    * @param that
    *          The point with which to sum this one.
@@ -77,24 +105,49 @@ public class Vector4D {
         this.w + that.w);
   }
 
+  /**
+   * Returns the string representation of this vector.
+   * 
+   * @return The string representation of this vector.
+   */
   @Override
   public String toString() {
     return "Vector[" + this.x + ", " + this.y + ", " + this.z + ", " + this.w
         + "]";
   }
 
+  /**
+   * Gets the w coordinate of this vector.
+   * 
+   * @return The w coordinate of this vector.
+   */
   public double w() {
     return this.w;
   }
 
+  /**
+   * Gets the x coordinate of this vector.
+   * 
+   * @return The x coordinate of this vector.
+   */
   public double x() {
     return this.x;
   }
 
+  /**
+   * Gets the y coordinate of this vector.
+   * 
+   * @return The y coordinate of this vector.
+   */
   public double y() {
     return this.y;
   }
 
+  /**
+   * Gets the z coordinate of this vector.
+   * 
+   * @return The z coordinate of this vector.
+   */
   public double z() {
     return this.z;
   }

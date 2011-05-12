@@ -4,7 +4,7 @@
 package edu.bu.cs.cs480.camera;
 
 /**
- * The viewport on which the scene is displayed
+ * The viewport on which the scene is displayed.
  * 
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
@@ -28,10 +28,10 @@ public class Viewport {
   /**
    * Sets the height of the viewport in pixels.
    * 
-   * @param width
+   * @param height
    *          The height of the viewport in pixels.
    */
-  public void setHeight(int height) {
+  public void setHeight(final int height) {
     this.height = height;
   }
 
@@ -41,7 +41,7 @@ public class Viewport {
    * @param width
    *          The width of the viewport in pixels.
    */
-  public void setWidth(int width) {
+  public void setWidth(final int width) {
     this.width = width;
   }
 

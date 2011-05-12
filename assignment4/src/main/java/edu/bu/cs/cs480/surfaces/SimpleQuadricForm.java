@@ -44,8 +44,8 @@ public abstract class SimpleQuadricForm extends ConcreteSurfaceObject {
    * method.
    * 
    * This method must only be called AFTER the
-   * {@link #setPosition(edu.bu.cs.cs480.Vector3D)} method has been
-   * called, in order to create the translation matrix.
+   * {@link #setPosition(edu.bu.cs.cs480.Vector3D)} method has been called, in
+   * order to create the translation matrix.
    * 
    * This method will overwrite the contents of the {@link #matrix} field.
    * 
@@ -114,7 +114,14 @@ public abstract class SimpleQuadricForm extends ConcreteSurfaceObject {
     if (pair == null) {
       return null;
     }
-    // TODO assumes that both are positive
+
+    // times should never be negative, because the intercepts should be forward
+    // from the rays direction, or null
+    if (pair.left() < 0 || pair.right() < 0) {
+      throw new RuntimeException(
+          "One of the computed intercept times was negative: " + pair);
+    }
+
     final double time = Math.min(pair.left(), pair.right());
 
     return new Intercept(ray, time, this, this.normal(Intercept

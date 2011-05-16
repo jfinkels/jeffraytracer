@@ -303,7 +303,7 @@ public class ModelReader {
   }
 
   /**
-   * Reads the next three float values between 0 and 1 from the Scanner and
+   * Reads the next three double values between 0 and 1 from the Scanner and
    * returns the corresponding color.
    * 
    * @return The color whose component values are read from the specified

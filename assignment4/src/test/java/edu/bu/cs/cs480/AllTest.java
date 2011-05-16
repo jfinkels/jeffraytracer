@@ -15,7 +15,7 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({ Matrix4x4Test.class, QuadraticSolverTest.class,
-    Vector4DTest.class })
+    Vector3DTest.class, Vector4DTest.class })
 public class AllTest {
   // intentionally unimplemented
 }

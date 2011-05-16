@@ -5,7 +5,7 @@ package edu.bu.cs.cs480.lights;
 
 import edu.bu.cs.cs480.Colorable;
 import edu.bu.cs.cs480.Directed;
-import edu.bu.cs.cs480.FloatColor;
+import edu.bu.cs.cs480.DoubleColor;
 import edu.bu.cs.cs480.PositionableTracerObject;
 import edu.bu.cs.cs480.Vector3D;
 
@@ -22,7 +22,7 @@ public abstract class Light extends PositionableTracerObject implements
   /** The exponent of attenuation of this light source. */
   private int attenuationExponent = 0;
   /** The color of this light source. */
-  private FloatColor color = null;
+  private DoubleColor color = null;
   /** The direction in which this light source points. */
   private Vector3D direction = null;
   /** Whether this light source casts a shadow. */
@@ -73,7 +73,7 @@ public abstract class Light extends PositionableTracerObject implements
    * @see edu.bu.cs.cs480.Colorable#color()
    */
   @Override
-  public FloatColor color() {
+  public DoubleColor color() {
     return this.color;
   }
 
@@ -124,10 +124,10 @@ public abstract class Light extends PositionableTracerObject implements
    * 
    * @param color
    *          {@inheritDoc}
-   * @see edu.bu.cs.cs480.Colorable#setColor(edu.bu.cs.cs480.FloatColor)
+   * @see edu.bu.cs.cs480.Colorable#setColor(edu.bu.cs.cs480.DoubleColor)
    */
   @Override
-  public void setColor(final FloatColor color) {
+  public void setColor(final DoubleColor color) {
     this.color = color;
   }
 

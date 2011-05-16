@@ -14,9 +14,6 @@ import edu.bu.cs.cs480.Vector3D;
  * @since Spring 2011
  */
 class Plane extends PositionableTracerObject implements SurfaceObject {
-  /** The tolerance for comparing double values to zero. */
-  // TODO extract this to a superclass
-  public static final double TOLERANCE = Double.MIN_VALUE;
   /** The surface object which contains this plane. */
   private final ConcreteSurfaceObject containingObject;
   /** The scalar value in the equation of this plane. */
@@ -63,7 +60,7 @@ class Plane extends PositionableTracerObject implements SurfaceObject {
    */
   @Override
   public boolean inside(final Vector3D point) {
-    return this.normal.dotProduct(point) + this.d < -TOLERANCE;
+    return this.normal.dotProduct(point) + this.d < 0;
   }
 
   /**
@@ -95,7 +92,7 @@ class Plane extends PositionableTracerObject implements SurfaceObject {
    */
   @Override
   public boolean outside(final Vector3D point) {
-    return this.normal.dotProduct(point) + this.d > TOLERANCE;
+    return this.normal.dotProduct(point) + this.d > 0;
   }
 
   /**

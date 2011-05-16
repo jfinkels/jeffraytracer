@@ -14,7 +14,7 @@ import java.util.Scanner;
 
 import org.apache.log4j.Logger;
 
-import edu.bu.cs.cs480.FloatColor;
+import edu.bu.cs.cs480.DoubleColor;
 import edu.bu.cs.cs480.Material;
 import edu.bu.cs.cs480.Vector3D;
 import edu.bu.cs.cs480.camera.Camera;
@@ -309,11 +309,11 @@ public class ModelReader {
    * @return The color whose component values are read from the specified
    *         input.
    */
-  protected FloatColor readColor() {
-    final float red = this.scanner.nextFloat();
-    final float green = this.scanner.nextFloat();
-    final float blue = this.scanner.nextFloat();
-    return new FloatColor(red, green, blue);
+  protected DoubleColor readColor() {
+    final double red = this.scanner.nextDouble();
+    final double green = this.scanner.nextDouble();
+    final double blue = this.scanner.nextDouble();
+    return new DoubleColor(red, green, blue);
   }
 
   /**

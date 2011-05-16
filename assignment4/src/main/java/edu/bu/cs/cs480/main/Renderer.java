@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
 
 import org.apache.log4j.Logger;
 
-import edu.bu.cs.cs480.FloatColor;
+import edu.bu.cs.cs480.DoubleColor;
 import edu.bu.cs.cs480.Ray;
 
 /**
@@ -83,7 +83,7 @@ class Renderer implements Runnable {
     for (int y = this.startRow; y < this.endRow; ++y) {
       for (int x = 0; x < this.width; ++x) {
         final Ray ray = this.rays[y * this.width + x];
-        final int color = FloatColor.toRGB(this.environment.trace(ray, 1));
+        final int color = DoubleColor.toRGB(this.environment.trace(ray, 1));
         // TODO for some reason, my scenes are all reflected in the x direction
         this.result.setRGB(x, y, color);
       }

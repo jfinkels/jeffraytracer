@@ -13,7 +13,7 @@ public class Material extends TracerObject implements Colorable {
   /** The coefficient of ambient reflection of this material. */
   private double ambientReflection = 0;
   /** The color of this material. */
-  private FloatColor color = null;
+  private DoubleColor color = null;
   /** The coefficient of diffuse reflection of this material. */
   private double diffuseReflection = 0;
   /** The coefficient of reflection of this material. */
@@ -43,7 +43,7 @@ public class Material extends TracerObject implements Colorable {
    * @see edu.bu.cs.cs480.Colorable#color()
    */
   @Override
-  public FloatColor color() {
+  public DoubleColor color() {
     return this.color;
   }
 
@@ -89,10 +89,10 @@ public class Material extends TracerObject implements Colorable {
    * 
    * @param color
    *          {@inheritDoc}
-   * @see edu.bu.cs.cs480.Colorable#setColor(edu.bu.cs.cs480.FloatColor)
+   * @see edu.bu.cs.cs480.Colorable#setColor(edu.bu.cs.cs480.DoubleColor)
    */
   @Override
-  public void setColor(final FloatColor color) {
+  public void setColor(final DoubleColor color) {
     this.color = color;
   }
 

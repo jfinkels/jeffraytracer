@@ -17,8 +17,6 @@ import edu.bu.cs.cs480.Vector4D;
  * @since Spring 2011
  */
 public abstract class SimpleQuadricForm extends ConcreteSurfaceObject {
-  /** The tolerance for testing equality of double values. */
-  public static final double TOLERANCE = Double.MIN_VALUE;
 
   /**
    * The matrix assigned by the {@link #compile()} method, which represents the
@@ -89,7 +87,7 @@ public abstract class SimpleQuadricForm extends ConcreteSurfaceObject {
   @Override
   public boolean inside(final Vector3D point) {
     final Vector4D homogeneous = new Vector4D(point, 1);
-    return homogeneous.dotProduct(this.matrix.product(homogeneous)) < -TOLERANCE;
+    return homogeneous.dotProduct(this.matrix.product(homogeneous)) < 0;
   }
 
   /**
@@ -115,12 +113,13 @@ public abstract class SimpleQuadricForm extends ConcreteSurfaceObject {
       return null;
     }
 
-    // times should never be negative, because the intercepts should be forward
-    // from the rays direction, or null
-    if (pair.left() < 0 || pair.right() < 0) {
-      throw new RuntimeException(
-          "One of the computed intercept times was negative: " + pair);
-    }
+    // times should never both be negative, because the intercepts should be
+    // forward from the rays direction, or null
+    // TODO this doesn't work
+    // if (pair.left() < 0|| pair.right() < 0) {
+    // throw new RuntimeException(
+    // "One of the computed intercept times was negative: " + pair);
+    // }
 
     final double time = Math.min(pair.left(), pair.right());
 
@@ -181,7 +180,7 @@ public abstract class SimpleQuadricForm extends ConcreteSurfaceObject {
   @Override
   public boolean outside(final Vector3D point) {
     final Vector4D homogeneous = new Vector4D(point, 1);
-    return homogeneous.dotProduct(this.matrix.product(homogeneous)) > TOLERANCE;
+    return homogeneous.dotProduct(this.matrix.product(homogeneous)) > 0;
   }
 
   /**

@@ -30,7 +30,7 @@ public class SimpleQuadricFormTest {
    * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
    * @since Spring 2011
    */
-  private static class TestQuadric1 extends SimpleQuadricForm {
+  static class TestQuadric1 extends SimpleQuadricForm {
     @Override
     protected Matrix4x4 rotation() {
       return Matrix4x4.identity();
@@ -48,7 +48,7 @@ public class SimpleQuadricFormTest {
    * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
    * @since Spring 2011
    */
-  private static class TestQuadric2 extends SimpleQuadricForm {
+  static class TestQuadric2 extends SimpleQuadricForm {
 
     @Override
     protected Matrix4x4 rotation() {

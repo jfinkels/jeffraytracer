@@ -11,7 +11,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import edu.bu.cs.cs480.FloatColor;
+import edu.bu.cs.cs480.DoubleColor;
 import edu.bu.cs.cs480.Material;
 import edu.bu.cs.cs480.Ray;
 import edu.bu.cs.cs480.Vector3D;
@@ -42,11 +42,6 @@ public class TracerEnvironment {
   public static final int MAX_DEPTH = 3;
   /** The number of threads to use when rendering. */
   public static final int NUM_THREADS = 2;
-  /**
-   * HACK: The tolerance for comparing floating point values to zero when
-   * computing the shadows.
-   */
-  public static final double SHADOW_TOLERANCE = Double.MIN_VALUE;
 
   /**
    * Returns {@code true} if and only if all of the elements of the specified
@@ -517,7 +512,7 @@ public class TracerEnvironment {
     }
 
     // apply the illumination to the color of the material at the intercept
-    final FloatColor color = material.color();
+    final DoubleColor color = material.color();
     final Vector3D illuminatedColor = color.scaledByComponentwise(result);
 
     // the color should not be greater than some maximum
@@ -544,7 +539,7 @@ public class TracerEnvironment {
     }
     for (final SurfaceObject surfaceObject : this.surfaceObjects) {
       final Intercept i = surfaceObject.interceptWith(ray);
-      if (i != null && i.time() > SHADOW_TOLERANCE) {
+      if (i != null && i.time() > 0) {
         // TODO should be doing result += this.shadowAmount(ray, surfaceObject)
         return 1;
       }

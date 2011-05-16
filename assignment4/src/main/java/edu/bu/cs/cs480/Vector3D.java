@@ -142,6 +142,7 @@ public class Vector3D {
    * @return {@code true} if and only if the components of this vector are
    *         exactly equal to the components of the specified other vector.
    */
+  @Override
   public boolean equals(final Object that) {
     if (!(that instanceof Vector3D)) {
       return false;

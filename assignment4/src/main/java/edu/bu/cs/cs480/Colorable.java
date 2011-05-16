@@ -15,7 +15,7 @@ public interface Colorable {
    * 
    * @return The color of this object.
    */
-  FloatColor color();
+  DoubleColor color();
 
   /**
    * Sets the color of this object.
@@ -23,5 +23,5 @@ public interface Colorable {
    * @param color
    *          The color of this object.
    */
-  void setColor(final FloatColor color);
+  void setColor(final DoubleColor color);
 }

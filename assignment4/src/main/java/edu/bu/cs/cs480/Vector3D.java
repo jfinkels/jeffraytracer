@@ -28,22 +28,10 @@ package edu.bu.cs.cs480;
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2008
  */
+@Immutable
 public class Vector3D {
   /** The origin, (0, 0, 0). */
   public static final Vector3D ORIGIN = new Vector3D(0, 0, 0);
-
-  /**
-   * If d is greater than one, this method returns 1.0; if d is less than
-   * negative one, this method returns -1.0; otherwise this method returns d.
-   * 
-   * @param d
-   *          The number to bound
-   * @return The maximum of -1 and the minimum of d and 1.
-   */
-  private static double bounded(final double d) {
-    return Math.max(-1, Math.min(d, 1));
-  }
-
   /** The x component of this point. */
   private final double x;
   /** The y component of this point. */
@@ -65,23 +53,6 @@ public class Vector3D {
     this.x = x;
     this.y = y;
     this.z = z;
-  }
-
-  /**
-   * Returns the angle in degrees between this vector and the specified other
-   * vector.
-   * 
-   * @param that
-   *          The other vector.
-   * @return The angle in degrees between this vector and the specified other
-   *         vector.
-   */
-  public double angleBetween(final Vector3D that) {
-    // need to floating point mathematics causes slight rounding error, so we
-    // need to check that the input to Math.acos is in the interval [-1, 1]
-    return Math.acos(bounded(this.dotProduct(that)
-        / (this.norm() * that.norm())))
-        * (180 / Math.PI);
   }
 
   /**
@@ -110,18 +81,7 @@ public class Vector3D {
   public Vector3D difference(final Vector3D that) {
     return new Vector3D(this.x - that.x, this.y - that.y, this.z - that.z);
   }
-
-  /**
-   * Computes the distance from this vector to the specified other vector.
-   * 
-   * @param that
-   *          The vector to which distance will be computed.
-   * @return The distance from this vector to the specified other vector.
-   */
-  public double distanceTo(final Vector3D that) {
-    return this.difference(that).norm();
-  }
-
+  
   /**
    * Returns the dot product of this vector and the specified other vector.
    * 
@@ -131,35 +91,6 @@ public class Vector3D {
    */
   public double dotProduct(final Vector3D that) {
     return this.x * that.x + this.y * that.y + this.z * that.z;
-  }
-
-  /**
-   * Returns {@code true} if and only if the components of this vector are
-   * exactly equal to the components of the specified other vector.
-   * 
-   * @param that
-   *          The vector to compare for equality.
-   * @return {@code true} if and only if the components of this vector are
-   *         exactly equal to the components of the specified other vector.
-   */
-  @Override
-  public boolean equals(final Object that) {
-    if (!(that instanceof Vector3D)) {
-      return false;
-    }
-    final Vector3D other = (Vector3D) that;
-    return this.x == other.x && this.y == other.y && this.z == other.z;
-  }
-
-  /**
-   * Not implemented: always returns -1.
-   * 
-   * @return -1.
-   */
-  @Override
-  public int hashCode() {
-    assert false : "hashCode() not implemented";
-    return -1;
   }
 
   /**
@@ -184,24 +115,6 @@ public class Vector3D {
   }
 
   /**
-   * Returns {@code true} if and only if this vector is parallel to and in the
-   * opposite direction from the specified other vector.
-   * 
-   * Pre-condition: the specified other vector is parallel to this one. If not,
-   * the result is undefined.
-   * 
-   * @param that
-   *          The other vector which is parallel to this one.
-   * @return {@code true} if and only if the specified other vector is in the
-   *         opposite direction from this one.
-   */
-  public boolean oppositeDirectionFrom(final Vector3D that) {
-    return Math.signum(this.x) != Math.signum(that.x)
-        && Math.signum(this.y) != Math.signum(that.y)
-        && Math.signum(this.z) != Math.signum(that.z);
-  }
-
-  /**
    * Returns a new unit vector which is orthogonal to this one.
    * 
    * @return A new unit vector which is orthogonal to this one.
@@ -211,22 +124,6 @@ public class Vector3D {
       return new Vector3D(0, 1, 0);
     }
     return this.crossProduct(new Vector3D(1, 0, 0)).normalized();
-  }
-
-  /**
-   * Returns {@code true} if and only if this vector is orthogonal to the
-   * specified other vector.
-   * 
-   * Algorithm: check if the dot product between the two vectors equals zero.
-   * They are orthogonal if and only if it is.
-   * 
-   * @param that
-   *          The other vector.
-   * @return {@code true} if and only if this vector is orthogonal to the
-   *         specified other vector.
-   */
-  public boolean orthogonalTo(final Vector3D that) {
-    return this.dotProduct(that) == 0;
   }
 
   /**
@@ -246,7 +143,7 @@ public class Vector3D {
    *          The other line to compare with.
    * @return Whether this line is parallel to the specified other line.
    */
-  public boolean parallelTo(final Vector3D that) {
+  private boolean parallelTo(final Vector3D that) {
     return this.crossProduct(that).equals(ORIGIN);
   }
 
@@ -285,10 +182,6 @@ public class Vector3D {
   public String toString() {
     return "Vector[" + this.x + ", " + this.y + ", " + this.z + "]";
   }
-
-  // public Vector4D toVector4D() {
-  // return new Vector4D(this, 1);
-  // }
 
   /**
    * Gets the x component of this point.

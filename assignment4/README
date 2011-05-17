@@ -5,7 +5,7 @@ This package contains a ray tracer which supports quadric surfaces (spheres and
 ellipses), linear surfaces (planes and boxes) and combinations of the two
 (cylinders).
 
-This file was last updated on 6 May 2011.
+This file was last updated on 16 May 2011.
 
 Getting started
 ===============
@@ -15,6 +15,8 @@ This project uses Maven (http://maven.apache.org/) for build management.
 To package this project into a JAR file, run
 
   mvn package
+
+This produces an executable JAR file in the "target" directory.
 
 To compile this project, run
 
@@ -27,12 +29,35 @@ To test this project, run
 To get project reports and development information, run
 
   mvn site
+  
+You can then view the site by opening "target/site/index.html" in a web
+browser.
 
 Writing models
 ==============
 
 The model file format is specified in model_file_format.txt. Example files are
 provided in the "src/test/resources/" directory.
+
+Development
+===========
+
+To prepare this package for development in Eclipse, run
+
+  mvn eclipse:eclipse -DdownloadSources=true -DdownloadJavadocs=true
+
+and
+
+  mvn eclipse:configure-workspace -Declipse.workspace=/path/to/workspace
+
+where "/path/to/workspace" is the path to your Eclipse workspace.
+
+Eclipse automatic source formatting rules can be found in "formatter.xml" in
+the top-level directory of this project.
+
+To use Checkstyle, the Maven Checkstyle plugin, or the Eclipse Checkstyle
+plugin, use the "checkstyle.xml" file in the top-level directory of this
+project.
 
 Contact
 =======

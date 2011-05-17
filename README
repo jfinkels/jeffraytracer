@@ -1,0 +1,22 @@
+Boston University CS 480/680 Computer Graphics assignments
+==========================================================
+
+This package contains programming assignments from Boston University's CS
+480/680 Computer Graphics course.
+
+The "assignment1" directory contains a program which draws polygons, tests
+whether points are inside or outside the polygon, and partitions a concave
+polygon into a union of disjoint convex polygons.
+
+The "assignment2" directory contains an arm and hand simulation with joints
+which can be rotated.
+
+The "assignment3" directory contains a simulation of birds and fish, both with
+moving parts, which adhere to some flock movement rules.
+
+The "assignment4" directory contains a ray tracer.
+
+Contact
+=======
+
+Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>

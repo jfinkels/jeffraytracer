@@ -42,7 +42,7 @@
     <version.plugin.cobertura>2.4</version.plugin.cobertura>
     <version.plugin.compiler>2.3.2</version.plugin.compiler>
     <version.plugin.dependency>2.2</version.plugin.dependency>
-    <version.plugin.deploy>2.5</version.plugin.deploy>
+    <version.plugin.deploy>2.6</version.plugin.deploy>
     <version.plugin.findbugs>2.3.1</version.plugin.findbugs>
     <version.plugin.install>2.3.1</version.plugin.install>
     <version.plugin.jar>2.3.1</version.plugin.jar>

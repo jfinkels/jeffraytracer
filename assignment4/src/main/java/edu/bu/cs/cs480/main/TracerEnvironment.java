@@ -71,8 +71,8 @@ public class TracerEnvironment {
    *         color as specified in {@link #MAX_COLOR}.
    */
   private static Vector3D boundedColor(final Vector3D color) {
-    return new Vector3D(Math.min(MAX_COLOR.x(), color.x()), Math.min(
-        MAX_COLOR.y(), color.y()), Math.min(MAX_COLOR.z(), color.z()));
+    return new Vector3D(Math.min(MAX_COLOR.x(), color.x()), Math.min(MAX_COLOR
+        .y(), color.y()), Math.min(MAX_COLOR.z(), color.z()));
   }
 
   /**
@@ -375,11 +375,14 @@ public class TracerEnvironment {
     resetBooleans(this.renderersFinished);
     final Renderer[] renderers = new Renderer[NUM_THREADS];
     final int deltaRow = height / NUM_THREADS;
-    // TODO what if NUM_THREADS is not a divisor of height?
-    for (int i = 0; i < NUM_THREADS; ++i) {
+    // ugly: in case NUM_THREADS is not a divisor of height, we manually force
+    // the last thread to take up the remainder
+    for (int i = 0; i < NUM_THREADS - 1; ++i) {
       renderers[i] = new Renderer(rays, i * deltaRow, (i + 1) * deltaRow,
           width, this, result, i);
     }
+    renderers[NUM_THREADS - 1] = new Renderer(rays, (NUM_THREADS - 1)
+        * deltaRow, height, width, this, result, NUM_THREADS - 1);
 
     // run the threads
     for (int i = 0; i < renderers.length; ++i) {
@@ -435,17 +438,30 @@ public class TracerEnvironment {
   }
 
   /**
-   * Returns the color at the specified intercept.
+   * Returns the color at the intercept of a surface object with the specified
+   * ray.
+   * 
+   * If the ray does not interept a surface object, this method returns the
+   * value of {@link #BACKGROUND_COLOR}.
    * 
    * The depth specifies the current depth in the ray recursion tree.
    * 
-   * @param intercept
-   *          The intercept at which to compute color.
+   * @param ray
+   *          The ray for which to compute the intercept.
    * @param depth
    *          The current depth in the ray recursion tree.
    * @return The color at the specified intercept.
    */
-  private Vector3D shade(final Intercept intercept, final int depth) {
+  Vector3D trace(final Ray ray, final int depth) {
+    // compute the intercept of the ray with surface objects in the scene
+    final Intercept intercept = this.minimumIntercept(ray);
+
+    // if no such intercept exists, just color this as the background color
+    if (intercept == null) {
+      return BACKGROUND_COLOR;
+    }
+
+    // create the accumulator for color due to lighting which will be returned
     Vector3D result = Vector3D.ORIGIN;
 
     // get the material of the object at this intercept
@@ -560,8 +576,8 @@ public class TracerEnvironment {
    */
   private Vector3D specularColor(final Intercept intercept, final Light light) {
     // reflect the light vector through the normal (R)
-    final Vector3D reflectedLight = reflected(light.direction(),
-        intercept.normal());
+    final Vector3D reflectedLight = reflected(light.direction(), intercept
+        .normal());
 
     // get the view plane vector (V)
     final Vector3D viewPlaneVector = intercept.ray().direction();
@@ -580,26 +596,6 @@ public class TracerEnvironment {
 
     // return color due to the specified light scaled by the specular scale
     return light.color().scaledBy(specularScale);
-  }
-
-  /**
-   * Returns the color at this intercept.
-   * 
-   * Note: in the provided pseudocode this was called RT_trace.
-   * 
-   * @param ray
-   *          The ray whose intercept with a surface object will be shaded.
-   * @param depth
-   *          The current depth of recursion in the ray tree.
-   * @return The color at this intercept.
-   */
-  // TODO combine trace() and shade()
-  Vector3D trace(final Ray ray, final int depth) {
-    final Intercept minIntercept = this.minimumIntercept(ray);
-    if (minIntercept == null) {
-      return BACKGROUND_COLOR;
-    }
-    return this.shade(minIntercept, depth);
   }
 
   /**
@@ -665,9 +661,8 @@ public class TracerEnvironment {
     }
 
     // compute the direction of the transmitted ray
-    final Vector3D transmittedDir = direction.scaledBy(ratio)
-        .sumWith(normal.scaledBy(ratio * cosAngle1 + factor * cosAngle2))
-        .normalized();
+    final Vector3D transmittedDir = direction.scaledBy(ratio).sumWith(
+        normal.scaledBy(ratio * cosAngle1 + factor * cosAngle2)).normalized();
 
     // create the ray of transmission
     final Ray transmissionRay = new Ray();

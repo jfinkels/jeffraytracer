@@ -3,8 +3,6 @@
  */
 package edu.bu.cs.cs480.main;
 
-import java.awt.image.BufferedImage;
-
 import org.apache.log4j.Logger;
 
 import edu.bu.cs.cs480.DoubleColor;
@@ -26,8 +24,8 @@ class Renderer implements Runnable {
   private final TracerEnvironment environment;
   /** The primary rays to use to trace the image. */
   private final Ray[] rays;
-  /** The image to which to write the traced pixels. */
-  private final BufferedImage result;
+  /** The array of pixels to which to write the traced colors. */
+  private final int[] pixels;
   /** The row in the {@link #rays} array row at which to start rendering. */
   private final int startRow;
   /**
@@ -55,14 +53,14 @@ class Renderer implements Runnable {
    *          The width of the output image.
    * @param environment
    *          The tracer environment to use to trace the scene.
-   * @param result
-   *          The output image to which to write the traced scene.
+   * @param pixels
+   *          The array of pixels to which to write the colors traced scene.
    * @param threadID
    *          The ID of this rendering thread.
    */
   public Renderer(final Ray[] rays, final int startRow, final int endRow,
       final int width, final TracerEnvironment environment,
-      final BufferedImage result, final int threadID) {
+      final int threadID, final int[] pixels) {
     // WARNING: since we are passing in a reference to an array of rays, this
     // class could potentially modify the contents of the array!
     this.rays = rays;
@@ -70,7 +68,7 @@ class Renderer implements Runnable {
     this.endRow = endRow;
     this.width = width;
     this.environment = environment;
-    this.result = result;
+    this.pixels = pixels;
     this.threadID = threadID;
   }
 
@@ -87,7 +85,8 @@ class Renderer implements Runnable {
         final Ray ray = this.rays[y * this.width + x];
         final int color = DoubleColor.toRGB(this.environment.trace(ray, 1));
         // TODO for some reason, my scenes are all reflected in the x direction
-        this.result.setRGB(x, y, color);
+        // this.result.setRGB(x, y, color);
+        this.pixels[y * this.width + x] = color;
       }
     }
     LOG.debug("Completed tracing rays from row " + this.startRow + " to row "

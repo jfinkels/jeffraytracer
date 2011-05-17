@@ -45,12 +45,12 @@ public class TracerEnvironmentTest {
 
   /** The list of files to test. */
   public static final List<String> TEST_FILES = Arrays.asList(
-  "singlesphere"
+  //"singlesphere"
   // , "singlecylinder"
   // , "singleellipsoid"
   // , "singlebox"
   //, "sphereTest"
-  //, "model1"
+  "model1"
   //, "model2"
   //, "model3"
   //, "model4"

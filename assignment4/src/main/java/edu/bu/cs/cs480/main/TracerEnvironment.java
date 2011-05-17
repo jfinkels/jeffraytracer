@@ -367,8 +367,7 @@ public class TracerEnvironment {
 
     // draw the intercept on an image
     LOG.debug("Casting primary rays and shading...");
-    final BufferedImage result = new BufferedImage(width, height,
-        BufferedImage.TYPE_INT_RGB);
+    final int[] pixels = new int[width * height];
 
     // create the rendering runnables which will render the scene in chunks of
     // rows
@@ -379,18 +378,23 @@ public class TracerEnvironment {
     // the last thread to take up the remainder
     for (int i = 0; i < NUM_THREADS - 1; ++i) {
       renderers[i] = new Renderer(rays, i * deltaRow, (i + 1) * deltaRow,
-          width, this, result, i);
+          width, this, i, pixels);
     }
     renderers[NUM_THREADS - 1] = new Renderer(rays, (NUM_THREADS - 1)
-        * deltaRow, height, width, this, result, NUM_THREADS - 1);
+        * deltaRow, height, width, this, NUM_THREADS - 1, pixels);
 
-    // run the threads
+    // run the threads which will fill in the colors in the pixels array
     for (int i = 0; i < renderers.length; ++i) {
       new Thread(renderers[i]).start();
     }
 
     // wait until all the threads have notified us that they are finished
     this.waitForThreads();
+
+    // transfer the colors from the pixels array to the buffered image
+    final BufferedImage result = new BufferedImage(width, height,
+        BufferedImage.TYPE_INT_RGB);
+    result.setRGB(0, 0, width, height, pixels, 0, width);
 
     return result;
   }

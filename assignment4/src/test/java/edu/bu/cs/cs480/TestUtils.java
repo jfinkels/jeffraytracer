@@ -5,6 +5,8 @@ package edu.bu.cs.cs480;
 
 import java.util.Random;
 
+import org.apache.log4j.Logger;
+
 /**
  * Utilities for JUnit tests.
  * 
@@ -15,6 +17,9 @@ public final class TestUtils {
 
   /** A random number generator. */
   private static final Random RANDOM = new Random();
+  /** The logger for this class. */
+  private static final transient Logger LOG = Logger
+      .getLogger(TestUtils.class);
 
   /**
    * Prints the stack trace of the specified throwable to stderr, then fails
@@ -24,7 +29,7 @@ public final class TestUtils {
    *          The throwable which was the cause of the current test failure.
    */
   public static void fail(final Throwable throwable) {
-    throwable.printStackTrace(System.err);
+    LOG.error("Failed due to error.", throwable);
     junit.framework.Assert.fail(throwable.getLocalizedMessage());
   }
 

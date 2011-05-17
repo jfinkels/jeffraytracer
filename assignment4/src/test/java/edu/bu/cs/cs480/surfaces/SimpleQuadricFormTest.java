@@ -93,7 +93,7 @@ public class SimpleQuadricFormTest {
     final Intercept intercept = sphere.interceptWith(ray);
     assertEquals(1, intercept.time(), 0);
     assertSame(sphere, intercept.surfaceObject());
-    assertTrue(intercept.pointOfIntersection().equals(Vector3D.ORIGIN));
+    assertTrue(intercept.pointOfIntersection().equalTo(Vector3D.ORIGIN));
   }
 
   /**

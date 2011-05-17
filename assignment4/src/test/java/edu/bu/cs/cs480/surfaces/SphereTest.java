@@ -40,7 +40,7 @@ public class SphereTest {
     assertEquals(5, intercept.time(), 0);
     assertSame(intercept.surfaceObject(), s);
     assertSame(r, intercept.ray());
-    assertTrue(intercept.normal().equals(new Vector3D(0, 0, -1)));
+    assertTrue(intercept.normal().equalTo(new Vector3D(0, 0, -1)));
 
     s = new Sphere();
     s.setPosition(new Vector3D(0, 0, 10));
@@ -51,7 +51,7 @@ public class SphereTest {
     assertEquals(15, intercept.time(), 0);
     assertSame(intercept.surfaceObject(), s);
     assertSame(r, intercept.ray());
-    assertTrue(intercept.normal().equals(new Vector3D(0, 0, -1)));
+    assertTrue(intercept.normal().equalTo(new Vector3D(0, 0, -1)));
 
     s = new Sphere();
     s.setPosition(new Vector3D(0, 5, 0));
@@ -63,7 +63,7 @@ public class SphereTest {
     assertEquals(5, intercept.time(), 0);
     assertSame(intercept.surfaceObject(), s);
     assertSame(r, intercept.ray());
-    assertTrue(intercept.normal().equals(new Vector3D(0, 0, -1)));
+    assertTrue(intercept.normal().equalTo(new Vector3D(0, 0, -1)));
   }
 
   /**

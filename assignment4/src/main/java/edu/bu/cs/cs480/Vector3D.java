@@ -81,7 +81,7 @@ public class Vector3D {
   public Vector3D difference(final Vector3D that) {
     return new Vector3D(this.x - that.x, this.y - that.y, this.z - that.z);
   }
-  
+
   /**
    * Returns the dot product of this vector and the specified other vector.
    * 
@@ -91,6 +91,19 @@ public class Vector3D {
    */
   public double dotProduct(final Vector3D that) {
     return this.x * that.x + this.y * that.y + this.z * that.z;
+  }
+
+  /**
+   * Returns {@code true} if and only if the components of this vector equal
+   * the components of the specified other vector exactly.
+   * 
+   * @param that
+   *          The other vector with which to test for equality.
+   * @return {@code true} if and only if the components of the two vectors are
+   *         equal.
+   */
+  public boolean equalTo(final Vector3D that) {
+    return this.x == that.x && this.y == that.y && this.z == that.z;
   }
 
   /**
@@ -129,9 +142,9 @@ public class Vector3D {
   /**
    * Determines whether this line is parallel to the specified other line.
    * 
-   * This method is symmetric, so if {@code v1} and {@code v2} are two
-   * {@code Line} objects, then {@code v1.parallelTo(v2)} if and only if
-   * {@code v2.parallelTo(v1)}.
+   * This method is symmetric, so if {@code v1} and {@code v2} are two {@code
+   * Line} objects, then {@code v1.parallelTo(v2)} if and only if {@code
+   * v2.parallelTo(v1)}.
    * 
    * Algorithm: since two vectors are parallel if they have the same direction,
    * all we need to check is whether this vector is a dilation of the other

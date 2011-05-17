@@ -4,6 +4,8 @@
 package edu.bu.cs.cs480;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -46,6 +48,26 @@ public class Vector3DTest {
     assertEquals(1.0, result.x(), 0.0);
     assertEquals(-1.0, result.y(), 0.0);
     assertEquals(1.0, result.z(), 0.0);
+  }
+
+  /**
+   * Test method for
+   * {@link edu.bu.cs.cs680.Vector3D#equalTo(edu.bu.cs.cs680.Vector3D)}.
+   */
+  @Test
+  public void testEqualTo() {
+    final Vector3D v1 = new Vector3D(1, 2, 3);
+    final Vector3D v2 = new Vector3D(1, 2, 3);
+    final Vector3D v3 = new Vector3D(1, 2, 4);
+    assertTrue(v1.equalTo(v1));
+    assertTrue(v2.equalTo(v2));
+    assertTrue(v3.equalTo(v3));
+    assertTrue(v1.equalTo(v2));
+    assertTrue(v2.equalTo(v1));
+    assertFalse(v1.equalTo(v3));
+    assertFalse(v3.equalTo(v1));
+    assertFalse(v2.equalTo(v3));
+    assertFalse(v3.equalTo(v2));
   }
 
   /**

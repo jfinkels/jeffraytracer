@@ -31,8 +31,8 @@ class Renderer implements Runnable {
   /** The row in the {@link #rays} array row at which to start rendering. */
   private final int startRow;
   /**
-   * The ID number of this thread, used to identify which thread has finished in
-   * the tracer environment.
+   * The ID number of this thread, used to identify which thread has finished
+   * in the tracer environment.
    */
   private final int threadID;
   /**
@@ -63,6 +63,8 @@ class Renderer implements Runnable {
   public Renderer(final Ray[] rays, final int startRow, final int endRow,
       final int width, final TracerEnvironment environment,
       final BufferedImage result, final int threadID) {
+    // WARNING: since we are passing in a reference to an array of rays, this
+    // class could potentially modify the contents of the array!
     this.rays = rays;
     this.startRow = startRow;
     this.endRow = endRow;

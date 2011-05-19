@@ -31,7 +31,7 @@
     
     <!-- dependency versions -->
     <version.dependency.junit>4.8.2</version.dependency.junit>
-    <version.dependency.log4j>1.2.16</version.dependency.log4j>
+    <version.dependency.log4j>1.2.14</version.dependency.log4j>
 
     <!-- plugin versions -->
     <version.plugin.assembly>2.2.1</version.plugin.assembly>

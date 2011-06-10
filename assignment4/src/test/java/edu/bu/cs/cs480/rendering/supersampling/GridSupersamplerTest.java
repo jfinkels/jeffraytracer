@@ -1,7 +1,7 @@
 /**
  * GridSupersamplerTest.java - test for the GridSupersampler class
  */
-package edu.bu.cs.cs480.rendering;
+package edu.bu.cs.cs480.rendering.supersampling;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

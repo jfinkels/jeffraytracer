@@ -1,7 +1,7 @@
 /**
  * RayGeneratorTest.java -
  */
-package edu.bu.cs.cs480.rendering;
+package edu.bu.cs.cs480.camera;
 
 import static org.junit.Assert.*;
 

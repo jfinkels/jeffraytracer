@@ -21,7 +21,6 @@ import edu.bu.cs.cs480.camera.Resolution;
 import edu.bu.cs.cs480.camera.Viewport;
 import edu.bu.cs.cs480.rendering.DefaultRenderingEnvironment;
 import edu.bu.cs.cs480.rendering.RenderingEnvironment;
-import edu.bu.cs.cs480.rendering.renderers.DefaultRenderer;
 import edu.bu.cs.cs480.rendering.tracers.BaseTracer;
 import edu.bu.cs.cs480.rendering.tracers.LinearTracer;
 

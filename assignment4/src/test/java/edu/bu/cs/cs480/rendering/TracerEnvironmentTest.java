@@ -53,7 +53,7 @@ public class TracerEnvironmentTest {
       );
 
   /**
-   * Test method for {@link edu.bu.cs.cs480.rendering.TracerEnvironment#render()}.
+   * Test method for {@link edu.bu.cs.cs480.rendering.BaseTracerEnvironment#render()}.
    */
   @Test
   public void testRender() {
@@ -61,7 +61,7 @@ public class TracerEnvironmentTest {
       try {
         LOG.debug("Reading file: " + DATA_DIR + dataFile + "."
             + INPUT_FILE_TYPE);
-        final TracerEnvironment e = new ModelReader(DATA_DIR + dataFile + "."
+        final BaseTracerEnvironment e = new ModelReader(DATA_DIR + dataFile + "."
             + INPUT_FILE_TYPE).environment();
         final File outputFile = new File(OUTPUT_DIR + dataFile + "."
             + OUTPUT_FILE_TYPE);

@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 
 import edu.bu.cs.cs480.io.FileFormatException;
 import edu.bu.cs.cs480.io.ModelReader;
-import edu.bu.cs.cs480.rendering.TracerEnvironment;
+import edu.bu.cs.cs480.rendering.BaseTracerEnvironment;
 
 /**
  * The driver for the ray tracer.
@@ -50,7 +50,7 @@ public final class Main {
     for (final String filename : args) {
       try {
         final ModelReader modelReader = new ModelReader(filename);
-        final TracerEnvironment environment = modelReader.environment();
+        final BaseTracerEnvironment environment = modelReader.environment();
         final RenderedImage image = environment.render();
         final File outputFile = new File(outputFilename(filename));
         ImageIO.write(image, OUTPUT_FILE_TYPE, outputFile);

@@ -21,7 +21,7 @@ class Renderer implements Runnable {
   /** The pixel in the {@link #rays} array at which to stop rendering. */
   private final int end;
   /** The environment to use to trace the scene. */
-  private final TracerEnvironment environment;
+  private final ThreadedTracerEnvironment environment;
   /** The primary rays to use to trace the image. */
   private final Ray[] rays;
   /** The array of pixels to which to write the traced colors. */
@@ -52,7 +52,7 @@ class Renderer implements Runnable {
    *          The ID of this rendering thread.
    */
   public Renderer(final Ray[] rays, final int start, final int end,
-      final TracerEnvironment environment, final int threadID,
+      final ThreadedTracerEnvironment environment, final int threadID,
       final Vector3D[] pixels) {
     // WARNING: since we are passing in a reference to an array of rays, this
     // class could potentially modify the contents of the array!

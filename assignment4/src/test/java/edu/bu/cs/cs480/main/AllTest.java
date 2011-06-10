@@ -1,7 +1,7 @@
 /**
  * AllTest.java - runs all tests in this package
  */
-package edu.bu.cs.cs480.rendering;
+package edu.bu.cs.cs480.main;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -14,7 +14,7 @@ import org.junit.runners.Suite.SuiteClasses;
  * @since Spring 2011
  */
 @RunWith(Suite.class)
-@SuiteClasses({ BaseRendererTest.class })
+@SuiteClasses({ MainTest.class })
 public class AllTest {
   // intentionally unimplemented
 }

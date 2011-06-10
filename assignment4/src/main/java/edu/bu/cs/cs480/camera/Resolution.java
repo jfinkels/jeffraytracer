@@ -21,7 +21,7 @@ public class Resolution {
    * @param xResolution
    *          The width of a pixel in world coordinates.
    */
-  public void setxResolution(final double xResolution) {
+  public void setXResolution(final double xResolution) {
     this.xResolution = xResolution;
   }
 
@@ -31,7 +31,7 @@ public class Resolution {
    * @param yResolution
    *          The height of a pixel in world coordinates.
    */
-  public void setyResolution(final double yResolution) {
+  public void setYResolution(final double yResolution) {
     this.yResolution = yResolution;
   }
 

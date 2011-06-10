@@ -1,20 +1,18 @@
 /**
- * RayGeneratorTest.java -
+ * RayGeneratorTest.java - test for the RayGenerator class
  */
-package edu.bu.cs.cs480.rendering;
+package edu.bu.cs.cs480.camera;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 import edu.bu.cs.cs480.Ray;
 import edu.bu.cs.cs480.Vector3D;
-import edu.bu.cs.cs480.camera.PerspectiveCamera;
-import edu.bu.cs.cs480.camera.Resolution;
-import edu.bu.cs.cs480.camera.Viewport;
-import edu.bu.cs.cs480.rendering.RayGenerator;
 
 /**
+ * Test for the RayGenerator class.
+ * 
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
@@ -22,7 +20,7 @@ public class RayGeneratorTest {
 
   /**
    * Test method for
-   * {@link edu.bu.cs.cs480.rendering.RayGenerator#generateRay(int, int)}.
+   * {@link edu.bu.cs.cs480.camera.RayGenerator#generateRay(int, int)}.
    */
   @Test
   public void testGenerateRay() {
@@ -31,8 +29,8 @@ public class RayGeneratorTest {
     viewport.setHeight(4);
 
     final Resolution resolution = new Resolution();
-    resolution.setxResolution(1);
-    resolution.setyResolution(1);
+    resolution.setXResolution(1);
+    resolution.setYResolution(1);
 
     final PerspectiveCamera camera = new PerspectiveCamera();
     camera.setPosition(new Vector3D(0, 0, -1));
@@ -53,7 +51,7 @@ public class RayGeneratorTest {
     for (int row = 0; row < 4; ++row) {
       for (int col = 0; col < 4; ++col) {
         final Ray ray = g.generateRay(row, col);
-        assertTrue(ray.position().equals(
+        assertTrue(ray.position().equalTo(
             new Vector3D(expected[row][col][0], expected[row][col][1],
                 expected[row][col][2])));
       }

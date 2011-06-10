@@ -1,9 +1,10 @@
 /**
  * GridSupersampler.java - supersampling on a square grid
  */
-package edu.bu.cs.cs480.rendering;
+package edu.bu.cs.cs480.rendering.supersampling;
 
 import edu.bu.cs.cs480.Ray;
+import edu.bu.cs.cs480.camera.RayGenerator;
 
 /**
  * Supersampling of rays using a square grid of fixed size.
@@ -12,10 +13,19 @@ import edu.bu.cs.cs480.Ray;
  * @since Spring 2011
  */
 public class GridSupersampler implements Supersampler {
+  /**
+   * The size of the square grid of virtual subpixels to create for each pixel.
+   */
   private final int gridSize;
-  private final int width;
+  /** The height in pixels of the original viewport. */
   private final int height;
+  /**
+   * The object which generates rays through the virtual viewport corresponding
+   * to the subpixel grid.
+   */
   private RayGenerator rayGenerator = null;
+  /** The width in pixels of the original viewport. */
+  private final int width;
 
   /**
    * Instantiates this supersampler with the specified width and height of the
@@ -38,34 +48,14 @@ public class GridSupersampler implements Supersampler {
   }
 
   /**
-   * The object which generates rays which extend from a center of projection
-   * through the pixels of the virtual viewport (that is, the viewport with
-   * dimensions {@code (gridSize * viewportWidth) * (gridSize *
-   * viewportHeight)}).
-   * 
-   * The dimensions and resolution of the viewport property of the ray
-   * generator must match the dimensions specified from the given viewport
-   * width, viewport height, and grid size in the constructor of this class.
-   * 
-   * This method must be called before the {@link #generateRays()} method can
-   * be called.
-   * 
-   * @param rayGenerator
-   *          The object which generates rays from a center of projection
-   */
-  public void setRayGenerator(final RayGenerator rayGenerator) {
-    this.rayGenerator = rayGenerator;
-  }
-
-  /**
    * Generates a grid of virtual rays for each original ray.
    * 
    * Pre-condition: the {@link #setRayGenerator(RayGenerator)} must be called
    * with a non-{@code null} parameter before this method can be called.
    * 
-   * @return An array of blocks of rays, in which each block contains {@code
-   *         (gridSize * gridSize)} rays.
-   * @see edu.bu.cs.cs480.rendering.Supersampler#generateRays()
+   * @return An array of blocks of rays, in which each block contains
+   *         {@code (gridSize * gridSize)} rays.
+   * @see edu.bu.cs.cs480.rendering.supersampling.Supersampler#generateRays()
    */
   @Override
   public Ray[][] generateRays() {
@@ -114,5 +104,25 @@ public class GridSupersampler implements Supersampler {
       }
     }
     return rays;
+  }
+
+  /**
+   * The object which generates rays which extend from a center of projection
+   * through the pixels of the virtual viewport (that is, the viewport with
+   * dimensions {@code (gridSize * viewportWidth) * (gridSize *
+   * viewportHeight)}).
+   * 
+   * The dimensions and resolution of the viewport property of the ray
+   * generator must match the dimensions specified from the given viewport
+   * width, viewport height, and grid size in the constructor of this class.
+   * 
+   * This method must be called before the {@link #generateRays()} method can
+   * be called.
+   * 
+   * @param rayGenerator
+   *          The object which generates rays from a center of projection
+   */
+  public void setRayGenerator(final RayGenerator rayGenerator) {
+    this.rayGenerator = rayGenerator;
   }
 }

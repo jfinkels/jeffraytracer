@@ -1,7 +1,7 @@
 /**
  * GridSupersamplerTest.java - test for the GridSupersampler class
  */
-package edu.bu.cs.cs480.rendering;
+package edu.bu.cs.cs480.rendering.supersampling;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -12,6 +12,7 @@ import edu.bu.cs.cs480.Ray;
 import edu.bu.cs.cs480.Vector3D;
 import edu.bu.cs.cs480.camera.Camera;
 import edu.bu.cs.cs480.camera.OrthographicCamera;
+import edu.bu.cs.cs480.camera.RayGenerator;
 import edu.bu.cs.cs480.camera.Resolution;
 import edu.bu.cs.cs480.camera.Viewport;
 
@@ -25,7 +26,7 @@ public class GridSupersamplerTest {
 
   /**
    * Test method for
-   * {@link edu.bu.cs.cs480.rendering.GridSupersampler#generateRays()}.
+   * {@link edu.bu.cs.cs480.rendering.supersampling.GridSupersampler#generateRays()}.
    */
   @Test
   public void testGenerateRays() {
@@ -39,8 +40,8 @@ public class GridSupersamplerTest {
     c.setDirection(new Vector3D(0, 0, 1));
     c.setUp(new Vector3D(0, 1, 0));
     final Resolution r = new Resolution();
-    r.setxResolution(1.0);
-    r.setyResolution(1.0);
+    r.setXResolution(1.0);
+    r.setYResolution(1.0);
     final Viewport v = new Viewport();
     v.setWidth(originalWidth * gridSize);
     v.setHeight(originalHeight * gridSize);

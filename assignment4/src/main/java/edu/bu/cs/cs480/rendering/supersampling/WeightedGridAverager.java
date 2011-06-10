@@ -1,7 +1,7 @@
 /**
  * WeightedGridAverager.java - weighted averager for pixel values in a grid
  */
-package edu.bu.cs.cs480.rendering;
+package edu.bu.cs.cs480.rendering.supersampling;
 
 import edu.bu.cs.cs480.Vector3D;
 
@@ -12,6 +12,18 @@ import edu.bu.cs.cs480.Vector3D;
  * @since Spring 2011
  */
 public class WeightedGridAverager extends GridAverager {
+
+  /**
+   * The weights of each subpixel in a {@code gridSize * gridSize} grid given
+   * in row major order.
+   */
+  private double[] weights;
+
+  /**
+   * The precomputed sum of the weights specified in the
+   * {@link #setWeights(double[])} method.
+   */
+  private double weightSum;
 
   /**
    * Averages the specified grid of pixel values using weights for each subgrid
@@ -53,7 +65,7 @@ public class WeightedGridAverager extends GridAverager {
    *          The color values of the subpixels as described in the
    *          documentation for this method.
    * @return The weighted average of each grid of subpixels.
-   * @see edu.bu.cs.cs480.main.Averager#average(Vector3D[])
+   * @see edu.bu.cs.cs480.rendering.supersampling.Averager#average(Vector3D[])
    */
   @Override
   public Vector3D[] average(final Vector3D[] pixels) {
@@ -75,7 +87,17 @@ public class WeightedGridAverager extends GridAverager {
     return result;
   }
 
-  // length must be gridSizeSquared
+  /**
+   * Sets the weights for each position in the grid, given in row-major order
+   * in a one-dimensional array.
+   * 
+   * Pre-condition: the length of the weights array must equal the square of (
+   * {@link #gridSize()}.
+   * 
+   * @param weights
+   *          The one-dimensional array in row-major order representing the
+   *          weights of the positions in the grid.
+   */
   public void setWeights(final double[] weights) {
     this.weights = weights.clone();
     this.weightSum = 0;
@@ -83,15 +105,4 @@ public class WeightedGridAverager extends GridAverager {
       this.weightSum += this.weights[i];
     }
   }
-
-  /**
-   * The precomputed sum of the weights specified in the
-   * {@link #setWeights(double[])} method.
-   */
-  private double weightSum;
-  /**
-   * The weights of each subpixel in a {@code gridSize * gridSize} grid given
-   * in row major order.
-   */
-  private double[] weights;
 }

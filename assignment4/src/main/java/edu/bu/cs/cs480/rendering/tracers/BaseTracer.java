@@ -1,70 +1,39 @@
 /**
- * TracerEnvironment.java - the environment which can trace a scene
+ * DefaultTracer.java - a default implementation of a ray tracer
  */
-package edu.bu.cs.cs480.rendering;
+package edu.bu.cs.cs480.rendering.tracers;
 
-import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import org.apache.log4j.Logger;
 
 import edu.bu.cs.cs480.DoubleColor;
 import edu.bu.cs.cs480.Material;
 import edu.bu.cs.cs480.Ray;
 import edu.bu.cs.cs480.Vector3D;
 import edu.bu.cs.cs480.camera.Camera;
-import edu.bu.cs.cs480.camera.Resolution;
-import edu.bu.cs.cs480.camera.Viewport;
 import edu.bu.cs.cs480.lights.AmbientLight;
 import edu.bu.cs.cs480.lights.Light;
+import edu.bu.cs.cs480.rendering.RenderingEnvironment;
 import edu.bu.cs.cs480.surfaces.Intercept;
 import edu.bu.cs.cs480.surfaces.SurfaceObject;
 import edu.bu.cs.cs480.surfaces.TimeComparator;
 
 /**
- * An environment which aggregates all the objects necessary to trace a scene.
+ * Implementation of a ray tracer, which provides a {@link #trace(Ray)} method
+ * for tracing a single ray.
  * 
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
-public class TracerEnvironment {
+public abstract class BaseTracer implements Tracer {
   /** The color of the background for rendered images. */
   public static final Vector3D BACKGROUND_COLOR = new Vector3D(0x10 / 255.0,
       0x10 / 255.0, 0x10 / 255.0);
-  /** The logger for this class. */
-  private static final Logger LOG = Logger.getLogger(TracerEnvironment.class);
   /** The maximum value by which to bound colors in the rendered scene. */
   public static final Vector3D MAX_COLOR = new Vector3D(1, 1, 1);
   /** The maximum depth in the ray tree. */
   public static final int MAX_DEPTH = 3;
-  /** The number of threads to use when rendering. */
-  public static final int NUM_THREADS = 2;
-  /**
-   * The default size of the grid used in supersampling of rays for
-   * antialiasing.
-   */
-  private static final int DEFAULT_SUPERSAMPLING_GRID_SIZE = 3;
-
-  /**
-   * Returns {@code true} if and only if all of the elements of the specified
-   * array are {@code true}.
-   * 
-   * @param array
-   *          The array to check.
-   * @return {@code true} if and only if all of the elements of the specified
-   *         array are {@code true}.
-   */
-  private static boolean all(final boolean[] array) {
-    for (int i = 0; i < array.length; ++i) {
-      if (!array[i]) {
-        return false;
-      }
-    }
-    return true;
-  }
 
   /**
    * Return the component-wise minimum of the specified color and the maximum
@@ -112,66 +81,17 @@ public class TracerEnvironment {
     return normal.scaledBy(normal.dotProduct(ray) * 2).difference(ray);
   }
 
-  /**
-   * Resets the value of each element of the specified array to {@code false}.
-   * 
-   * @param array
-   *          The array to reset to false.
-   */
-  private static void resetBooleans(final boolean[] array) {
-    for (int i = 0; i < array.length; ++i) {
-      array[i] = false;
-    }
-  }
-
-  /** The list of all lights in the scene which are ambient lights. */
-  private List<AmbientLight> ambientLights = new ArrayList<AmbientLight>();
-  /** The virtual camera through which the scene is viewed. */
-  private Camera camera = null;
-  /** The list of light sources for the scene. */
-  private List<Light> lights = new ArrayList<Light>();
-  /** Stores whether each of the rendering threads has finished. */
-  private boolean[] renderersFinished = new boolean[NUM_THREADS];
-  /** The resolution of the scene when displayed in the viewport. */
-  private Resolution resolution = null;
-  /** The size of the grid used in supersampling of rays for antialiasing. */
-  private int supersamplingGridSize = DEFAULT_SUPERSAMPLING_GRID_SIZE;
-  /** The list of surface objects to be rendered. */
-  private List<SurfaceObject> surfaceObjects = new ArrayList<SurfaceObject>();
-  /** The dimensions of the viewport in which the scene is displayed. */
-  private Viewport viewport = null;
+  /** The scene to trace. */
+  private final RenderingEnvironment environment;
 
   /**
-   * Adds the specified ambient light to the scene.
+   * Instantiates this object with access to the specified scene to trace.
    * 
-   * The light must also be added to the list of all lights, by calling the
-   * {@link #addLight(Light)} method.
-   * 
-   * @param light
-   *          The ambient light to add.
+   * @param environment
+   *          The scene to trace.
    */
-  public void addAmbientLight(final AmbientLight light) {
-    this.ambientLights.add(light);
-  }
-
-  /**
-   * Adds the specified light to the scene.
-   * 
-   * @param light
-   *          The light to add.
-   */
-  public void addLight(final Light light) {
-    this.lights.add(light);
-  }
-
-  /**
-   * Adds the specified surface object to the scene.
-   * 
-   * @param surfaceObject
-   *          The surface object to add.
-   */
-  public void addSurfaceObject(final SurfaceObject surfaceObject) {
-    this.surfaceObjects.add(surfaceObject);
+  public BaseTracer(final RenderingEnvironment environment) {
+    this.environment = environment;
   }
 
   /**
@@ -185,7 +105,7 @@ public class TracerEnvironment {
    */
   private Vector3D ambientColor(final Intercept intercept) {
     Vector3D reflection = Vector3D.ORIGIN;
-    for (final AmbientLight light : this.ambientLights) {
+    for (final AmbientLight light : this.environment.ambientLights()) {
       reflection = reflection.sumWith(light.color().toVector());
     }
     final Material material = intercept.surfaceObject().material();
@@ -236,10 +156,13 @@ public class TracerEnvironment {
    */
   private Intercept minimumIntercept(final Ray ray) {
     final List<Intercept> candidates = new ArrayList<Intercept>();
-    for (final SurfaceObject surfaceObject : this.surfaceObjects) {
+    final List<SurfaceObject> surfaceObjects = this.environment
+        .surfaceObjects();
+    final Camera camera = this.environment.camera();
+    for (final SurfaceObject surfaceObject : surfaceObjects) {
       final Intercept intercept = surfaceObject.interceptWith(ray);
       if (intercept != null
-          && (intercept.time() <= this.camera.far() && intercept.time() >= this.camera
+          && (intercept.time() <= camera.far() && intercept.time() >= camera
               .near())) {
         candidates.add(intercept);
       }
@@ -297,164 +220,82 @@ public class TracerEnvironment {
   }
 
   /**
-   * Renders the scene and returns the resulting image.
+   * Returns a number between 0 and 1 inclusive representing how much the
+   * origin of the specified ray is in shadow (0 means not at all in shadow and
+   * 1 means entirely in shadow).
    * 
-   * @return The image which is the result of rendering the scene.
+   * @param ray
+   *          The ray to check for intercepts with surface objects.
+   * @param light
+   *          The light which may cast a shadow on the specified ray.
+   * @return A number between 0 and 1 inclusive representing how much the
+   *         origin of the specified ray is in shadow (0 means not at all in
+   *         shadow and 1 means entirely in shadow).
    */
-  public RenderedImage render() {
-    // get the width and height of the viewport
-    final int width = this.viewport.width();
-    final int height = this.viewport.height();
-
-    // create the supersampler which will create many virtual rays and then
-    // average their color values in order to produce an antialiased output
-    // image
-    LOG.debug("Generating primary rays...");
-
-    // create the resolution for the virtual superpixel camera
-    final Resolution superpixelResolution = new Resolution();
-    superpixelResolution.setxResolution(this.resolution.xResolution()
-        / this.supersamplingGridSize);
-    superpixelResolution.setyResolution(this.resolution.yResolution()
-        / this.supersamplingGridSize);
-
-    // create the viewport for the virtual superpixel camera
-    final int superWidth = width * this.supersamplingGridSize;
-    final int superHeight = height * this.supersamplingGridSize;
-    final Viewport superpixelViewport = new Viewport();
-    superpixelViewport.setWidth(superWidth);
-    superpixelViewport.setHeight(superHeight);
-
-    // create the object which generates primary rays extending from the camera
-    // through the superpixel viewport
-    final RayGenerator rayGenerator = new RayGenerator();
-    rayGenerator.setCamera(this.camera);
-    rayGenerator.setResolution(superpixelResolution);
-    rayGenerator.setViewport(superpixelViewport);
-
-    // generate the virtual primary rays for each superpixel
-    final GridSupersampler supersampler = new GridSupersampler(width, height,
-        this.supersamplingGridSize);
-    supersampler.setRayGenerator(rayGenerator);
-    final Ray[][] rays = supersampler.generateRays();
-
-    // compile all the surface objects so that we only compute their quadratic
-    // form matrices one time
-    LOG.debug("Compiling quadric form matrices...");
-    for (final SurfaceObject surfaceObject : this.surfaceObjects) {
-      surfaceObject.compile();
+  // TODO for now, this only returns 0 or 1, no intermediate values
+  private double shadowAmount(final Ray ray, final Light light) {
+    if (!light.castsShadow()) {
+      return 0;
     }
-
-    // put all the rays into a one dimensional array, so it's easy for our
-    // renderers to split them up
-    final Ray[] rays1D = new Ray[superWidth * superHeight];
-    int z = 0;
-    for (int i = 0; i < rays.length; ++i) {
-      for (int j = 0; j < rays[i].length; ++j) {
-        rays1D[z] = rays[i][j];
-        z += 1;
+    for (final SurfaceObject surfaceObject : this.environment.surfaceObjects()) {
+      final Intercept i = surfaceObject.interceptWith(ray);
+      if (i != null && i.time() > 0) {
+        // TODO should be doing result += this.shadowAmount(ray, surfaceObject)
+        return 1;
       }
     }
-
-    // create the rendering runnables which will render the scene in chunks
-    LOG.debug("Creating renderers...");
-    final int numSuperpixels = rays1D.length;
-    final Vector3D[] superpixels = new Vector3D[numSuperpixels];
-    final int delta = numSuperpixels / NUM_THREADS;
-    resetBooleans(this.renderersFinished);
-    final Renderer[] renderers = new Renderer[NUM_THREADS];
-    // ugly: in case NUM_THREADS is not a divisor of the number of rays, we
-    // manually force the last thread to take up the remainder, that's why the
-    // upper bound is NUM_THREADS - 1 and the last renderer is created after
-    // the loop
-    for (int i = 0; i < NUM_THREADS - 1; ++i) {
-      // this creates a renderer which renders "delta" pixels, starting at
-      // offset "i * delta", and with ID number "i"
-      renderers[i] = new Renderer(rays1D, i * delta, (i + 1) * delta, this, i,
-          superpixels);
-    }
-    renderers[NUM_THREADS - 1] = new Renderer(rays1D, (NUM_THREADS - 1)
-        * delta, numSuperpixels, this, NUM_THREADS - 1, superpixels);
-
-    // run the threads which will fill in the colors in the pixels array
-    LOG.debug("Tracing rays...");
-    for (final Renderer renderer : renderers) {
-      new Thread(renderer).start();
-    }
-
-    // wait until all the threads have notified us that they are finished
-    this.waitForThreads();
-
-    // average the pixels
-    final GridAverager averager = new FlatGridAverager();
-    averager.setGridSize(this.supersamplingGridSize);
-    final Vector3D[] colors = averager.average(superpixels);
-    final int[] pixels = new int[colors.length];
-    for (int i = 0; i < pixels.length; ++i) {
-      pixels[i] = DoubleColor.toRGB(colors[i]);
-    }
-
-    // transfer the colors from the pixels array to the buffered image
-    final BufferedImage result = new BufferedImage(width, height,
-        BufferedImage.TYPE_INT_RGB);
-    result.setRGB(0, 0, width, height, pixels, 0, width);
-
-    return result;
+    return 0;
   }
 
   /**
-   * Marks the rendering thread with the specified ID completed.
+   * Returns the color due to specular reflection from the specified light at
+   * the specified intercept.
    * 
-   * Pre-condition: threadID is between 0 and the number of threads.
-   * 
-   * @param threadID
-   *          The ID of the thread to be marked completed.
+   * @param intercept
+   *          The intercept to color.
+   * @param light
+   *          The light with which to compute specular reflection.
+   * @return The color due to specular reflection from the specified light at
+   *         the specified intercept.
    */
-  void rendererFinished(final int threadID) {
-    this.renderersFinished[threadID] = true;
+  private Vector3D specularColor(final Intercept intercept, final Light light) {
+    // reflect the light vector through the normal (R)
+    final Vector3D reflectedLight = reflected(light.direction(),
+        intercept.normal());
+
+    // get the view plane vector (V)
+    final Vector3D viewPlaneVector = intercept.ray().direction();
+
+    // get the dot product between the view plane vector and the reflected vec
+    final double dotProduct = reflectedLight.dotProduct(viewPlaneVector);
+
+    // get the coefficient and exponent of specular reflection
+    final Material material = intercept.surfaceObject().material();
+    final double specularCoefficient = material.specularReflection();
+    final double specularExponent = material.specularExponent();
+
+    // get the total scaling factor due to specular reflection
+    final double specularScale = specularCoefficient
+        * Math.pow(Math.max(0, dotProduct), specularExponent);
+
+    // return color due to the specified light scaled by the specular scale
+    return light.color().scaledBy(specularScale);
   }
 
   /**
-   * Sets the virtual camera through which the scene is viewed.
+   * Returns the color at the intercept of a surface object with the specified
+   * ray.
    * 
-   * @param camera
-   *          The virtual camera through which the scene is viewed.
-   */
-  public void setCamera(final Camera camera) {
-    this.camera = camera;
-  }
-
-  /**
-   * Sets the resolution of the scene when displayed in the viewport.
+   * If the ray does not interept a surface object, this method returns the
+   * value of {@link #BACKGROUND_COLOR}.
    * 
-   * @param resolution
-   *          The resolution of the scene when displayed in the viewport.
+   * @param ray
+   *          The ray for which to compute the intercept.
+   * @return The color at the specified intercept.
    */
-  public void setResolution(final Resolution resolution) {
-    this.resolution = resolution;
-  }
-
-  /**
-   * Sets the size of the grid (in number of pixels) of virtual subpixels to
-   * use in place of each pixel for supersampling in order to antialias the
-   * rendered image.
-   *
-   * @param supersamplingGridSize
-   *          The size of the grid of subpixels (that is, the number of pixels
-   *          on one side of the square grid).
-   */
-  public void setSupersamplingGridSize(final int supersamplingGridSize) {
-    this.supersamplingGridSize = supersamplingGridSize;
-  }
-
-  /**
-   * Sets the dimensions of the viewport in which the scene is displayed.
-   * 
-   * @param viewport
-   *          The dimensions of the viewport in which the scene is displayed.
-   */
-  public void setViewport(final Viewport viewport) {
-    this.viewport = viewport;
+  @Override
+  public Vector3D trace(final Ray ray) {
+    return this.trace(ray, 1);
   }
 
   /**
@@ -472,7 +313,7 @@ public class TracerEnvironment {
    *          The current depth in the ray recursion tree.
    * @return The color at the specified intercept.
    */
-  Vector3D trace(final Ray ray, final int depth) {
+  private Vector3D trace(final Ray ray, final int depth) {
     // compute the intercept of the ray with surface objects in the scene
     final Intercept intercept = this.minimumIntercept(ray);
 
@@ -492,7 +333,7 @@ public class TracerEnvironment {
 
     // iterate over each light in the scene to determine its contribution to
     // the total illumination at the point of intersection
-    for (final Light light : this.lights) {
+    for (final Light light : this.environment.lights()) {
       // get the vector from the point of intersection to the light source
       final Vector3D pointOfIntersection = intercept.pointOfIntersection();
       final Vector3D pointToLight = light.position().difference(
@@ -553,69 +394,6 @@ public class TracerEnvironment {
 
     // the color should not be greater than some maximum
     return boundedColor(illuminatedColor);
-  }
-
-  /**
-   * Returns a number between 0 and 1 inclusive representing how much the
-   * origin of the specified ray is in shadow (0 means not at all in shadow and
-   * 1 means entirely in shadow).
-   * 
-   * @param ray
-   *          The ray to check for intercepts with surface objects.
-   * @param light
-   *          The light which may cast a shadow on the specified ray.
-   * @return A number between 0 and 1 inclusive representing how much the
-   *         origin of the specified ray is in shadow (0 means not at all in
-   *         shadow and 1 means entirely in shadow).
-   */
-  // TODO for now, this only returns 0 or 1, no intermediate values
-  private double shadowAmount(final Ray ray, final Light light) {
-    if (!light.castsShadow()) {
-      return 0;
-    }
-    for (final SurfaceObject surfaceObject : this.surfaceObjects) {
-      final Intercept i = surfaceObject.interceptWith(ray);
-      if (i != null && i.time() > 0) {
-        // TODO should be doing result += this.shadowAmount(ray, surfaceObject)
-        return 1;
-      }
-    }
-    return 0;
-  }
-
-  /**
-   * Returns the color due to specular reflection from the specified light at
-   * the specified intercept.
-   * 
-   * @param intercept
-   *          The intercept to color.
-   * @param light
-   *          The light with which to compute specular reflection.
-   * @return The color due to specular reflection from the specified light at
-   *         the specified intercept.
-   */
-  private Vector3D specularColor(final Intercept intercept, final Light light) {
-    // reflect the light vector through the normal (R)
-    final Vector3D reflectedLight = reflected(light.direction(),
-        intercept.normal());
-
-    // get the view plane vector (V)
-    final Vector3D viewPlaneVector = intercept.ray().direction();
-
-    // get the dot product between the view plane vector and the reflected vec
-    final double dotProduct = reflectedLight.dotProduct(viewPlaneVector);
-
-    // get the coefficient and exponent of specular reflection
-    final Material material = intercept.surfaceObject().material();
-    final double specularCoefficient = material.specularReflection();
-    final double specularExponent = material.specularExponent();
-
-    // get the total scaling factor due to specular reflection
-    final double specularScale = specularCoefficient
-        * Math.pow(Math.max(0, dotProduct), specularExponent);
-
-    // return color due to the specified light scaled by the specular scale
-    return light.color().scaledBy(specularScale);
   }
 
   /**
@@ -698,14 +476,4 @@ public class TracerEnvironment {
     return transmissionColor.scaledBy(transmission);
   }
 
-  /** Waits for the rendering threads to complete. */
-  private synchronized void waitForThreads() {
-    while (!all(this.renderersFinished)) {
-      try {
-        this.wait();
-      } catch (final InterruptedException exception) {
-        LOG.error(exception);
-      }
-    }
-  }
 }

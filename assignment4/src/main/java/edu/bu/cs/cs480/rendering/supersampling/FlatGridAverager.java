@@ -1,7 +1,7 @@
 /**
  * FlatGridAverager.java - unweighted averager for pixels values in a grid
  */
-package edu.bu.cs.cs480.rendering;
+package edu.bu.cs.cs480.rendering.supersampling;
 
 /**
  * Averages pixel values from a grid using unweighted averaging.

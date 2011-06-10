@@ -5,7 +5,6 @@ package edu.bu.cs.cs480.rendering.supersampling;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
@@ -54,16 +53,6 @@ public class WeightedGridAveragerTest {
     assertTrue(averages2[0].equalTo(new Vector3D(1.55, 1.55, 1.55)));
     assertTrue(averages2[1].equalTo(new Vector3D(1.55, 1.55, 1.55)));
 
-  }
-
-  /**
-   * Test method for
-   * {@link edu.bu.cs.cs480.rendering.supersampling.WeightedGridAverager#setWeights(double[])}
-   * .
-   */
-  @Test
-  public void testSetWeights() {
-    fail("Not yet implemented");
   }
 
 }

@@ -22,7 +22,7 @@ public class MainTest {
    * Test method for {@link edu.bu.cs.cs480.main.Main#main(java.lang.String[])}
    * .
    */
-  @Test
+  //@Test
   public void testMain() {
     Main.main(new String[] { TESTFILE });
   }

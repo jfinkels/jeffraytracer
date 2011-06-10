@@ -10,9 +10,9 @@ import org.junit.Test;
 import edu.bu.cs.cs480.Ray;
 import edu.bu.cs.cs480.Vector3D;
 import edu.bu.cs.cs480.camera.PerspectiveCamera;
+import edu.bu.cs.cs480.camera.RayGenerator;
 import edu.bu.cs.cs480.camera.Resolution;
 import edu.bu.cs.cs480.camera.Viewport;
-import edu.bu.cs.cs480.rendering.RayGenerator;
 
 /**
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
@@ -22,7 +22,7 @@ public class RayGeneratorTest {
 
   /**
    * Test method for
-   * {@link edu.bu.cs.cs480.rendering.RayGenerator#generateRay(int, int)}.
+   * {@link edu.bu.cs.cs480.camera.RayGenerator#generateRay(int, int)}.
    */
   @Test
   public void testGenerateRay() {

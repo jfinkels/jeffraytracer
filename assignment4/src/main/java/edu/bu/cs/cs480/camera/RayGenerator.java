@@ -1,13 +1,11 @@
 /**
  * RayGenerator.java - generates rays at a point with respect to a camera
  */
-package edu.bu.cs.cs480.rendering;
+package edu.bu.cs.cs480.camera;
 
 import edu.bu.cs.cs480.Ray;
 import edu.bu.cs.cs480.Vector3D;
-import edu.bu.cs.cs480.camera.Camera;
-import edu.bu.cs.cs480.camera.Resolution;
-import edu.bu.cs.cs480.camera.Viewport;
+import edu.bu.cs.cs480.rendering.RenderingEnvironment;
 
 /**
  * Generates rays at a specified position with respect to a given camera,
@@ -25,7 +23,7 @@ public class RayGenerator {
   /** The dimensions of the viewport in which the scene is displayed. */
   private Viewport viewport = null;
 
-  RayGenerator(final RenderingEnvironment environment) {
+  public RayGenerator(final RenderingEnvironment environment) {
     this(environment.camera(), environment.resolution(), environment.viewport());
   }
   

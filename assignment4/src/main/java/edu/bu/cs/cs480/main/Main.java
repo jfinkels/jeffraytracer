@@ -12,13 +12,13 @@ import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
 
+import edu.bu.cs.cs480.camera.RayGenerator;
 import edu.bu.cs.cs480.camera.Resolution;
 import edu.bu.cs.cs480.camera.Viewport;
 import edu.bu.cs.cs480.io.FileFormatException;
 import edu.bu.cs.cs480.io.ModelReader;
 import edu.bu.cs.cs480.rendering.FlatGridAverager;
 import edu.bu.cs.cs480.rendering.GridSupersampler;
-import edu.bu.cs.cs480.rendering.RayGenerator;
 import edu.bu.cs.cs480.rendering.RenderingEnvironment;
 import edu.bu.cs.cs480.rendering.ThreadedSupersamplingRenderer;
 

@@ -4,6 +4,7 @@
 package edu.bu.cs.cs480.rendering;
 
 import edu.bu.cs.cs480.Ray;
+import edu.bu.cs.cs480.camera.RayGenerator;
 
 /**
  * Supersampling of rays using a square grid of fixed size.

@@ -16,6 +16,7 @@ import edu.bu.cs.cs480.Material;
 import edu.bu.cs.cs480.Ray;
 import edu.bu.cs.cs480.Vector3D;
 import edu.bu.cs.cs480.camera.Camera;
+import edu.bu.cs.cs480.camera.RayGenerator;
 import edu.bu.cs.cs480.lights.AmbientLight;
 import edu.bu.cs.cs480.lights.Light;
 import edu.bu.cs.cs480.surfaces.Intercept;

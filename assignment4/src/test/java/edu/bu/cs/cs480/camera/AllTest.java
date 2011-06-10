@@ -14,7 +14,8 @@ import org.junit.runners.Suite.SuiteClasses;
  * @since Spring 2011
  */
 @RunWith(Suite.class)
-@SuiteClasses({ RayGeneratorTest.class })
+@SuiteClasses({ OrthographicCameraTest.class, PerspectiveCameraTest.class,
+    RayGeneratorTest.class })
 public class AllTest {
   // intentionally unimplemented
 }

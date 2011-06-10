@@ -1,7 +1,7 @@
 /**
  * WeightedGridAverager.java - weighted averager for pixel values in a grid
  */
-package edu.bu.cs.cs480.rendering;
+package edu.bu.cs.cs480.rendering.supersampling;
 
 import edu.bu.cs.cs480.Vector3D;
 

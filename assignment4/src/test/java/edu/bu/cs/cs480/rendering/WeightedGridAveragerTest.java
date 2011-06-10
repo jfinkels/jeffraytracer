@@ -10,6 +10,7 @@ import static org.junit.Assert.fail;
 import org.junit.Test;
 
 import edu.bu.cs.cs480.Vector3D;
+import edu.bu.cs.cs480.rendering.supersampling.WeightedGridAverager;
 
 /**
  * Test for the WeightedGridAverager class.
@@ -21,7 +22,7 @@ public class WeightedGridAveragerTest {
 
   /**
    * Test method for
-   * {@link edu.bu.cs.cs480.rendering.WeightedGridAverager#average(edu.bu.cs.cs480.Vector3D[])}
+   * {@link edu.bu.cs.cs480.rendering.supersampling.WeightedGridAverager#average(edu.bu.cs.cs480.Vector3D[])}
    * .
    */
   @Test
@@ -58,7 +59,7 @@ public class WeightedGridAveragerTest {
 
   /**
    * Test method for
-   * {@link edu.bu.cs.cs480.rendering.WeightedGridAverager#setWeights(double[])}
+   * {@link edu.bu.cs.cs480.rendering.supersampling.WeightedGridAverager#setWeights(double[])}
    * .
    */
   @Test

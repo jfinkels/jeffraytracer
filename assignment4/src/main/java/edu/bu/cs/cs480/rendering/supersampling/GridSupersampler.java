@@ -1,7 +1,7 @@
 /**
  * GridSupersampler.java - supersampling on a square grid
  */
-package edu.bu.cs.cs480.rendering;
+package edu.bu.cs.cs480.rendering.supersampling;
 
 import edu.bu.cs.cs480.Ray;
 import edu.bu.cs.cs480.camera.RayGenerator;
@@ -66,7 +66,7 @@ public class GridSupersampler implements Supersampler {
    * 
    * @return An array of blocks of rays, in which each block contains {@code
    *         (gridSize * gridSize)} rays.
-   * @see edu.bu.cs.cs480.rendering.Supersampler#generateRays()
+   * @see edu.bu.cs.cs480.rendering.supersampling.Supersampler#generateRays()
    */
   @Override
   public Ray[][] generateRays() {

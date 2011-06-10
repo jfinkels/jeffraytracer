@@ -1,7 +1,7 @@
 /**
  * Supersampler.java - a supersampler of rays for antialiasing
  */
-package edu.bu.cs.cs480.rendering;
+package edu.bu.cs.cs480.rendering.supersampling;
 
 import edu.bu.cs.cs480.Ray;
 

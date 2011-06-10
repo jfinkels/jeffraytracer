@@ -15,6 +15,7 @@ import edu.bu.cs.cs480.camera.OrthographicCamera;
 import edu.bu.cs.cs480.camera.RayGenerator;
 import edu.bu.cs.cs480.camera.Resolution;
 import edu.bu.cs.cs480.camera.Viewport;
+import edu.bu.cs.cs480.rendering.supersampling.GridSupersampler;
 
 /**
  * Test for the GridSupersampler class.
@@ -26,7 +27,7 @@ public class GridSupersamplerTest {
 
   /**
    * Test method for
-   * {@link edu.bu.cs.cs480.rendering.GridSupersampler#generateRays()}.
+   * {@link edu.bu.cs.cs480.rendering.supersampling.GridSupersampler#generateRays()}.
    */
   @Test
   public void testGenerateRays() {

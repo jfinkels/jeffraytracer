@@ -3,6 +3,8 @@
  */
 package edu.bu.cs.cs480.rendering;
 
+import java.util.concurrent.CountDownLatch;
+
 import org.apache.log4j.Logger;
 
 import edu.bu.cs.cs480.Ray;
@@ -15,8 +17,15 @@ import edu.bu.cs.cs480.Vector3D;
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
-public class DefaultThreadedTracer extends DefaultTracer implements
-    ThreadedTracer {
+public class DefaultThreadedTracer extends DefaultTracer {
+
+  /** The default number of threads to use when rendering. */
+  public static final int DEFAULT_NUM_THREADS = 2;
+  /** The logger for this class. */
+  private static transient final Logger LOG = Logger
+      .getLogger(DefaultThreadedTracer.class);
+  /** The number of threads to use when tracing an array of rays. */
+  private int numThreads = DEFAULT_NUM_THREADS;
 
   /**
    * Instantiates this object by calling the corresponding constructor of the
@@ -30,40 +39,6 @@ public class DefaultThreadedTracer extends DefaultTracer implements
   }
 
   /**
-   * Resets the value of each element of the specified array to {@code false}.
-   * 
-   * @param array
-   *          The array to reset to false.
-   */
-  private static void resetBooleans(final boolean[] array) {
-    for (int i = 0; i < array.length; ++i) {
-      array[i] = false;
-    }
-  }
-
-  /** The logger for this class. */
-  private static transient final Logger LOG = Logger
-      .getLogger(DefaultThreadedTracer.class);
-  /** Stores whether each of the rendering threads has finished. */
-  private boolean[] renderersFinished = null;
-
-  /**
-   * Marks the rendering thread with the specified ID completed.
-   * 
-   * Pre-condition: threadID is between 0 and the number of threads.
-   * 
-   * @param threadID
-   *          The ID of the thread to be marked completed.
-   */
-  @Override
-  public void threadFinished(final int threadID) {
-    this.renderersFinished[threadID] = true;
-  }
-
-  /** The default number of threads to use when rendering. */
-  public static final int DEFAULT_NUM_THREADS = 2;
-
-  /**
    * Sets the number of threads to use when tracing an array of rays.
    * 
    * @param numThreads
@@ -72,9 +47,6 @@ public class DefaultThreadedTracer extends DefaultTracer implements
   public void setNumThreads(final int numThreads) {
     this.numThreads = numThreads;
   }
-
-  /** The number of threads to use when tracing an array of rays. */
-  private int numThreads = DEFAULT_NUM_THREADS;
 
   /**
    * Traces each of the rays in the specified array by splitting up the work
@@ -92,64 +64,55 @@ public class DefaultThreadedTracer extends DefaultTracer implements
    */
   @Override
   public Vector3D[] traceAll(final Ray[] rays) {
-    final int numPixels = rays.length;
-    final Vector3D[] pixels = new Vector3D[numPixels];
-    final int delta = numPixels / this.numThreads;
-    this.renderersFinished = new boolean[this.numThreads];
-    resetBooleans(this.renderersFinished);
-    final TracerThread[] renderers = new TracerThread[this.numThreads];
-    // ugly: in case NUM_THREADS is not a divisor of the number of rays, we
-    // manually force the last thread to take up the remainder, that's why
-    // the upper bound is NUM_THREADS - 1 and the last renderer is created
-    // after the loop
-    for (int i = 0; i < this.numThreads - 1; ++i) {
-      // this creates a renderer which renders "delta" pixels, starting at
-      // offset "i * delta", and with ID number "i"
-      renderers[i] = new TracerThread(rays, i * delta, (i + 1) * delta, this,
-          i, pixels);
-    }
-    renderers[this.numThreads - 1] = new TracerThread(rays,
-        (this.numThreads - 1) * delta, numPixels, this, this.numThreads - 1,
-        pixels);
+    final Vector3D[] colors = new Vector3D[rays.length];
 
-    // run the threads which will fill in the colors in the pixels array
-    for (final TracerThread renderer : renderers) {
-      new Thread(renderer).start();
+    // Set the start and end pixels for the tracer threads. In case
+    // this.numThreads is not a divisor of the number of rays, we manually
+    // force the last thread to take up the remainder.
+    final int[] slices = new int[this.numThreads + 1];
+    final int delta = rays.length / this.numThreads;
+    for (int i = 0; i < this.numThreads; ++i) {
+      slices[i] = i * delta;
+    }
+    slices[this.numThreads] = rays.length;
+
+    // the latch on which to wait until each tracer thread has completed
+    final CountDownLatch latch = new CountDownLatch(this.numThreads);
+
+    // create a tracer thread for each slice
+    for (int i = 0; i < slices.length - 1; ++i) {
+      final int start = slices[i];
+      final int end = slices[i + 1];
+      LOG.debug("Tracing rays from pixel " + start + " to pixel " + end
+          + "...");
+      new Thread() {
+        /**
+         * Traces rays from the {@code rays} array starting at index
+         * {@code start} and ending at index {@code end}.
+         * 
+         * Assigns the results to the corresponding location of the
+         * {@code colors} array.
+         */
+        @Override
+        public void run() {
+          for (int i = start; i < end; ++i) {
+            colors[i] = DefaultThreadedTracer.this.trace(rays[i]);
+          }
+          // once this thread has traced its rays, count down the latch
+          latch.countDown();
+        }
+      }.start();
     }
 
     // wait until all the threads have notified us that they are finished
-    this.waitForThreads();
-
-    return pixels;
-  }
-
-  /** Waits for the rendering threads to complete. */
-  private synchronized void waitForThreads() {
-    while (!all(this.renderersFinished)) {
-      try {
-        this.wait();
-      } catch (final InterruptedException exception) {
-        LOG.error(exception);
-      }
+    try {
+      latch.await();
+    } catch (final InterruptedException exception) {
+      LOG.error(
+          "Tracing thread was interrupted; pixels may not have been completely shaded.",
+          exception);
     }
-  }
 
-  /**
-   * Returns {@code true} if and only if all of the elements of the specified
-   * array are {@code true}.
-   * 
-   * @param array
-   *          The array to check.
-   * @return {@code true} if and only if all of the elements of the specified
-   *         array are {@code true}.
-   */
-  private static boolean all(final boolean[] array) {
-    for (int i = 0; i < array.length; ++i) {
-      if (!array[i]) {
-        return false;
-      }
-    }
-    return true;
+    return colors;
   }
-
 }

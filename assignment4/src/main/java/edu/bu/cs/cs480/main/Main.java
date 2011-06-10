@@ -20,7 +20,7 @@ import edu.bu.cs.cs480.io.ModelReader;
 import edu.bu.cs.cs480.rendering.DefaultThreadedTracer;
 import edu.bu.cs.cs480.rendering.RenderingEnvironment;
 import edu.bu.cs.cs480.rendering.SupersamplingRenderer;
-import edu.bu.cs.cs480.rendering.ThreadedTracer;
+import edu.bu.cs.cs480.rendering.Tracer;
 import edu.bu.cs.cs480.rendering.supersampling.FlatGridAverager;
 import edu.bu.cs.cs480.rendering.supersampling.GridSupersampler;
 
@@ -98,7 +98,7 @@ public final class Main {
         averager.setGridSize(DEFAULT_SUPERSAMPLING_GRID_SIZE);
 
         // create the tracer
-        final ThreadedTracer tracer = new DefaultThreadedTracer(environment);
+        final Tracer tracer = new DefaultThreadedTracer(environment);
         
         // create the renderer
         final SupersamplingRenderer renderer = new SupersamplingRenderer(

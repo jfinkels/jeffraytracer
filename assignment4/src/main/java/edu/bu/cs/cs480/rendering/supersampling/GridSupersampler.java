@@ -17,8 +17,6 @@ public class GridSupersampler implements Supersampler {
    * The size of the square grid of virtual subpixels to create for each pixel.
    */
   private final int gridSize;
-  /** The width in pixels of the original viewport. */
-  private final int width;
   /** The height in pixels of the original viewport. */
   private final int height;
   /**
@@ -26,6 +24,8 @@ public class GridSupersampler implements Supersampler {
    * to the subpixel grid.
    */
   private RayGenerator rayGenerator = null;
+  /** The width in pixels of the original viewport. */
+  private final int width;
 
   /**
    * Instantiates this supersampler with the specified width and height of the
@@ -45,26 +45,6 @@ public class GridSupersampler implements Supersampler {
     this.gridSize = gridSize;
     this.width = viewportWidth;
     this.height = viewportHeight;
-  }
-
-  /**
-   * The object which generates rays which extend from a center of projection
-   * through the pixels of the virtual viewport (that is, the viewport with
-   * dimensions {@code (gridSize * viewportWidth) * (gridSize *
-   * viewportHeight)}).
-   * 
-   * The dimensions and resolution of the viewport property of the ray
-   * generator must match the dimensions specified from the given viewport
-   * width, viewport height, and grid size in the constructor of this class.
-   * 
-   * This method must be called before the {@link #generateRays()} method can
-   * be called.
-   * 
-   * @param rayGenerator
-   *          The object which generates rays from a center of projection
-   */
-  public void setRayGenerator(final RayGenerator rayGenerator) {
-    this.rayGenerator = rayGenerator;
   }
 
   /**
@@ -124,5 +104,25 @@ public class GridSupersampler implements Supersampler {
       }
     }
     return rays;
+  }
+
+  /**
+   * The object which generates rays which extend from a center of projection
+   * through the pixels of the virtual viewport (that is, the viewport with
+   * dimensions {@code (gridSize * viewportWidth) * (gridSize *
+   * viewportHeight)}).
+   * 
+   * The dimensions and resolution of the viewport property of the ray
+   * generator must match the dimensions specified from the given viewport
+   * width, viewport height, and grid size in the constructor of this class.
+   * 
+   * This method must be called before the {@link #generateRays()} method can
+   * be called.
+   * 
+   * @param rayGenerator
+   *          The object which generates rays from a center of projection
+   */
+  public void setRayGenerator(final RayGenerator rayGenerator) {
+    this.rayGenerator = rayGenerator;
   }
 }

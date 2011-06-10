@@ -19,6 +19,16 @@ public abstract class GridAverager implements Averager {
   private int gridSize;
 
   /**
+   * Gets the size of the grid (that is, the length of one side of the square)
+   * in number of pixels.
+   * 
+   * @return The number of pixels along one side of the square grid.
+   */
+  protected int gridSize() {
+    return this.gridSize;
+  }
+
+  /**
    * Sets the size of the grid (that is, the length of one side of the square)
    * in number of pixels.
    * 
@@ -27,16 +37,6 @@ public abstract class GridAverager implements Averager {
    */
   public void setGridSize(final int gridSize) {
     this.gridSize = gridSize;
-  }
-
-  /**
-   * Gets the size of the grid (that is, the length of one side of the square)
-   * in number of pixels.
-   * 
-   * @return The number of pixels along one side of the square grid.
-   */
-  protected int gridSize() {
-    return this.gridSize;
   }
 
 }

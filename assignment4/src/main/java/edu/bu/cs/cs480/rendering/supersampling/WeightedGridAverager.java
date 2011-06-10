@@ -14,6 +14,18 @@ import edu.bu.cs.cs480.Vector3D;
 public class WeightedGridAverager extends GridAverager {
 
   /**
+   * The weights of each subpixel in a {@code gridSize * gridSize} grid given
+   * in row major order.
+   */
+  private double[] weights;
+
+  /**
+   * The precomputed sum of the weights specified in the
+   * {@link #setWeights(double[])} method.
+   */
+  private double weightSum;
+
+  /**
    * Averages the specified grid of pixel values using weights for each subgrid
    * specified in the {@link #setWeights(double[])} method.
    * 
@@ -93,15 +105,4 @@ public class WeightedGridAverager extends GridAverager {
       this.weightSum += this.weights[i];
     }
   }
-
-  /**
-   * The precomputed sum of the weights specified in the
-   * {@link #setWeights(double[])} method.
-   */
-  private double weightSum;
-  /**
-   * The weights of each subpixel in a {@code gridSize * gridSize} grid given
-   * in row major order.
-   */
-  private double[] weights;
 }

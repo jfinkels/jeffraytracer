@@ -1,5 +1,5 @@
 /**
- * BaseTracerEnvironment.java - the environment which can trace a scene
+ * BaseRenderer.java - the environment which can trace a scene
  */
 package edu.bu.cs.cs480.rendering;
 
@@ -16,8 +16,6 @@ import edu.bu.cs.cs480.Material;
 import edu.bu.cs.cs480.Ray;
 import edu.bu.cs.cs480.Vector3D;
 import edu.bu.cs.cs480.camera.Camera;
-import edu.bu.cs.cs480.camera.Resolution;
-import edu.bu.cs.cs480.camera.Viewport;
 import edu.bu.cs.cs480.lights.AmbientLight;
 import edu.bu.cs.cs480.lights.Light;
 import edu.bu.cs.cs480.surfaces.Intercept;
@@ -30,19 +28,17 @@ import edu.bu.cs.cs480.surfaces.TimeComparator;
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
-public class BaseTracerEnvironment implements TracerEnvironment {
+public class BaseRenderer implements Renderer {
   /** The color of the background for rendered images. */
   public static final Vector3D BACKGROUND_COLOR = new Vector3D(0x10 / 255.0,
       0x10 / 255.0, 0x10 / 255.0);
   /** The logger for this class. */
   private static final transient Logger LOG = Logger
-      .getLogger(BaseTracerEnvironment.class);
+      .getLogger(BaseRenderer.class);
   /** The maximum value by which to bound colors in the rendered scene. */
   public static final Vector3D MAX_COLOR = new Vector3D(1, 1, 1);
   /** The maximum depth in the ray tree. */
   public static final int MAX_DEPTH = 3;
-  /** The number of threads to use when rendering. */
-  public static final int NUM_THREADS = 2;
 
   /**
    * Return the component-wise minimum of the specified color and the maximum
@@ -90,51 +86,11 @@ public class BaseTracerEnvironment implements TracerEnvironment {
     return normal.scaledBy(normal.dotProduct(ray) * 2).difference(ray);
   }
 
-  /** The list of all lights in the scene which are ambient lights. */
-  private List<AmbientLight> ambientLights = new ArrayList<AmbientLight>();
-  /** The virtual camera through which the scene is viewed. */
-  private Camera camera = null;
-  /** The list of light sources for the scene. */
-  private List<Light> lights = new ArrayList<Light>();
-  /** The resolution of the scene when displayed in the viewport. */
-  private Resolution resolution = null;
-  /** The list of surface objects to be rendered. */
-  private List<SurfaceObject> surfaceObjects = new ArrayList<SurfaceObject>();
-  /** The dimensions of the viewport in which the scene is displayed. */
-  private Viewport viewport = null;
-
-  /**
-   * Adds the specified ambient light to the scene.
-   * 
-   * The light must also be added to the list of all lights, by calling the
-   * {@link #addLight(Light)} method.
-   * 
-   * @param light
-   *          The ambient light to add.
-   */
-  public void addAmbientLight(final AmbientLight light) {
-    this.ambientLights.add(light);
+  public BaseRenderer(final RenderingEnvironment environment) {
+    this.environment = environment;
   }
 
-  /**
-   * Adds the specified light to the scene.
-   * 
-   * @param light
-   *          The light to add.
-   */
-  public void addLight(final Light light) {
-    this.lights.add(light);
-  }
-
-  /**
-   * Adds the specified surface object to the scene.
-   * 
-   * @param surfaceObject
-   *          The surface object to add.
-   */
-  public void addSurfaceObject(final SurfaceObject surfaceObject) {
-    this.surfaceObjects.add(surfaceObject);
-  }
+  private final RenderingEnvironment environment;
 
   /**
    * Returns the energy of the ambient lights in the scene scaled by the
@@ -147,7 +103,7 @@ public class BaseTracerEnvironment implements TracerEnvironment {
    */
   private Vector3D ambientColor(final Intercept intercept) {
     Vector3D reflection = Vector3D.ORIGIN;
-    for (final AmbientLight light : this.ambientLights) {
+    for (final AmbientLight light : this.environment.ambientLights()) {
       reflection = reflection.sumWith(light.color().toVector());
     }
     final Material material = intercept.surfaceObject().material();
@@ -198,10 +154,13 @@ public class BaseTracerEnvironment implements TracerEnvironment {
    */
   private Intercept minimumIntercept(final Ray ray) {
     final List<Intercept> candidates = new ArrayList<Intercept>();
-    for (final SurfaceObject surfaceObject : this.surfaceObjects) {
+    final List<SurfaceObject> surfaceObjects = this.environment
+        .surfaceObjects();
+    final Camera camera = this.environment.camera();
+    for (final SurfaceObject surfaceObject : surfaceObjects) {
       final Intercept intercept = surfaceObject.interceptWith(ray);
       if (intercept != null
-          && (intercept.time() <= this.camera.far() && intercept.time() >= this.camera
+          && (intercept.time() <= camera.far() && intercept.time() >= camera
               .near())) {
         candidates.add(intercept);
       }
@@ -259,13 +218,10 @@ public class BaseTracerEnvironment implements TracerEnvironment {
   }
 
   protected Ray[][] generatePrimaryRays() {
-    final int height = this.viewport.height();
-    final int width = this.viewport.width();
-    final Ray[][] result = new Ray[width][height];
-    final RayGenerator rayGenerator = new RayGenerator();
-    rayGenerator.setCamera(this.camera);
-    rayGenerator.setResolution(this.resolution);
-    rayGenerator.setViewport(this.viewport);
+    final int height = this.environment.viewport().height();
+    final int width = this.environment.viewport().width();
+    final Ray[][] result = new Ray[height][width];
+    final RayGenerator rayGenerator = new RayGenerator(this.environment);
 
     for (int y = 0; y < height; ++y) {
       for (int x = 0; x < width; ++x) {
@@ -293,7 +249,7 @@ public class BaseTracerEnvironment implements TracerEnvironment {
     LOG.debug("Generating primary rays...");
     final Ray[][] rays = this.generatePrimaryRays();
     LOG.debug("Compiling quadric form matrices...");
-    for (final SurfaceObject surfaceObject : this.surfaceObjects) {
+    for (final SurfaceObject surfaceObject : this.environment.surfaceObjects()) {
       surfaceObject.compile();
     }
     LOG.debug("Tracing rays...");
@@ -310,8 +266,8 @@ public class BaseTracerEnvironment implements TracerEnvironment {
    * @return
    */
   private RenderedImage generateImage(final int[] colors) {
-    final int width = this.viewport.width();
-    final int height = this.viewport.height();
+    final int width = this.environment.viewport().width();
+    final int height = this.environment.viewport().height();
     final BufferedImage result = new BufferedImage(width, height,
         BufferedImage.TYPE_INT_RGB);
     result.setRGB(0, 0, width, height, colors, 0, width);
@@ -344,36 +300,6 @@ public class BaseTracerEnvironment implements TracerEnvironment {
       j += length;
     }
     return result;
-  }
-
-  /**
-   * Sets the virtual camera through which the scene is viewed.
-   * 
-   * @param camera
-   *          The virtual camera through which the scene is viewed.
-   */
-  public void setCamera(final Camera camera) {
-    this.camera = camera;
-  }
-
-  /**
-   * Sets the resolution of the scene when displayed in the viewport.
-   * 
-   * @param resolution
-   *          The resolution of the scene when displayed in the viewport.
-   */
-  public void setResolution(final Resolution resolution) {
-    this.resolution = resolution;
-  }
-
-  /**
-   * Sets the dimensions of the viewport in which the scene is displayed.
-   * 
-   * @param viewport
-   *          The dimensions of the viewport in which the scene is displayed.
-   */
-  public void setViewport(final Viewport viewport) {
-    this.viewport = viewport;
   }
 
   /**
@@ -412,7 +338,7 @@ public class BaseTracerEnvironment implements TracerEnvironment {
 
     // iterate over each light in the scene to determine its contribution to
     // the total illumination at the point of intersection
-    for (final Light light : this.lights) {
+    for (final Light light : this.environment.lights()) {
       // get the vector from the point of intersection to the light source
       final Vector3D pointOfIntersection = intercept.pointOfIntersection();
       final Vector3D pointToLight = light.position().difference(
@@ -493,7 +419,7 @@ public class BaseTracerEnvironment implements TracerEnvironment {
     if (!light.castsShadow()) {
       return 0;
     }
-    for (final SurfaceObject surfaceObject : this.surfaceObjects) {
+    for (final SurfaceObject surfaceObject : this.environment.surfaceObjects()) {
       final Intercept i = surfaceObject.interceptWith(ray);
       if (i != null && i.time() > 0) {
         // TODO should be doing result += this.shadowAmount(ray, surfaceObject)
@@ -616,18 +542,6 @@ public class BaseTracerEnvironment implements TracerEnvironment {
     // scale the transmitted color by the coefficient of transmission of
     // the material at the point of intersection
     return transmissionColor.scaledBy(transmission);
-  }
-
-  protected Viewport viewport() {
-    return this.viewport;
-  }
-
-  protected Camera camera() {
-    return this.camera;
-  }
-
-  protected Resolution resolution() {
-    return this.resolution;
   }
 
 }

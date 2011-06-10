@@ -25,6 +25,20 @@ public class RayGenerator {
   /** The dimensions of the viewport in which the scene is displayed. */
   private Viewport viewport = null;
 
+  RayGenerator(final RenderingEnvironment environment) {
+    this(environment.camera(), environment.resolution(), environment.viewport());
+  }
+  
+  public RayGenerator() {
+    // intentionally unimplemented
+  }
+  
+  public RayGenerator(final Camera camera, final Resolution resolution, final Viewport viewport) {
+    this.setCamera(camera);
+    this.setResolution(resolution);
+    this.setViewport(viewport);
+  }
+  
   /**
    * Generates the ray which would start at pixel location (row, column) in the
    * viewport based on the resolution, the viewport size, and the camera's

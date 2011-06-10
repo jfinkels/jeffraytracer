@@ -10,7 +10,7 @@ import java.io.FileNotFoundException;
 import org.junit.Test;
 
 import edu.bu.cs.cs480.TestUtils;
-import edu.bu.cs.cs480.rendering.BaseTracerEnvironment;
+import edu.bu.cs.cs480.rendering.RenderingEnvironment;
 
 /**
  * Test for the ModelReader class.
@@ -31,7 +31,7 @@ public class ModelReaderTest {
    */
   @Test
   public void testFromFile() {
-    BaseTracerEnvironment e = null;
+    RenderingEnvironment e = null;
     try {
       e = new ModelReader(TESTFILE).environment();
     } catch (final FileNotFoundException exception) {

@@ -26,7 +26,8 @@ import edu.bu.cs.cs480.lights.AmbientLight;
 import edu.bu.cs.cs480.lights.InfinityLight;
 import edu.bu.cs.cs480.lights.Light;
 import edu.bu.cs.cs480.lights.PointLight;
-import edu.bu.cs.cs480.rendering.BaseTracerEnvironment;
+import edu.bu.cs.cs480.rendering.DefaultRenderingEnvironment;
+import edu.bu.cs.cs480.rendering.RenderingEnvironment;
 import edu.bu.cs.cs480.surfaces.Box;
 import edu.bu.cs.cs480.surfaces.ConstructiveSolidGeometry;
 import edu.bu.cs.cs480.surfaces.Cylinder;
@@ -104,7 +105,7 @@ public class ModelReader {
   public static final String VIEWPORT = "viewport";
 
   /** The tracer environment which can render the scene read by this class. */
-  private final BaseTracerEnvironment environment = new BaseTracerEnvironment();
+  private final RenderingEnvironment environment = new DefaultRenderingEnvironment();
   /** Whether the current light being read is an ambient light. */
   private boolean isAmbientLight = false;
   /** The scanner which reads the model file. */
@@ -229,7 +230,7 @@ public class ModelReader {
    * @return The tracer environment which has been parsed from the file
    *         specified in the constructor.
    */
-  public BaseTracerEnvironment environment() {
+  public RenderingEnvironment environment() {
     return this.environment;
   }
 

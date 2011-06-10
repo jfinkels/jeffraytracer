@@ -61,11 +61,12 @@ public class TracerEnvironmentTest {
       try {
         LOG.debug("Reading file: " + DATA_DIR + dataFile + "."
             + INPUT_FILE_TYPE);
-        final BaseTracerEnvironment e = new ModelReader(DATA_DIR + dataFile + "."
+        final RenderingEnvironment e = new ModelReader(DATA_DIR + dataFile + "."
             + INPUT_FILE_TYPE).environment();
         final File outputFile = new File(OUTPUT_DIR + dataFile + "."
             + OUTPUT_FILE_TYPE);
-        ImageIO.write(e.render(), OUTPUT_FILE_TYPE, outputFile);
+        final BaseRenderer renderer = new BaseRenderer(e);
+        ImageIO.write(renderer.render(), OUTPUT_FILE_TYPE, outputFile);
 
       } catch (final FileNotFoundException exception) {
         TestUtils.fail(exception);

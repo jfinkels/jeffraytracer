@@ -12,8 +12,15 @@ import edu.bu.cs.cs480.Vector3D;
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
-public class ThreadedSupersamplingTracerEnvironment extends
-    SupersamplingTracerEnvironment implements ThreadedTracerEnvironment {
+public class ThreadedSupersamplingRenderer extends SupersamplingRenderer
+    implements ThreadedRenderer {
+
+  /**
+   * @param environment
+   */
+  public ThreadedSupersamplingRenderer(final RenderingEnvironment environment) {
+    super(environment);
+  }
 
   /**
    * Resets the value of each element of the specified array to {@code false}.
@@ -26,11 +33,12 @@ public class ThreadedSupersamplingTracerEnvironment extends
       array[i] = false;
     }
   }
-/** The logger for this class. */
+
+  /** The logger for this class. */
   private static transient final Logger LOG = Logger
-      .getLogger(ThreadedSupersamplingTracerEnvironment.class);
+      .getLogger(ThreadedSupersamplingRenderer.class);
   /** Stores whether each of the rendering threads has finished. */
-  private boolean[] renderersFinished = new boolean[NUM_THREADS];
+  private boolean[] renderersFinished = null;
 
   /**
    * Marks the rendering thread with the specified ID completed.
@@ -45,28 +53,38 @@ public class ThreadedSupersamplingTracerEnvironment extends
     this.renderersFinished[threadID] = true;
   }
 
+  /** The default number of threads to use when rendering. */
+  public static final int DEFAULT_NUM_THREADS = 2;
+
+  public void setNumThreads(final int numThreads) {
+    this.numThreads = numThreads;
+  }
+  
+  private int numThreads = DEFAULT_NUM_THREADS;
+  
   @Override
   protected Vector3D[] traceAllRays(final Ray[] rays) {
     final int numPixels = rays.length;
     final Vector3D[] pixels = new Vector3D[numPixels];
-    final int delta = numPixels / NUM_THREADS;
+    final int delta = numPixels / this.numThreads;
+    this.renderersFinished = new boolean[this.numThreads];
     resetBooleans(this.renderersFinished);
-    final Renderer[] renderers = new Renderer[NUM_THREADS];
+    final RendererHelper[] renderers = new RendererHelper[this.numThreads];
     // ugly: in case NUM_THREADS is not a divisor of the number of rays, we
     // manually force the last thread to take up the remainder, that's why
     // the upper bound is NUM_THREADS - 1 and the last renderer is created
     // after the loop
-    for (int i = 0; i < NUM_THREADS - 1; ++i) {
+    for (int i = 0; i < this.numThreads - 1; ++i) {
       // this creates a renderer which renders "delta" pixels, starting at
       // offset "i * delta", and with ID number "i"
-      renderers[i] = new Renderer(rays, i * delta, (i + 1) * delta, this, i,
-          pixels);
+      renderers[i] = new RendererHelper(rays, i * delta, (i + 1) * delta,
+          this, i, pixels);
     }
-    renderers[NUM_THREADS - 1] = new Renderer(rays, (NUM_THREADS - 1) * delta,
-        numPixels, this, NUM_THREADS - 1, pixels);
+    renderers[this.numThreads - 1] = new RendererHelper(rays, (this.numThreads - 1)
+        * delta, numPixels, this, this.numThreads - 1, pixels);
 
     // run the threads which will fill in the colors in the pixels array
-    for (final Renderer renderer : renderers) {
+    for (final RendererHelper renderer : renderers) {
       new Thread(renderer).start();
     }
 

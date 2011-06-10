@@ -19,7 +19,7 @@ public class Vector3DTest {
 
   /**
    * Test method for
-   * {@link edu.bu.cs.cs680.Vector3D#crossProduct(edu.bu.cs.cs680.Vector3D)}.
+   * {@link edu.bu.cs.cs480.Vector3D#crossProduct(edu.bu.cs.cs480.Vector3D)}.
    */
   @Test
   public void testCrossProduct() {
@@ -38,7 +38,7 @@ public class Vector3DTest {
 
   /**
    * Test method for
-   * {@link edu.bu.cs.cs680.Vector3D#difference(edu.bu.cs.cs680.Vector3D)}.
+   * {@link edu.bu.cs.cs480.Vector3D#difference(edu.bu.cs.cs480.Vector3D)}.
    */
   @Test
   public void testDifference3D() {
@@ -52,7 +52,7 @@ public class Vector3DTest {
 
   /**
    * Test method for
-   * {@link edu.bu.cs.cs680.Vector3D#equalTo(edu.bu.cs.cs680.Vector3D)}.
+   * {@link edu.bu.cs.cs480.Vector3D#equalTo(edu.bu.cs.cs480.Vector3D)}.
    */
   @Test
   public void testEqualTo() {
@@ -71,7 +71,7 @@ public class Vector3DTest {
   }
 
   /**
-   * Test method for {@link edu.bu.cs.cs680.Vector3D#norm()}.
+   * Test method for {@link edu.bu.cs.cs480.Vector3D#norm()}.
    */
   @Test
   public void testNorm() {
@@ -83,7 +83,7 @@ public class Vector3DTest {
 
   /**
    * Test method for
-   * {@link edu.bu.cs.cs680.Vector3D#Vector3D(double, double, double)}.
+   * {@link edu.bu.cs.cs480.Vector3D#Vector3D(double, double, double)}.
    */
   @Test
   public void testVector3DDoubleDoubleDouble() {
@@ -95,7 +95,7 @@ public class Vector3DTest {
 
   /**
    * Test method for
-   * {@link edu.bu.cs.cs680.Vector3D#Vector3D(float, float, float)}.
+   * {@link edu.bu.cs.cs480.Vector3D#Vector3D(float, float, float)}.
    */
   @Test
   public void testVector3DFloatFloatFloat() {
@@ -106,7 +106,7 @@ public class Vector3DTest {
   }
 
   /**
-   * Test method for {@link edu.bu.cs.cs680.Vector3D#scaledBy(double)}.
+   * Test method for {@link edu.bu.cs.cs480.Vector3D#scaledBy(double)}.
    */
   @Test
   public void testScaledBy() {
@@ -119,7 +119,7 @@ public class Vector3DTest {
 
   /**
    * Test method for
-   * {@link edu.bu.cs.cs680.Vector3D#sumWith(edu.bu.cs.cs680.Vector3D)}.
+   * {@link edu.bu.cs.cs480.Vector3D#sumWith(edu.bu.cs.cs480.Vector3D)}.
    */
   @Test
   public void testSumWith() {

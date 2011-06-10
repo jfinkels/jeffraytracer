@@ -14,7 +14,7 @@ import org.junit.runners.Suite.SuiteClasses;
  * @since Spring 2011
  */
 @RunWith(Suite.class)
-@SuiteClasses({ BaseRendererTest.class })
+@SuiteClasses({ DefaultRendererTest.class })
 public class AllTest {
   // intentionally unimplemented
 }

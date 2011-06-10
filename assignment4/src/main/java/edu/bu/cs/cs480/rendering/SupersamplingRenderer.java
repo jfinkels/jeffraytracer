@@ -16,7 +16,7 @@ import edu.bu.cs.cs480.rendering.supersampling.Supersampler;
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
-public class SupersamplingRenderer extends BaseRenderer {
+public class SupersamplingRenderer extends DefaultRenderer {
   /**
    * Instantiates this class by calling the corresponding constructor of the
    * superclass.

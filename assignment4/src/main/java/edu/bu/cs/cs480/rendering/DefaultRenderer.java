@@ -21,10 +21,10 @@ import edu.bu.cs.cs480.surfaces.SurfaceObject;
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
-public class BaseRenderer implements Renderer {
+public class DefaultRenderer implements Renderer {
   /** The logger for this class. */
   private static final transient Logger LOG = Logger
-      .getLogger(BaseRenderer.class);
+      .getLogger(DefaultRenderer.class);
 
   /**
    * Flattens a two-dimensional array into a one-dimensional array in row-major
@@ -63,7 +63,7 @@ public class BaseRenderer implements Renderer {
    * @param environment
    *          The scene to render.
    */
-  public BaseRenderer(final RenderingEnvironment environment) {
+  public DefaultRenderer(final RenderingEnvironment environment) {
     this.environment = environment;
   }
 

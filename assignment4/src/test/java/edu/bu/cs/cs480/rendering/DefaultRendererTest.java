@@ -1,5 +1,5 @@
 /**
- * BaseRendererTest.java - test for the BaseRenderer class
+ * DefaultRendererTest.java - test for the BaseRenderer class
  */
 package edu.bu.cs.cs480.rendering;
 
@@ -21,15 +21,15 @@ import edu.bu.cs.cs480.camera.Resolution;
 import edu.bu.cs.cs480.camera.Viewport;
 
 /**
- * Test for the BaseRenderer class.
+ * Test for the DefaultRenderer class.
  * 
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
-public class BaseRendererTest {
+public class DefaultRendererTest {
 
   /** The renderer to test. */
-  private BaseRenderer r = null;
+  private DefaultRenderer r = null;
 
   /** Set up the renderer for testing. */
   @Before
@@ -48,13 +48,13 @@ public class BaseRendererTest {
     e.setViewport(v);
     e.setResolution(r);
     e.setCamera(c);
-    this.r = new BaseRenderer(e);
+    this.r = new DefaultRenderer(e);
     this.r.setTracer(new LinearTracer(e));
   }
 
   /**
    * Test method for
-   * {@link edu.bu.cs.cs480.rendering.BaseRenderer#generateImage(int[])}.
+   * {@link edu.bu.cs.cs480.rendering.DefaultRenderer#generateImage(int[])}.
    */
   @Test
   public void testGenerateImage() {
@@ -73,7 +73,7 @@ public class BaseRendererTest {
 
   /**
    * Test method for
-   * {@link edu.bu.cs.cs480.rendering.BaseRenderer#generatePrimaryRays()}.
+   * {@link edu.bu.cs.cs480.rendering.DefaultRenderer#generatePrimaryRays()}.
    */
   @Test
   public void testGeneratePrimaryRays() {
@@ -89,7 +89,7 @@ public class BaseRendererTest {
 
   /**
    * Test method for
-   * {@link edu.bu.cs.cs480.rendering.BaseRenderer#postProcessing(edu.bu.cs.cs480.Vector3D[])}
+   * {@link edu.bu.cs.cs480.rendering.DefaultRenderer#postProcessing(edu.bu.cs.cs480.Vector3D[])}
    * .
    */
   @Test
@@ -107,7 +107,7 @@ public class BaseRendererTest {
   }
 
   /**
-   * Test method for {@link edu.bu.cs.cs480.rendering.BaseRenderer#render()}.
+   * Test method for {@link edu.bu.cs.cs480.rendering.DefaultRenderer#render()}.
    */
   @Test
   public void testRender() {

@@ -75,7 +75,17 @@ public class WeightedGridAverager extends GridAverager {
     return result;
   }
 
-  // length must be gridSizeSquared
+  /**
+   * Sets the weights for each position in the grid, given in row-major order
+   * in a one-dimensional array.
+   * 
+   * Pre-condition: the length of the weights array must equal the square of (
+   * {@link #gridSize()}.
+   * 
+   * @param weights
+   *          The one-dimensional array in row-major order representing the
+   *          weights of the positions in the grid.
+   */
   public void setWeights(final double[] weights) {
     this.weights = weights.clone();
     this.weightSum = 0;

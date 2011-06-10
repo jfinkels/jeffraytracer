@@ -129,13 +129,10 @@ public class TracerEnvironment {
   private List<Light> lights = new ArrayList<Light>();
   /** Stores whether each of the rendering threads has finished. */
   private boolean[] renderersFinished = new boolean[NUM_THREADS];
-
   /** The resolution of the scene when displayed in the viewport. */
   private Resolution resolution = null;
-
   /** The list of surface objects to be rendered. */
   private List<SurfaceObject> surfaceObjects = new ArrayList<SurfaceObject>();
-
   /** The dimensions of the viewport in which the scene is displayed. */
   private Viewport viewport = null;
 

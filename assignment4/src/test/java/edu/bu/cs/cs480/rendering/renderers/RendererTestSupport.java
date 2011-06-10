@@ -1,7 +1,7 @@
 /**
  * RendererTestSupport.java - support for test classes of renderers
  */
-package edu.bu.cs.cs480.rendering;
+package edu.bu.cs.cs480.rendering.renderers;
 
 import java.util.Arrays;
 import java.util.List;

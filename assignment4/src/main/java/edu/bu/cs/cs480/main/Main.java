@@ -17,12 +17,12 @@ import edu.bu.cs.cs480.camera.Resolution;
 import edu.bu.cs.cs480.camera.Viewport;
 import edu.bu.cs.cs480.io.FileFormatException;
 import edu.bu.cs.cs480.io.ModelReader;
-import edu.bu.cs.cs480.rendering.DefaultThreadedTracer;
 import edu.bu.cs.cs480.rendering.RenderingEnvironment;
-import edu.bu.cs.cs480.rendering.SupersamplingRenderer;
-import edu.bu.cs.cs480.rendering.Tracer;
+import edu.bu.cs.cs480.rendering.renderers.SupersamplingRenderer;
 import edu.bu.cs.cs480.rendering.supersampling.FlatGridAverager;
 import edu.bu.cs.cs480.rendering.supersampling.GridSupersampler;
+import edu.bu.cs.cs480.rendering.tracers.DefaultThreadedTracer;
+import edu.bu.cs.cs480.rendering.tracers.Tracer;
 
 /**
  * The driver for the ray tracer.

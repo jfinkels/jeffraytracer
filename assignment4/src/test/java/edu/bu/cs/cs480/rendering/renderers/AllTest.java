@@ -1,7 +1,7 @@
 /**
  * AllTest.java - runs all tests in this package
  */
-package edu.bu.cs.cs480.rendering;
+package edu.bu.cs.cs480.rendering.renderers;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;

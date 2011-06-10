@@ -1,7 +1,7 @@
 /**
  * DefaultRendererTest.java - test for the BaseRenderer class
  */
-package edu.bu.cs.cs480.rendering;
+package edu.bu.cs.cs480.rendering.renderers;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -19,6 +19,11 @@ import edu.bu.cs.cs480.camera.Camera;
 import edu.bu.cs.cs480.camera.OrthographicCamera;
 import edu.bu.cs.cs480.camera.Resolution;
 import edu.bu.cs.cs480.camera.Viewport;
+import edu.bu.cs.cs480.rendering.DefaultRenderingEnvironment;
+import edu.bu.cs.cs480.rendering.RenderingEnvironment;
+import edu.bu.cs.cs480.rendering.renderers.DefaultRenderer;
+import edu.bu.cs.cs480.rendering.tracers.BaseTracer;
+import edu.bu.cs.cs480.rendering.tracers.LinearTracer;
 
 /**
  * Test for the DefaultRenderer class.
@@ -54,7 +59,7 @@ public class DefaultRendererTest {
 
   /**
    * Test method for
-   * {@link edu.bu.cs.cs480.rendering.DefaultRenderer#generateImage(int[])}.
+   * {@link edu.bu.cs.cs480.rendering.renderers.DefaultRenderer#generateImage(int[])}.
    */
   @Test
   public void testGenerateImage() {
@@ -73,7 +78,7 @@ public class DefaultRendererTest {
 
   /**
    * Test method for
-   * {@link edu.bu.cs.cs480.rendering.DefaultRenderer#generatePrimaryRays()}.
+   * {@link edu.bu.cs.cs480.rendering.renderers.DefaultRenderer#generatePrimaryRays()}.
    */
   @Test
   public void testGeneratePrimaryRays() {
@@ -89,7 +94,7 @@ public class DefaultRendererTest {
 
   /**
    * Test method for
-   * {@link edu.bu.cs.cs480.rendering.DefaultRenderer#postProcessing(edu.bu.cs.cs480.Vector3D[])}
+   * {@link edu.bu.cs.cs480.rendering.renderers.DefaultRenderer#postProcessing(edu.bu.cs.cs480.Vector3D[])}
    * .
    */
   @Test
@@ -107,7 +112,7 @@ public class DefaultRendererTest {
   }
 
   /**
-   * Test method for {@link edu.bu.cs.cs480.rendering.DefaultRenderer#render()}.
+   * Test method for {@link edu.bu.cs.cs480.rendering.renderers.DefaultRenderer#render()}.
    */
   @Test
   public void testRender() {

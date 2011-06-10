@@ -1,10 +1,11 @@
 /**
  * LinearTracer.java - a tracer which just traces each ray in linear order
  */
-package edu.bu.cs.cs480.rendering;
+package edu.bu.cs.cs480.rendering.tracers;
 
 import edu.bu.cs.cs480.Ray;
 import edu.bu.cs.cs480.Vector3D;
+import edu.bu.cs.cs480.rendering.RenderingEnvironment;
 
 /**
  * Traces each ray in a given array from start to finish, one at a time.
@@ -31,7 +32,7 @@ public class LinearTracer extends BaseTracer {
    * @param rays
    *          {@inheritDoc}
    * @return {@inheritDoc}
-   * @see edu.bu.cs.cs480.rendering.Tracer#traceAll(edu.bu.cs.cs480.Ray[])
+   * @see edu.bu.cs.cs480.rendering.tracers.Tracer#traceAll(edu.bu.cs.cs480.Ray[])
    */
   @Override
   public Vector3D[] traceAll(final Ray[] rays) {

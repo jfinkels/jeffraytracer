@@ -1,7 +1,7 @@
 /**
  * DefaultThreadedTracer - implementation of a tracer which employs threads
  */
-package edu.bu.cs.cs480.rendering;
+package edu.bu.cs.cs480.rendering.tracers;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 
 import edu.bu.cs.cs480.Ray;
 import edu.bu.cs.cs480.Vector3D;
+import edu.bu.cs.cs480.rendering.RenderingEnvironment;
 
 /**
  * A tracer which, when tracing multiple rays, splits the work into some number

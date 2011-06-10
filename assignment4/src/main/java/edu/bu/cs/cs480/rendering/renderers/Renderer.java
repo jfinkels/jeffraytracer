@@ -1,7 +1,7 @@
 /**
  * Renderer.java - an object which can render a scene to an image
  */
-package edu.bu.cs.cs480.rendering;
+package edu.bu.cs.cs480.rendering.renderers;
 
 import java.awt.image.RenderedImage;
 

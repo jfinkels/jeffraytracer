@@ -1,7 +1,7 @@
 /**
  * BaseRenderer.java - renders a scene by calling a tracer
  */
-package edu.bu.cs.cs480.rendering;
+package edu.bu.cs.cs480.rendering.renderers;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
@@ -12,6 +12,8 @@ import edu.bu.cs.cs480.DoubleColor;
 import edu.bu.cs.cs480.Ray;
 import edu.bu.cs.cs480.Vector3D;
 import edu.bu.cs.cs480.camera.RayGenerator;
+import edu.bu.cs.cs480.rendering.RenderingEnvironment;
+import edu.bu.cs.cs480.rendering.tracers.Tracer;
 import edu.bu.cs.cs480.surfaces.SurfaceObject;
 
 /**

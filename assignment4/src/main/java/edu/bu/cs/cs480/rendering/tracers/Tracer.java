@@ -1,7 +1,7 @@
 /**
  * Tracer.java - an object which traces and shades a scene
  */
-package edu.bu.cs.cs480.rendering;
+package edu.bu.cs.cs480.rendering.tracers;
 
 import edu.bu.cs.cs480.Ray;
 import edu.bu.cs.cs480.Vector3D;

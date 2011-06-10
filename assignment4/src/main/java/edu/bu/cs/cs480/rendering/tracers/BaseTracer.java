@@ -1,7 +1,7 @@
 /**
  * DefaultTracer.java - a default implementation of a ray tracer
  */
-package edu.bu.cs.cs480.rendering;
+package edu.bu.cs.cs480.rendering.tracers;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,6 +14,7 @@ import edu.bu.cs.cs480.Vector3D;
 import edu.bu.cs.cs480.camera.Camera;
 import edu.bu.cs.cs480.lights.AmbientLight;
 import edu.bu.cs.cs480.lights.Light;
+import edu.bu.cs.cs480.rendering.RenderingEnvironment;
 import edu.bu.cs.cs480.surfaces.Intercept;
 import edu.bu.cs.cs480.surfaces.SurfaceObject;
 import edu.bu.cs.cs480.surfaces.TimeComparator;

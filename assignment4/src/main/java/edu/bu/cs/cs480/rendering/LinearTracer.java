@@ -12,7 +12,7 @@ import edu.bu.cs.cs480.Vector3D;
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
-public class LinearTracer extends DefaultTracer {
+public class LinearTracer extends BaseTracer {
 
   /**
    * Instantiates this object by calling the corresponding constructor of the

@@ -40,8 +40,8 @@ public class GridSupersamplerTest {
     c.setDirection(new Vector3D(0, 0, 1));
     c.setUp(new Vector3D(0, 1, 0));
     final Resolution r = new Resolution();
-    r.setxResolution(1.0);
-    r.setyResolution(1.0);
+    r.setXResolution(1.0);
+    r.setYResolution(1.0);
     final Viewport v = new Viewport();
     v.setWidth(originalWidth * gridSize);
     v.setHeight(originalHeight * gridSize);

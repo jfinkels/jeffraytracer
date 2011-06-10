@@ -25,7 +25,7 @@ import edu.bu.cs.cs480.surfaces.TimeComparator;
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
-public abstract class DefaultTracer implements Tracer {
+public abstract class BaseTracer implements Tracer {
   /** The color of the background for rendered images. */
   public static final Vector3D BACKGROUND_COLOR = new Vector3D(0x10 / 255.0,
       0x10 / 255.0, 0x10 / 255.0);
@@ -89,7 +89,7 @@ public abstract class DefaultTracer implements Tracer {
    * @param environment
    *          The scene to trace.
    */
-  public DefaultTracer(final RenderingEnvironment environment) {
+  public BaseTracer(final RenderingEnvironment environment) {
     this.environment = environment;
   }
 

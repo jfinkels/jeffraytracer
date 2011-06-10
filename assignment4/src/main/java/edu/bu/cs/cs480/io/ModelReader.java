@@ -552,8 +552,8 @@ public class ModelReader {
     final double y = this.scanner.nextDouble();
 
     final Resolution resolution = new Resolution();
-    resolution.setxResolution(x);
-    resolution.setyResolution(y);
+    resolution.setXResolution(x);
+    resolution.setYResolution(y);
 
     return resolution;
   }

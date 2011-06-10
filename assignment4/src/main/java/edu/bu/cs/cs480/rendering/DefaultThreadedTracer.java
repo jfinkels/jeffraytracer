@@ -17,7 +17,7 @@ import edu.bu.cs.cs480.Vector3D;
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
-public class DefaultThreadedTracer extends DefaultTracer {
+public class DefaultThreadedTracer extends BaseTracer {
 
   /** The default number of threads to use when rendering. */
   public static final int DEFAULT_NUM_THREADS = 2;

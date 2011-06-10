@@ -29,8 +29,8 @@ public class RayGeneratorTest {
     viewport.setHeight(4);
 
     final Resolution resolution = new Resolution();
-    resolution.setxResolution(1);
-    resolution.setyResolution(1);
+    resolution.setXResolution(1);
+    resolution.setYResolution(1);
 
     final PerspectiveCamera camera = new PerspectiveCamera();
     camera.setPosition(new Vector3D(0, 0, -1));

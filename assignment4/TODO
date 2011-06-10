@@ -5,5 +5,3 @@ TODO
 * CSG objects are completely untested
 * interface HasViewingSystem with setCamera(), setViewport(), setResolution()
 * package-level documentation
-* rename setxResolution -> setXResolution
-* rename DefaultTracer -> BaseTracer

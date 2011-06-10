@@ -70,9 +70,9 @@ public final class Main {
 
         // create the resolution for the virtual superpixel camera
         final Resolution superpixelResolution = new Resolution();
-        superpixelResolution.setxResolution(environment.resolution()
+        superpixelResolution.setXResolution(environment.resolution()
             .xResolution() / DEFAULT_SUPERSAMPLING_GRID_SIZE);
-        superpixelResolution.setyResolution(environment.resolution()
+        superpixelResolution.setYResolution(environment.resolution()
             .yResolution() / DEFAULT_SUPERSAMPLING_GRID_SIZE);
 
         // create the viewport for the virtual superpixel camera

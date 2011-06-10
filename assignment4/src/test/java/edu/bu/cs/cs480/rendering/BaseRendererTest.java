@@ -38,8 +38,8 @@ public class BaseRendererTest {
     v.setWidth(2);
     v.setHeight(2);
     final Resolution r = new Resolution();
-    r.setxResolution(1);
-    r.setyResolution(1);
+    r.setXResolution(1);
+    r.setYResolution(1);
     final Camera c = new OrthographicCamera();
     c.setPosition(new Vector3D(0, 0, -1));
     c.setDirection(new Vector3D(0, 0, 1));
@@ -114,7 +114,7 @@ public class BaseRendererTest {
     final RenderedImage i = this.r.render();
     final int[] output = new int[4];
     final int backgroundColor = DoubleColor
-        .toRGB(DefaultTracer.BACKGROUND_COLOR);
+        .toRGB(BaseTracer.BACKGROUND_COLOR);
     final int[] components = { (backgroundColor >> 16) & 0xFF,
         (backgroundColor >> 8) & 0xFF, backgroundColor & 0xFF, 0 };
     assertArrayEquals(components, i.getData().getPixel(0, 0, output));

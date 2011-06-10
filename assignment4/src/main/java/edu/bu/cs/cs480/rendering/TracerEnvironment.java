@@ -42,8 +42,11 @@ public class TracerEnvironment {
   public static final int MAX_DEPTH = 3;
   /** The number of threads to use when rendering. */
   public static final int NUM_THREADS = 2;
-  /** The size of the grid used in supersampling of rays for antialiasing. */
-  private static final int GRID_SUPERSAMPLING_SIZE = 3;
+  /**
+   * The default size of the grid used in supersampling of rays for
+   * antialiasing.
+   */
+  private static final int DEFAULT_SUPERSAMPLING_GRID_SIZE = 3;
 
   /**
    * Returns {@code true} if and only if all of the elements of the specified
@@ -131,6 +134,8 @@ public class TracerEnvironment {
   private boolean[] renderersFinished = new boolean[NUM_THREADS];
   /** The resolution of the scene when displayed in the viewport. */
   private Resolution resolution = null;
+  /** The size of the grid used in supersampling of rays for antialiasing. */
+  private int supersamplingGridSize = DEFAULT_SUPERSAMPLING_GRID_SIZE;
   /** The list of surface objects to be rendered. */
   private List<SurfaceObject> surfaceObjects = new ArrayList<SurfaceObject>();
   /** The dimensions of the viewport in which the scene is displayed. */
@@ -309,13 +314,13 @@ public class TracerEnvironment {
     // create the resolution for the virtual superpixel camera
     final Resolution superpixelResolution = new Resolution();
     superpixelResolution.setxResolution(this.resolution.xResolution()
-        / GRID_SUPERSAMPLING_SIZE);
+        / this.supersamplingGridSize);
     superpixelResolution.setyResolution(this.resolution.yResolution()
-        / GRID_SUPERSAMPLING_SIZE);
+        / this.supersamplingGridSize);
 
     // create the viewport for the virtual superpixel camera
-    final int superWidth = width * GRID_SUPERSAMPLING_SIZE;
-    final int superHeight = height * GRID_SUPERSAMPLING_SIZE;
+    final int superWidth = width * this.supersamplingGridSize;
+    final int superHeight = height * this.supersamplingGridSize;
     final Viewport superpixelViewport = new Viewport();
     superpixelViewport.setWidth(superWidth);
     superpixelViewport.setHeight(superHeight);
@@ -329,7 +334,7 @@ public class TracerEnvironment {
 
     // generate the virtual primary rays for each superpixel
     final GridSupersampler supersampler = new GridSupersampler(width, height,
-        GRID_SUPERSAMPLING_SIZE);
+        this.supersamplingGridSize);
     supersampler.setRayGenerator(rayGenerator);
     final Ray[][] rays = supersampler.generateRays();
 
@@ -382,7 +387,7 @@ public class TracerEnvironment {
 
     // average the pixels
     final GridAverager averager = new FlatGridAverager();
-    averager.setGridSize(GRID_SUPERSAMPLING_SIZE);
+    averager.setGridSize(this.supersamplingGridSize);
     final Vector3D[] colors = averager.average(superpixels);
     final int[] pixels = new int[colors.length];
     for (int i = 0; i < pixels.length; ++i) {
@@ -427,6 +432,19 @@ public class TracerEnvironment {
    */
   public void setResolution(final Resolution resolution) {
     this.resolution = resolution;
+  }
+
+  /**
+   * Sets the size of the grid (in number of pixels) of virtual subpixels to
+   * use in place of each pixel for supersampling in order to antialias the
+   * rendered image.
+   *
+   * @param supersamplingGridSize
+   *          The size of the grid of subpixels (that is, the number of pixels
+   *          on one side of the square grid).
+   */
+  public void setSupersamplingGridSize(final int supersamplingGridSize) {
+    this.supersamplingGridSize = supersamplingGridSize;
   }
 
   /**

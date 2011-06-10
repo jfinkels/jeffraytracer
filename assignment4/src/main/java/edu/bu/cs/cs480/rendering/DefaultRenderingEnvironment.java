@@ -1,5 +1,5 @@
 /**
- * DefaultRenderingEnvironment.java - 
+ * DefaultRenderingEnvironment.java - a scene which can be rendered
  */
 package edu.bu.cs.cs480.rendering;
 
@@ -14,6 +14,8 @@ import edu.bu.cs.cs480.lights.Light;
 import edu.bu.cs.cs480.surfaces.SurfaceObject;
 
 /**
+ * Provides all the properties necessary for a scene which can be rendered.
+ * 
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
@@ -30,16 +32,11 @@ public class DefaultRenderingEnvironment implements RenderingEnvironment {
   private List<SurfaceObject> surfaceObjects = new ArrayList<SurfaceObject>();
   /** The dimensions of the viewport in which the scene is displayed. */
   private Viewport viewport = null;
-  
 
   /**
-   * Adds the specified ambient light to the scene.
+   * {@inheritDoc}
    * 
-   * The light must also be added to the list of all lights, by calling the
-   * {@link #addLight(Light)} method.
-   * 
-   * @param light
-   *          The ambient light to add.
+   * @return {@inheritDoc}
    */
   @Override
   public void addAmbientLight(final AmbientLight light) {
@@ -47,10 +44,9 @@ public class DefaultRenderingEnvironment implements RenderingEnvironment {
   }
 
   /**
-   * Adds the specified light to the scene.
+   * {@inheritDoc}
    * 
-   * @param light
-   *          The light to add.
+   * @return {@inheritDoc}
    */
   @Override
   public void addLight(final Light light) {
@@ -58,37 +54,49 @@ public class DefaultRenderingEnvironment implements RenderingEnvironment {
   }
 
   /**
-   * Adds the specified surface object to the scene.
+   * {@inheritDoc}
    * 
-   * @param surfaceObject
-   *          The surface object to add.
+   * @return {@inheritDoc}
    */
   @Override
   public void addSurfaceObject(final SurfaceObject surfaceObject) {
     this.surfaceObjects.add(surfaceObject);
   }
 
+  /**
+   * {@inheritDoc}
+   * 
+   * @return {@inheritDoc}
+   */
   @Override
   public Viewport viewport() {
-   return this.viewport;
- }
+    return this.viewport;
+  }
 
- @Override
-public Camera camera() {
-   return this.camera;
- }
-
- @Override
-public Resolution resolution() {
-   return this.resolution;
- }
-
- 
   /**
-   * Sets the virtual camera through which the scene is viewed.
+   * {@inheritDoc}
    * 
-   * @param camera
-   *          The virtual camera through which the scene is viewed.
+   * @return {@inheritDoc}
+   */
+  @Override
+  public Camera camera() {
+    return this.camera;
+  }
+
+  /**
+   * {@inheritDoc}
+   * 
+   * @return {@inheritDoc}
+   */
+  @Override
+  public Resolution resolution() {
+    return this.resolution;
+  }
+
+  /**
+   * {@inheritDoc}
+   * 
+   * @return {@inheritDoc}
    */
   @Override
   public void setCamera(final Camera camera) {
@@ -96,10 +104,9 @@ public Resolution resolution() {
   }
 
   /**
-   * Sets the resolution of the scene when displayed in the viewport.
+   * {@inheritDoc}
    * 
-   * @param resolution
-   *          The resolution of the scene when displayed in the viewport.
+   * @return {@inheritDoc}
    */
   @Override
   public void setResolution(final Resolution resolution) {
@@ -107,18 +114,20 @@ public Resolution resolution() {
   }
 
   /**
-   * Sets the dimensions of the viewport in which the scene is displayed.
+   * {@inheritDoc}
    * 
-   * @param viewport
-   *          The dimensions of the viewport in which the scene is displayed.
+   * @return {@inheritDoc}
    */
   @Override
   public void setViewport(final Viewport viewport) {
     this.viewport = viewport;
   }
 
-
-  /* (non-Javadoc)
+  /**
+   * {@inheritDoc}
+   * 
+   * @return {@inheritDoc}
+   * 
    * @see edu.bu.cs.cs480.rendering.RenderingEnvironment#lights()
    */
   @Override
@@ -126,7 +135,11 @@ public Resolution resolution() {
     return this.lights;
   }
 
-  /* (non-Javadoc)
+  /**
+   * {@inheritDoc}
+   * 
+   * @return {@inheritDoc}
+   * 
    * @see edu.bu.cs.cs480.rendering.RenderingEnvironment#ambientLights()
    */
   @Override
@@ -134,7 +147,10 @@ public Resolution resolution() {
     return this.ambientLights;
   }
 
-  /* (non-Javadoc)
+  /**
+   * {@inheritDoc}
+   * 
+   * @return {@inheritDoc}
    * @see edu.bu.cs.cs480.rendering.RenderingEnvironment#surfaceObjects()
    */
   @Override

@@ -1,5 +1,5 @@
 /**
- * RendererHelper.java - object which renders some number of rows of the image
+ * TracerThread.java - Runnable object which traces some number of rays
  */
 package edu.bu.cs.cs480.rendering;
 
@@ -9,23 +9,27 @@ import edu.bu.cs.cs480.Ray;
 import edu.bu.cs.cs480.Vector3D;
 
 /**
- * A runnable which renders some number of rows of the image specified by the
- * tracer environment.
+ * A runnable which traces some number of rays specified by the parent
+ * ThreadedTracer object.
  * 
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
-class RendererHelper implements Runnable {
+class TracerThread implements Runnable {
   /** The logger for this class. */
-  private static final transient Logger LOG = Logger.getLogger(RendererHelper.class);
+  private static final transient Logger LOG = Logger
+      .getLogger(TracerThread.class);
   /** The pixel in the {@link #rays} array at which to stop rendering. */
   private final int end;
-  /** The environment to use to trace the scene. */
-  private final ThreadedRenderer environment;
+  /**
+   * The tracer to use to trace the scene, and to inform when this object has
+   * completed its portion of the tracing.
+   */
+  private final ThreadedTracer parentTracer;
   /** The primary rays to use to trace the image. */
   private final Ray[] rays;
-  /** The array of pixels to which to write the traced colors. */
-  private final Vector3D[] pixels;
+  /** The array of colors to which to write the traced colors. */
+  private final Vector3D[] colors;
   /** The pixel in the {@link #rays} array at which to start rendering. */
   private final int start;
   /**
@@ -38,52 +42,59 @@ class RendererHelper implements Runnable {
    * Instantiates this renderer with access to all the necessary information
    * from the tracer environment.
    * 
+   * This object will trace rays from the specified array and assign the result
+   * to the corresponding location in the specified colors array.
+   * 
+   * Pre-condition: the length of the {@code colors} array must be at least as
+   * great as the length of the {@code rays} array.
+   * 
    * @param rays
    *          An array containing (as a sublist) the primary rays to trace.
    * @param start
    *          The pixel at which to start tracing.
    * @param end
    *          The pixel at which to end tracing.
-   * @param environment
-   *          The tracer environment to use to trace the scene.
-   * @param pixels
-   *          The array of pixels to which to write the colors traced scene.
+   * @param parentTracer
+   *          The threaded tracer to use to trace the scene, and to notify when
+   *          this object has completed tracing.
+   * @param colors
+   *          The array to which to write the colors traced by this object.
    * @param threadID
    *          The ID of this rendering thread.
    */
-  public RendererHelper(final Ray[] rays, final int start, final int end,
-      final ThreadedRenderer environment, final int threadID,
-      final Vector3D[] pixels) {
+  public TracerThread(final Ray[] rays, final int start, final int end,
+      final ThreadedTracer parentTracer, final int threadID,
+      final Vector3D[] colors) {
     // WARNING: since we are passing in a reference to an array of rays, this
     // class could potentially modify the contents of the array!
     this.rays = rays;
     this.start = start;
     this.end = end;
-    this.environment = environment;
-    this.pixels = pixels;
+    this.parentTracer = parentTracer;
+    this.colors = colors;
     this.threadID = threadID;
   }
 
   /**
    * Traces rays from the {@link #rays} array starting at position (0,
    * {@link #startRow}) and ending at (this.width - 1, {@link #endRow} - 1).
+   * 
+   * Assigns the results to the corresponding location of the {@link #colors}
+   * array.
    */
   @Override
   public void run() {
     LOG.debug("Tracing rays from pixel " + this.start + " to pixel "
         + this.end + "...");
     for (int i = this.start; i < this.end; ++i) {
-      final Ray ray = this.rays[i];
-      // TODO for some reason, my scenes are all reflected in the x direction
-      // this.result.setRGB(x, y, color);
-      this.pixels[i] = this.environment.trace(ray, 1);
+      this.colors[i] = this.parentTracer.trace(this.rays[i]);
     }
 
     LOG.debug("Completed tracing rays from pixel " + this.start + " to pixel "
         + this.end + ".");
-    synchronized (this.environment) {
-      this.environment.rendererFinished(this.threadID);
-      this.environment.notifyAll();
+    synchronized (this.parentTracer) {
+      this.parentTracer.threadFinished(this.threadID);
+      this.parentTracer.notifyAll();
     }
   }
 }

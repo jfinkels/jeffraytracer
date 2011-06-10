@@ -10,7 +10,6 @@ import static org.junit.Assert.fail;
 import org.junit.Test;
 
 import edu.bu.cs.cs480.Vector3D;
-import edu.bu.cs.cs480.rendering.supersampling.WeightedGridAverager;
 
 /**
  * Test for the WeightedGridAverager class.

@@ -94,18 +94,6 @@ public class Vector3DTest {
   }
 
   /**
-   * Test method for
-   * {@link edu.bu.cs.cs480.Vector3D#Vector3D(float, float, float)}.
-   */
-  @Test
-  public void testVector3DFloatFloatFloat() {
-    final Vector3D vector = new Vector3D(0.0f, 1.0f, 2.0f);
-    assertEquals(0.0, vector.x(), 0.0);
-    assertEquals(1.0, vector.y(), 0.0);
-    assertEquals(2.0, vector.z(), 0.0);
-  }
-
-  /**
    * Test method for {@link edu.bu.cs.cs480.Vector3D#scaledBy(double)}.
    */
   @Test

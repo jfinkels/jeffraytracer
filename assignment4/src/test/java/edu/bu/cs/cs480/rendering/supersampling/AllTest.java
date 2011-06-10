@@ -7,9 +7,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import edu.bu.cs.cs480.rendering.supersampling.GridSupersamplerTest;
-import edu.bu.cs.cs480.rendering.supersampling.WeightedGridAveragerTest;
-
 /**
  * Runs all tests in this package.
  * 

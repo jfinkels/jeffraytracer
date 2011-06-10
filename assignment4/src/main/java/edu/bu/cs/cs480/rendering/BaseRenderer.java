@@ -35,7 +35,7 @@ public class BaseRenderer implements Renderer {
    * Pre-condition: the input array is rectangular (that is, each row has the
    * same number of elements).
    * 
-   * @param rays
+   * @param array
    *          The two-dimensional array to flatten.
    * @return A new one-dimensional array with the same elements of the
    *         two-dimensional array in row-major order.
@@ -78,7 +78,7 @@ public class BaseRenderer implements Renderer {
    * the width and height of the viewport of the RenderingEnvironment specified
    * in the constructor of this class.
    * 
-   * @param pixels
+   * @param colors
    *          The color values to set in a pixel.
    * @return A new RGB image with the specified color values set on each of its
    *         pixels.

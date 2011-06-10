@@ -1,20 +1,18 @@
 /**
- * RayGeneratorTest.java -
+ * RayGeneratorTest.java - test for the RayGenerator class
  */
 package edu.bu.cs.cs480.camera;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 import edu.bu.cs.cs480.Ray;
 import edu.bu.cs.cs480.Vector3D;
-import edu.bu.cs.cs480.camera.PerspectiveCamera;
-import edu.bu.cs.cs480.camera.RayGenerator;
-import edu.bu.cs.cs480.camera.Resolution;
-import edu.bu.cs.cs480.camera.Viewport;
 
 /**
+ * Test for the RayGenerator class.
+ * 
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */

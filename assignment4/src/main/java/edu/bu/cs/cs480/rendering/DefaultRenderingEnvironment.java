@@ -36,7 +36,8 @@ public class DefaultRenderingEnvironment implements RenderingEnvironment {
   /**
    * {@inheritDoc}
    * 
-   * @return {@inheritDoc}
+   * @param light
+   *          {@inheritDoc}
    */
   @Override
   public void addAmbientLight(final AmbientLight light) {
@@ -46,7 +47,8 @@ public class DefaultRenderingEnvironment implements RenderingEnvironment {
   /**
    * {@inheritDoc}
    * 
-   * @return {@inheritDoc}
+   * @param light
+   *          {@inheritDoc}
    */
   @Override
   public void addLight(final Light light) {
@@ -56,7 +58,8 @@ public class DefaultRenderingEnvironment implements RenderingEnvironment {
   /**
    * {@inheritDoc}
    * 
-   * @return {@inheritDoc}
+   * @param surfaceObject
+   *          {@inheritDoc}
    */
   @Override
   public void addSurfaceObject(final SurfaceObject surfaceObject) {
@@ -96,7 +99,8 @@ public class DefaultRenderingEnvironment implements RenderingEnvironment {
   /**
    * {@inheritDoc}
    * 
-   * @return {@inheritDoc}
+   * @param camera
+   *          {@inheritDoc}
    */
   @Override
   public void setCamera(final Camera camera) {
@@ -106,7 +110,8 @@ public class DefaultRenderingEnvironment implements RenderingEnvironment {
   /**
    * {@inheritDoc}
    * 
-   * @return {@inheritDoc}
+   * @param resolution
+   *          {@inheritDoc}
    */
   @Override
   public void setResolution(final Resolution resolution) {
@@ -116,7 +121,8 @@ public class DefaultRenderingEnvironment implements RenderingEnvironment {
   /**
    * {@inheritDoc}
    * 
-   * @return {@inheritDoc}
+   * @param viewport
+   *          {@inheritDoc}
    */
   @Override
   public void setViewport(final Viewport viewport) {

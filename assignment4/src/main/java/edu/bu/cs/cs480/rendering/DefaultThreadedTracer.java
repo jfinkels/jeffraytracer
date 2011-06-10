@@ -22,7 +22,7 @@ public class DefaultThreadedTracer extends DefaultTracer {
   /** The default number of threads to use when rendering. */
   public static final int DEFAULT_NUM_THREADS = 2;
   /** The logger for this class. */
-  private static transient final Logger LOG = Logger
+  private static final transient Logger LOG = Logger
       .getLogger(DefaultThreadedTracer.class);
   /** The number of threads to use when tracing an array of rays. */
   private int numThreads = DEFAULT_NUM_THREADS;

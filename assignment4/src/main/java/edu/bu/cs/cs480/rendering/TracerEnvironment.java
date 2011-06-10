@@ -73,8 +73,8 @@ public class TracerEnvironment {
    *         color as specified in {@link #MAX_COLOR}.
    */
   private static Vector3D boundedColor(final Vector3D color) {
-    return new Vector3D(Math.min(MAX_COLOR.x(), color.x()), Math.min(MAX_COLOR
-        .y(), color.y()), Math.min(MAX_COLOR.z(), color.z()));
+    return new Vector3D(Math.min(MAX_COLOR.x(), color.x()), Math.min(
+        MAX_COLOR.y(), color.y()), Math.min(MAX_COLOR.z(), color.z()));
   }
 
   /**
@@ -308,21 +308,29 @@ public class TracerEnvironment {
     // average their color values in order to produce an antialiased output
     // image
     LOG.debug("Generating primary rays...");
-    final RayGenerator rayGenerator = new RayGenerator();
-    rayGenerator.setCamera(this.camera);
-    // TODO do I have to change the resolution as well?
+
+    // create the resolution for the virtual superpixel camera
     final Resolution superpixelResolution = new Resolution();
     superpixelResolution.setxResolution(this.resolution.xResolution()
         / GRID_SUPERSAMPLING_SIZE);
     superpixelResolution.setyResolution(this.resolution.yResolution()
         / GRID_SUPERSAMPLING_SIZE);
-    rayGenerator.setResolution(superpixelResolution);
-    final Viewport superpixelViewport = new Viewport();
+
+    // create the viewport for the virtual superpixel camera
     final int superWidth = width * GRID_SUPERSAMPLING_SIZE;
     final int superHeight = height * GRID_SUPERSAMPLING_SIZE;
+    final Viewport superpixelViewport = new Viewport();
     superpixelViewport.setWidth(superWidth);
     superpixelViewport.setHeight(superHeight);
+
+    // create the object which generates primary rays extending from the camera
+    // through the superpixel viewport
+    final RayGenerator rayGenerator = new RayGenerator();
+    rayGenerator.setCamera(this.camera);
+    rayGenerator.setResolution(superpixelResolution);
     rayGenerator.setViewport(superpixelViewport);
+
+    // generate the virtual primary rays for each superpixel
     final GridSupersampler supersampler = new GridSupersampler(width, height,
         GRID_SUPERSAMPLING_SIZE);
     supersampler.setRayGenerator(rayGenerator);
@@ -573,8 +581,8 @@ public class TracerEnvironment {
    */
   private Vector3D specularColor(final Intercept intercept, final Light light) {
     // reflect the light vector through the normal (R)
-    final Vector3D reflectedLight = reflected(light.direction(), intercept
-        .normal());
+    final Vector3D reflectedLight = reflected(light.direction(),
+        intercept.normal());
 
     // get the view plane vector (V)
     final Vector3D viewPlaneVector = intercept.ray().direction();
@@ -658,8 +666,9 @@ public class TracerEnvironment {
     }
 
     // compute the direction of the transmitted ray
-    final Vector3D transmittedDir = direction.scaledBy(ratio).sumWith(
-        normal.scaledBy(ratio * cosAngle1 + factor * cosAngle2)).normalized();
+    final Vector3D transmittedDir = direction.scaledBy(ratio)
+        .sumWith(normal.scaledBy(ratio * cosAngle1 + factor * cosAngle2))
+        .normalized();
 
     // create the ray of transmission
     final Ray transmissionRay = new Ray();

@@ -1,7 +1,7 @@
 /**
  * ModelReader.java - reads a tracer model from a file
  */
-package edu.bu.cs.cs480.main;
+package edu.bu.cs.cs480.io;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -26,6 +26,7 @@ import edu.bu.cs.cs480.lights.AmbientLight;
 import edu.bu.cs.cs480.lights.InfinityLight;
 import edu.bu.cs.cs480.lights.Light;
 import edu.bu.cs.cs480.lights.PointLight;
+import edu.bu.cs.cs480.rendering.TracerEnvironment;
 import edu.bu.cs.cs480.surfaces.Box;
 import edu.bu.cs.cs480.surfaces.ConstructiveSolidGeometry;
 import edu.bu.cs.cs480.surfaces.Cylinder;

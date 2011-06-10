@@ -1,7 +1,7 @@
 /**
  * TracerEnvironment.java - the environment which can trace a scene
  */
-package edu.bu.cs.cs480.main;
+package edu.bu.cs.cs480.rendering;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
@@ -42,6 +42,8 @@ public class TracerEnvironment {
   public static final int MAX_DEPTH = 3;
   /** The number of threads to use when rendering. */
   public static final int NUM_THREADS = 2;
+  /** The size of the grid used in supersampling of rays for antialiasing. */
+  private static final int GRID_SUPERSAMPLING_SIZE = 3;
 
   /**
    * Returns {@code true} if and only if all of the elements of the specified
@@ -146,7 +148,7 @@ public class TracerEnvironment {
    * @param light
    *          The ambient light to add.
    */
-  void addAmbientLight(final AmbientLight light) {
+  public void addAmbientLight(final AmbientLight light) {
     this.ambientLights.add(light);
   }
 
@@ -156,7 +158,7 @@ public class TracerEnvironment {
    * @param light
    *          The light to add.
    */
-  void addLight(final Light light) {
+  public void addLight(final Light light) {
     this.lights.add(light);
   }
 
@@ -166,7 +168,7 @@ public class TracerEnvironment {
    * @param surfaceObject
    *          The surface object to add.
    */
-  void addSurfaceObject(final SurfaceObject surfaceObject) {
+  public void addSurfaceObject(final SurfaceObject surfaceObject) {
     this.surfaceObjects.add(surfaceObject);
   }
 
@@ -220,52 +222,6 @@ public class TracerEnvironment {
 
     // return the color due to the specified light scaled by the diffuse scale
     return light.color().scaledBy(diffuseScale);
-  }
-
-  /**
-   * Generates the ray which would start at pixel location (row, column) in the
-   * viewport based on the resolution, the viewport size, and the camera's
-   * measurements.
-   * 
-   * Algorithm adapted from source code of Zheng Wu.
-   * 
-   * @param row
-   *          The vertical pixel location in the viewport at which the ray
-   *          originates.
-   * @param column
-   *          The horizontal pixel location in the viewport at which the ray
-   *          originates.
-   * @return The ray which would start at pixel location (row, column) in the
-   *         viewport.
-   */
-  protected Ray generateRay(final int row, final int column) {
-    // compute location of pixel on view plane
-    final double du = (column - (this.viewport.width() / 2.0) + 1)
-        * this.resolution.xResolution();
-    final double dv = -(row - (this.viewport.height() / 2.0) + 1)
-        * this.resolution.yResolution();
-
-    // get the vectors which define the camera's basis
-    final Vector3D c = this.camera.position();
-    final Vector3D n = this.camera.direction();
-    final Vector3D v = this.camera.up();
-    final Vector3D u = v.crossProduct(n);
-
-    // convert (du, dv) to location in scene coordinates using the camera's
-    // basis vectors
-    final Vector3D temp1 = n.scaledBy(this.camera.focalLength());
-    final Vector3D temp2 = u.scaledBy(du);
-    final Vector3D temp3 = v.scaledBy(dv);
-    final Vector3D origin = c.sumWith(temp1).sumWith(temp2).sumWith(temp3);
-
-    // compute the direction of the ray with respect to the camera and position
-    final Vector3D direction = this.camera.rayDirection(origin);
-
-    final Ray result = new Ray();
-    result.setPosition(origin);
-    result.setDirection(direction);
-
-    return result;
   }
 
   /**
@@ -348,15 +304,29 @@ public class TracerEnvironment {
     final int width = this.viewport.width();
     final int height = this.viewport.height();
 
-    // first create the rays and initialize them with the appropriate computed
-    // origin and direction based on the camera type and measurements
+    // create the supersampler which will create many virtual rays and then
+    // average their color values in order to produce an antialiased output
+    // image
     LOG.debug("Generating primary rays...");
-    final Ray[] rays = new Ray[width * height];
-    for (int y = 0; y < height; ++y) {
-      for (int x = 0; x < width; ++x) {
-        rays[y * width + x] = generateRay(y, x);
-      }
-    }
+    final RayGenerator rayGenerator = new RayGenerator();
+    rayGenerator.setCamera(this.camera);
+    // TODO do I have to change the resolution as well?
+    final Resolution superpixelResolution = new Resolution();
+    superpixelResolution.setxResolution(this.resolution.xResolution()
+        / GRID_SUPERSAMPLING_SIZE);
+    superpixelResolution.setyResolution(this.resolution.yResolution()
+        / GRID_SUPERSAMPLING_SIZE);
+    rayGenerator.setResolution(superpixelResolution);
+    final Viewport superpixelViewport = new Viewport();
+    final int superWidth = width * GRID_SUPERSAMPLING_SIZE;
+    final int superHeight = height * GRID_SUPERSAMPLING_SIZE;
+    superpixelViewport.setWidth(superWidth);
+    superpixelViewport.setHeight(superHeight);
+    rayGenerator.setViewport(superpixelViewport);
+    final GridSupersampler supersampler = new GridSupersampler(width, height,
+        GRID_SUPERSAMPLING_SIZE);
+    supersampler.setRayGenerator(rayGenerator);
+    final Ray[][] rays = supersampler.generateRays();
 
     // compile all the surface objects so that we only compute their quadratic
     // form matrices one time
@@ -365,31 +335,54 @@ public class TracerEnvironment {
       surfaceObject.compile();
     }
 
-    // draw the intercept on an image
-    LOG.debug("Casting primary rays and shading...");
-    final int[] pixels = new int[width * height];
+    // put all the rays into a one dimensional array, so it's easy for our
+    // renderers to split them up
+    final Ray[] rays1D = new Ray[superWidth * superHeight];
+    int z = 0;
+    for (int i = 0; i < rays.length; ++i) {
+      for (int j = 0; j < rays[i].length; ++j) {
+        rays1D[z] = rays[i][j];
+        z += 1;
+      }
+    }
 
-    // create the rendering runnables which will render the scene in chunks of
-    // rows
+    // create the rendering runnables which will render the scene in chunks
+    LOG.debug("Creating renderers...");
+    final int numSuperpixels = rays1D.length;
+    final Vector3D[] superpixels = new Vector3D[numSuperpixels];
+    final int delta = numSuperpixels / NUM_THREADS;
     resetBooleans(this.renderersFinished);
     final Renderer[] renderers = new Renderer[NUM_THREADS];
-    final int deltaRow = height / NUM_THREADS;
-    // ugly: in case NUM_THREADS is not a divisor of height, we manually force
-    // the last thread to take up the remainder
+    // ugly: in case NUM_THREADS is not a divisor of the number of rays, we
+    // manually force the last thread to take up the remainder, that's why the
+    // upper bound is NUM_THREADS - 1 and the last renderer is created after
+    // the loop
     for (int i = 0; i < NUM_THREADS - 1; ++i) {
-      renderers[i] = new Renderer(rays, i * deltaRow, (i + 1) * deltaRow,
-          width, this, i, pixels);
+      // this creates a renderer which renders "delta" pixels, starting at
+      // offset "i * delta", and with ID number "i"
+      renderers[i] = new Renderer(rays1D, i * delta, (i + 1) * delta, this, i,
+          superpixels);
     }
-    renderers[NUM_THREADS - 1] = new Renderer(rays, (NUM_THREADS - 1)
-        * deltaRow, height, width, this, NUM_THREADS - 1, pixels);
+    renderers[NUM_THREADS - 1] = new Renderer(rays1D, (NUM_THREADS - 1)
+        * delta, numSuperpixels, this, NUM_THREADS - 1, superpixels);
 
     // run the threads which will fill in the colors in the pixels array
-    for (int i = 0; i < renderers.length; ++i) {
-      new Thread(renderers[i]).start();
+    LOG.debug("Tracing rays...");
+    for (final Renderer renderer : renderers) {
+      new Thread(renderer).start();
     }
 
     // wait until all the threads have notified us that they are finished
     this.waitForThreads();
+
+    // average the pixels
+    final GridAverager averager = new FlatGridAverager();
+    averager.setGridSize(GRID_SUPERSAMPLING_SIZE);
+    final Vector3D[] colors = averager.average(superpixels);
+    final int[] pixels = new int[colors.length];
+    for (int i = 0; i < pixels.length; ++i) {
+      pixels[i] = DoubleColor.toRGB(colors[i]);
+    }
 
     // transfer the colors from the pixels array to the buffered image
     final BufferedImage result = new BufferedImage(width, height,
@@ -417,7 +410,7 @@ public class TracerEnvironment {
    * @param camera
    *          The virtual camera through which the scene is viewed.
    */
-  void setCamera(final Camera camera) {
+  public void setCamera(final Camera camera) {
     this.camera = camera;
   }
 
@@ -427,7 +420,7 @@ public class TracerEnvironment {
    * @param resolution
    *          The resolution of the scene when displayed in the viewport.
    */
-  void setResolution(final Resolution resolution) {
+  public void setResolution(final Resolution resolution) {
     this.resolution = resolution;
   }
 
@@ -437,7 +430,7 @@ public class TracerEnvironment {
    * @param viewport
    *          The dimensions of the viewport in which the scene is displayed.
    */
-  void setViewport(final Viewport viewport) {
+  public void setViewport(final Viewport viewport) {
     this.viewport = viewport;
   }
 

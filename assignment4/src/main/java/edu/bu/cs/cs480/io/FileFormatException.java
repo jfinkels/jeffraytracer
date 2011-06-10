@@ -1,7 +1,7 @@
 /**
  * FileFormatException.java - thrown when a data file has an incorrect format
  */
-package edu.bu.cs.cs480.main;
+package edu.bu.cs.cs480.io;
 
 /**
  * Thrown when a data file has an incorrect format.

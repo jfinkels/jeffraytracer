@@ -1,7 +1,7 @@
 /**
  * ModelReaderTest.java - test for the ModelReader class
  */
-package edu.bu.cs.cs480.main;
+package edu.bu.cs.cs480.io;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import org.junit.Test;
 
 import edu.bu.cs.cs480.TestUtils;
+import edu.bu.cs.cs480.rendering.TracerEnvironment;
 
 /**
  * Test for the ModelReader class.
@@ -26,7 +27,7 @@ public class ModelReaderTest {
 
   /**
    * Test method for
-   * {@link edu.bu.cs.cs480.main.ModelReader#ModelReader(java.lang.String)}.
+   * {@link edu.bu.cs.cs480.io.ModelReader#ModelReader(java.lang.String)}.
    */
   @Test
   public void testFromFile() {

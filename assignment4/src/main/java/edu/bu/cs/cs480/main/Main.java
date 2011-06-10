@@ -12,6 +12,10 @@ import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
 
+import edu.bu.cs.cs480.io.FileFormatException;
+import edu.bu.cs.cs480.io.ModelReader;
+import edu.bu.cs.cs480.rendering.TracerEnvironment;
+
 /**
  * The driver for the ray tracer.
  * 

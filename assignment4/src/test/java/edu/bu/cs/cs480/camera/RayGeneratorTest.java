@@ -51,7 +51,7 @@ public class RayGeneratorTest {
     for (int row = 0; row < 4; ++row) {
       for (int col = 0; col < 4; ++col) {
         final Ray ray = g.generateRay(row, col);
-        assertTrue(ray.position().equals(
+        assertTrue(ray.position().equalTo(
             new Vector3D(expected[row][col][0], expected[row][col][1],
                 expected[row][col][2])));
       }

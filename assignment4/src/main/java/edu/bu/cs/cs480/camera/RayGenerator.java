@@ -5,7 +5,6 @@ package edu.bu.cs.cs480.camera;
 
 import edu.bu.cs.cs480.Ray;
 import edu.bu.cs.cs480.Vector3D;
-import edu.bu.cs.cs480.rendering.RenderingEnvironment;
 
 /**
  * Generates rays at a specified position with respect to a given camera,
@@ -23,20 +22,30 @@ public class RayGenerator {
   /** The dimensions of the viewport in which the scene is displayed. */
   private Viewport viewport = null;
 
-  public RayGenerator(final RenderingEnvironment environment) {
-    this(environment.camera(), environment.resolution(), environment.viewport());
-  }
-  
+  /** Instantiates this class without setting any properties. */
   public RayGenerator() {
     // intentionally unimplemented
   }
-  
-  public RayGenerator(final Camera camera, final Resolution resolution, final Viewport viewport) {
+
+  /**
+   * Instantiates this ray generator with the specified camera, viewport, and
+   * resolution.
+   * 
+   * @param camera
+   *          The camera from which rays originate.
+   * @param resolution
+   *          The resolution of the viewport in pixels with respect to the
+   *          model coordinate system.
+   * @param viewport
+   *          The viewport through which rays pass.
+   */
+  public RayGenerator(final Camera camera, final Resolution resolution,
+      final Viewport viewport) {
     this.setCamera(camera);
     this.setResolution(resolution);
     this.setViewport(viewport);
   }
-  
+
   /**
    * Generates the ray which would start at pixel location (row, column) in the
    * viewport based on the resolution, the viewport size, and the camera's

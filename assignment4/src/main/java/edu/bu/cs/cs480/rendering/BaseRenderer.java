@@ -103,7 +103,9 @@ public class BaseRenderer implements Renderer {
     final int height = this.environment.viewport().height();
     final int width = this.environment.viewport().width();
     final Ray[][] result = new Ray[height][width];
-    final RayGenerator rayGenerator = new RayGenerator(this.environment);
+    final RayGenerator rayGenerator = new RayGenerator(
+        this.environment.camera(), this.environment.resolution(),
+        this.environment.viewport());
 
     for (int y = 0; y < height; ++y) {
       for (int x = 0; x < width; ++x) {

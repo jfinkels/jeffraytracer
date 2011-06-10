@@ -3,9 +3,8 @@
  */
 package edu.bu.cs.cs480.rendering.supersampling;
 
-
 /**
- * Averages pixel volor values arranged in a grid.
+ * Averages pixel color values arranged in a grid.
  * 
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011

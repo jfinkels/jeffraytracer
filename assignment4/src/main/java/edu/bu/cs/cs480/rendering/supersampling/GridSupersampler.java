@@ -13,9 +13,18 @@ import edu.bu.cs.cs480.camera.RayGenerator;
  * @since Spring 2011
  */
 public class GridSupersampler implements Supersampler {
+  /**
+   * The size of the square grid of virtual subpixels to create for each pixel.
+   */
   private final int gridSize;
+  /** The width in pixels of the original viewport. */
   private final int width;
+  /** The height in pixels of the original viewport. */
   private final int height;
+  /**
+   * The object which generates rays through the virtual viewport corresponding
+   * to the subpixel grid.
+   */
   private RayGenerator rayGenerator = null;
 
   /**
@@ -64,8 +73,8 @@ public class GridSupersampler implements Supersampler {
    * Pre-condition: the {@link #setRayGenerator(RayGenerator)} must be called
    * with a non-{@code null} parameter before this method can be called.
    * 
-   * @return An array of blocks of rays, in which each block contains {@code
-   *         (gridSize * gridSize)} rays.
+   * @return An array of blocks of rays, in which each block contains
+   *         {@code (gridSize * gridSize)} rays.
    * @see edu.bu.cs.cs480.rendering.supersampling.Supersampler#generateRays()
    */
   @Override

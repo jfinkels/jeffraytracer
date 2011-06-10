@@ -3,7 +3,6 @@
  */
 package edu.bu.cs.cs480.rendering.supersampling;
 
-import edu.bu.cs.cs480.rendering.Averager;
 
 /**
  * Averages pixel volor values arranged in a grid.

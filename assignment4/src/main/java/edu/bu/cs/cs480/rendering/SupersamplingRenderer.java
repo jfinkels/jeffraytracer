@@ -6,6 +6,7 @@ package edu.bu.cs.cs480.rendering;
 import edu.bu.cs.cs480.DoubleColor;
 import edu.bu.cs.cs480.Ray;
 import edu.bu.cs.cs480.Vector3D;
+import edu.bu.cs.cs480.rendering.supersampling.Averager;
 import edu.bu.cs.cs480.rendering.supersampling.Supersampler;
 
 /**

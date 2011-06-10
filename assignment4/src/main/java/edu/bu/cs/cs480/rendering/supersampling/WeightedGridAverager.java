@@ -65,7 +65,7 @@ public class WeightedGridAverager extends GridAverager {
    *          The color values of the subpixels as described in the
    *          documentation for this method.
    * @return The weighted average of each grid of subpixels.
-   * @see edu.bu.cs.cs480.main.Averager#average(Vector3D[])
+   * @see edu.bu.cs.cs480.rendering.supersampling.Averager#average(Vector3D[])
    */
   @Override
   public Vector3D[] average(final Vector3D[] pixels) {

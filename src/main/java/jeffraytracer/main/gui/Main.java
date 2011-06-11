@@ -39,7 +39,7 @@ public class Main extends JFrame implements ActionListener {
    * @param args
    *          This parameter is ignored.
    */
-  public static void main(String[] args) {
+  public static void main(final String[] args) {
     new Main();
   }
 
@@ -83,6 +83,8 @@ public class Main extends JFrame implements ActionListener {
    * Responds to selection of the "Load model..." menu item by presenting a
    * file chooser dialog, then rendering and displaying the image.
    * 
+   * @param event
+   *          The event which triggered this method call.
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   @Override

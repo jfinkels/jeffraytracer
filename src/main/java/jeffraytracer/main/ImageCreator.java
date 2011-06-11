@@ -1,5 +1,5 @@
 /**
- * ImageCreator.java -
+ * ImageCreator.java - provides high-level reading/rendering methods
  */
 package jeffraytracer.main;
 
@@ -20,6 +20,9 @@ import jeffraytracer.rendering.tracers.DefaultThreadedTracer;
 import jeffraytracer.rendering.tracers.Tracer;
 
 /**
+ * Provides high-level methods which reads a model from a file, renders it,
+ * and returns the rendered image.
+ * 
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
@@ -111,5 +114,10 @@ public class ImageCreator {
   public static BufferedImage fromFile(final String filename)
       throws FileNotFoundException, FileFormatException {
     return fromFile(new File(filename));
+  }
+  
+  /** Prevents instantiation. */
+  private ImageCreator() {
+    // intentionally unimplemented
   }
 }

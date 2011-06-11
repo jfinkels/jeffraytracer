@@ -129,17 +129,25 @@ public class SupersamplingRendererTest {
   public void testPostProcessing() {
     final Vector3D[] colors = new Vector3D[16];
     // block 1
-    colors[0] = colors[1] = new Vector3D(1, 0, 0);
-    colors[2] = colors[3] = new Vector3D(0, 1, 0);
+    colors[0] = new Vector3D(1, 0, 0);
+    colors[1] = new Vector3D(1, 0, 0);
+    colors[2] = new Vector3D(0, 1, 0);
+    colors[3] = new Vector3D(0, 1, 0);
     // block 2
-    colors[4] = colors[5] = new Vector3D(0, 1, 0);
-    colors[6] = colors[7] = new Vector3D(0, 0, 1);
+    colors[4] = new Vector3D(0, 1, 0);
+    colors[5] = new Vector3D(0, 1, 0);
+    colors[6] = new Vector3D(0, 0, 1);
+    colors[7] = new Vector3D(0, 0, 1);
     // block 3
-    colors[8] = colors[9] = new Vector3D(0, 0, 1);
-    colors[10] = colors[11] = new Vector3D(1, 0, 0);
+    colors[8] = new Vector3D(0, 0, 1);
+    colors[9] = new Vector3D(0, 0, 1);
+    colors[10] = new Vector3D(1, 0, 0);
+    colors[11] = new Vector3D(1, 0, 0);
     // block 4
-    colors[12] = colors[13] = new Vector3D(1, 1, 1);
-    colors[14] = colors[15] = new Vector3D(0, 0, 0);
+    colors[12] = new Vector3D(1, 1, 1);
+    colors[13] = new Vector3D(1, 1, 1);
+    colors[14] = new Vector3D(0, 0, 0);
+    colors[15] = new Vector3D(0, 0, 0);
 
     final int[] averages = this.r.postProcessing(colors);
     assertEquals(4, averages.length);

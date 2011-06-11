@@ -33,9 +33,18 @@ public class ImagePanel extends JPanel {
     this.repaint();
   }
 
+  /** The width of the panel when no image is being drawn. */
   public static final int EMPTY_WIDTH = 400;
+  /** The height of the panel when no image is being drawn. */
   public static final int EMPTY_HEIGHT = 300;
 
+  /**
+   * Returns the dimensions of the image which is being drawn, or if no image
+   * is being drawn, some reasonable default.
+   * 
+   * @return The dimensions of the image being drawn, or if no image is being
+   *         drawn, some reasonable default.
+   */
   @Override
   public Dimension getPreferredSize() {
     if (this.image == null) {

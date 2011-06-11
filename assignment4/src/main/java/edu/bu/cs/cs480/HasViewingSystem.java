@@ -1,5 +1,5 @@
 /**
- * HasViewingSystem.java -
+ * HasViewingSystem.java - object which has a camera, viewport, and resolution
  */
 package edu.bu.cs.cs480;
 
@@ -8,6 +8,8 @@ import edu.bu.cs.cs480.camera.Resolution;
 import edu.bu.cs.cs480.camera.Viewport;
 
 /**
+ * An object which has a camera, a resolution, and a viewport.
+ * 
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
@@ -36,7 +38,6 @@ public interface HasViewingSystem {
    *          The dimensions of the viewport in which the scene is displayed.
    */
   void setViewport(final Viewport viewport);
-  
 
   /**
    * Gets the virtual camera through which the scene is viewed.

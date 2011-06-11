@@ -1,5 +1,5 @@
 /**
- * ViewingSystemSupport.java -
+ * ViewingSystemSupport.java - base implementation of HasViewingSystem
  */
 package edu.bu.cs.cs480;
 
@@ -8,6 +8,8 @@ import edu.bu.cs.cs480.camera.Resolution;
 import edu.bu.cs.cs480.camera.Viewport;
 
 /**
+ * An implementation of an object with a camera, resolution, and viewport.
+ * 
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */

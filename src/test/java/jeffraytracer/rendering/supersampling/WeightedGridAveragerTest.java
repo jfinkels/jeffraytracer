@@ -38,19 +38,15 @@ public class WeightedGridAveragerTest {
     a.setWeights(weights);
     final Vector3D[] averages = a.average(colors);
     assertEquals(1, averages.length);
-    assertTrue(averages[0].equalTo(new Vector3D(1.55, 1.55, 1.55)));
+    assertTrue(averages[0].equalTo(new Vector3D(.3875, .3875, .3875)));
 
     Vector3D[] colors2 = new Vector3D[8];
-    double[] weights2 = new double[8];
     System.arraycopy(colors, 0, colors2, 0, 4);
     System.arraycopy(colors, 0, colors2, 4, 4);
-    System.arraycopy(weights, 0, weights2, 0, 4);
-    System.arraycopy(weights, 0, weights2, 4, 4);
-    a.setWeights(weights2);
     final Vector3D[] averages2 = a.average(colors2);
     assertEquals(2, averages2.length);
-    assertTrue(averages2[0].equalTo(new Vector3D(1.55, 1.55, 1.55)));
-    assertTrue(averages2[1].equalTo(new Vector3D(1.55, 1.55, 1.55)));
+    assertTrue(averages2[0].equalTo(new Vector3D(.3875, .3875, .3875)));
+    assertTrue(averages2[1].equalTo(new Vector3D(.3875, .3875, .3875)));
 
   }
 

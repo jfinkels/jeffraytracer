@@ -21,7 +21,7 @@ import org.junit.Test;
 public class ModelReaderTest {
 
   /** The directory containing the model files for testing. */
-  public static final String TESTDIR = "src/test/resources/edu/bu/cs/cs480/";
+  public static final String TESTDIR = "src/test/resources/jeffraytracer/";
   /** The file containing a test model. */
   public static final String TESTFILE = TESTDIR + "model1.dat";
 

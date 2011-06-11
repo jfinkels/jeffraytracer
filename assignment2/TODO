@@ -1,2 +1,0 @@
-* rename *(positive|negative)Extent methods to *(forward|backward)Extent
-* fix inheritance for component

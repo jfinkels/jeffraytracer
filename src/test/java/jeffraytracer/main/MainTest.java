@@ -3,6 +3,8 @@
  */
 package jeffraytracer.main;
 
+import org.junit.Test;
+
 /**
  * Test for the Main class.
  * 
@@ -19,7 +21,7 @@ public class MainTest {
   /**
    * Test method for {@link jeffraytracer.main.Main#main(java.lang.String[])} .
    */
-  // @Test
+  //@Test
   public void testMain() {
     Main.main(new String[] { TESTFILE });
   }

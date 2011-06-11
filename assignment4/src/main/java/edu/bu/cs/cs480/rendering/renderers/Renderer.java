@@ -3,7 +3,7 @@
  */
 package edu.bu.cs.cs480.rendering.renderers;
 
-import java.awt.image.RenderedImage;
+import java.awt.Image;
 
 /**
  * An object which can render a scene to an image.
@@ -17,5 +17,5 @@ public interface Renderer {
    * 
    * @return The rendered image representing the scene.
    */
-  RenderedImage render();
+  Image render();
 }

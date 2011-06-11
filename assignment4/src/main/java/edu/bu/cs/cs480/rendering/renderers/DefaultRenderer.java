@@ -4,7 +4,6 @@
 package edu.bu.cs.cs480.rendering.renderers;
 
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 
 import org.apache.log4j.Logger;
 
@@ -85,7 +84,7 @@ public class DefaultRenderer implements Renderer {
    * @return A new RGB image with the specified color values set on each of its
    *         pixels.
    */
-  protected RenderedImage generateImage(final int[] colors) {
+  protected BufferedImage generateImage(final int[] colors) {
     final int width = this.environment.viewport().width();
     final int height = this.environment.viewport().height();
     final BufferedImage result = new BufferedImage(width, height,
@@ -147,7 +146,7 @@ public class DefaultRenderer implements Renderer {
    * @return The image which is the result of rendering the scene.
    */
   @Override
-  public RenderedImage render() {
+  public BufferedImage render() {
     LOG.debug("Generating primary rays...");
     final Ray[][] rays = this.generatePrimaryRays();
     LOG.debug("Compiling quadric form matrices...");

@@ -3,11 +3,10 @@
  */
 package edu.bu.cs.cs480.rendering.renderers;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.awt.image.RenderedImage;
+import java.awt.image.BufferedImage;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -62,17 +61,12 @@ public class DefaultRendererTest {
    */
   @Test
   public void testGenerateImage() {
-    final RenderedImage i = this.r.generateImage(new int[] { 0xFF0000,
+    final BufferedImage i = this.r.generateImage(new int[] { 0xFF0000,
         0x00FF00, 0x0000FF, 0xFFFFFF });
-    final int[] output = new int[4];
-    assertArrayEquals(new int[] { 0xFF, 0, 0, 0 },
-        i.getData().getPixel(0, 0, output));
-    assertArrayEquals(new int[] { 0, 0xFF, 0, 0 },
-        i.getData().getPixel(1, 0, output));
-    assertArrayEquals(new int[] { 0, 0, 0xFF, 0 },
-        i.getData().getPixel(0, 1, output));
-    assertArrayEquals(new int[] { 0xFF, 0xFF, 0xFF, 0 },
-        i.getData().getPixel(1, 1, output));
+    assertEquals(0xFFFF0000, i.getRGB(0, 0));
+    assertEquals(0xFF00FF00, i.getRGB(1, 0));
+    assertEquals(0xFF0000FF, i.getRGB(0, 1));
+    assertEquals(0xFFFFFFFF, i.getRGB(1, 1));
   }
 
   /**
@@ -115,15 +109,11 @@ public class DefaultRendererTest {
    */
   @Test
   public void testRender() {
-    final RenderedImage i = this.r.render();
-    final int[] output = new int[4];
-    final int backgroundColor = DoubleColor
+    final BufferedImage image = this.r.render();
+      final int backgroundColor = DoubleColor
         .toRGB(BaseTracer.BACKGROUND_COLOR);
-    final int[] components = { (backgroundColor >> 16) & 0xFF,
-        (backgroundColor >> 8) & 0xFF, backgroundColor & 0xFF, 0 };
-    assertArrayEquals(components, i.getData().getPixel(0, 0, output));
-    assertArrayEquals(components, i.getData().getPixel(1, 0, output));
-    assertArrayEquals(components, i.getData().getPixel(0, 1, output));
-    assertArrayEquals(components, i.getData().getPixel(1, 1, output));
+    for (int i = 0; i < 4; ++i) {
+      assertEquals(backgroundColor, image.getRGB(i / 2, i % 2));
+    }
   }
 }

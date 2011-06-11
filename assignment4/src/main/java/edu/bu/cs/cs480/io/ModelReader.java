@@ -64,11 +64,11 @@ public class ModelReader {
    * model file format.
    */
   public static final String INTERSECTION = "intersect";
+  /** The identifier for a light definition in the model file format. */
+  public static final String LIGHT = "light";
   /** The logger for this class. */
   private static final transient Logger LOG = Logger
       .getLogger(ModelReader.class);
-  /** The identifier for a light definition in the model file format. */
-  public static final String LIGHT = "light";
   /** The identifier for a material definition in the model file format. */
   public static final String MATERIAL = "mat";
   /** The identifier for an object definition in the model file format. */
@@ -104,34 +104,58 @@ public class ModelReader {
   /** The identifier for the viewport definition in the model file format. */
   public static final String VIEWPORT = "viewport";
 
+  /**
+   * Returns a the subset of values from the specified map whose corresponding
+   * keys are specified by filter.
+   * 
+   * @param <K>
+   *          The type of key in the map.
+   * @param <V>
+   *          The type of value in the map.
+   * @param filter
+   *          The values of these keys will be included in the returned
+   *          collection.
+   * @param map
+   *          The map to filter.
+   * @return The subset of values from the specified map whose corresponding
+   *         keys are specified by filter.
+   */
+  private static <K, V> Collection<V> filterValuesByKey(
+      final Collection<K> filter, final Map<K, V> map) {
+    final List<V> values = new ArrayList<V>();
+    for (final K key : filter) {
+      if (map.containsKey(key)) {
+        values.add(map.get(key));
+      }
+    }
+    return values;
+  }
   /** The tracer environment which can render the scene read by this class. */
   private final RenderingEnvironment environment = new DefaultRenderingEnvironment();
   /** Whether the current light being read is an ambient light. */
   private boolean isAmbientLight = false;
-  /** The scanner which reads the model file. */
-  private final Scanner scanner;
   /** The map from ID number to material being read from the file. */
   private final Map<Integer, Material> materials = new HashMap<Integer, Material>();
+  /** The scanner which reads the model file. */
+  private final Scanner scanner;
   /** The map from ID number to surface object being read from the file. */
   private final Map<Integer, SurfaceObject> surfaceObjects = new HashMap<Integer, SurfaceObject>();
 
   /**
-   * Instantiates this reader with the model at the specified filename.
-   * location.
+   * Instantiates this reader with the model contained in the specified file.
    * 
-   * @param filename
-   *          The name of the file containing the description of the tracer
-   *          model.
+   * @param file
+   *          The file containing the description of the tracer model.
    * @throws FileNotFoundException
    *           If no file exists at the specified location.
    * @throws FileFormatException
    *           If the file is not in the correct format, as specified by
    *           "model_file_format.txt".
    */
-  public ModelReader(final String filename) throws FileNotFoundException,
-      FileFormatException {
+  public ModelReader(final File file) throws FileFormatException,
+      FileNotFoundException {
     // create the scanner which reads tokens from the file
-    this.scanner = new Scanner(new File(filename));
+    this.scanner = new Scanner(file);
 
     List<Integer> toRender = null;
 
@@ -177,7 +201,7 @@ public class ModelReader {
     }
 
     if (toRender == null) {
-      throw new FileFormatException("File \"" + filename
+      throw new FileFormatException("File \"" + file.getName()
           + "\"does not specify a render list.");
     }
 
@@ -197,30 +221,20 @@ public class ModelReader {
   }
 
   /**
-   * Returns a the subset of values from the specified map whose corresponding
-   * keys are specified by filter.
+   * Instantiates this reader with the model at the specified filename.
    * 
-   * @param <K>
-   *          The type of key in the map.
-   * @param <V>
-   *          The type of value in the map.
-   * @param filter
-   *          The values of these keys will be included in the returned
-   *          collection.
-   * @param map
-   *          The map to filter.
-   * @return The subset of values from the specified map whose corresponding
-   *         keys are specified by filter.
+   * @param filename
+   *          The name of the file containing the description of the tracer
+   *          model.
+   * @throws FileNotFoundException
+   *           If no file exists at the specified location.
+   * @throws FileFormatException
+   *           If the file is not in the correct format, as specified by
+   *           "model_file_format.txt".
    */
-  private static <K, V> Collection<V> filterValuesByKey(
-      final Collection<K> filter, final Map<K, V> map) {
-    final List<V> values = new ArrayList<V>();
-    for (final K key : filter) {
-      if (map.containsKey(key)) {
-        values.add(map.get(key));
-      }
-    }
-    return values;
+  public ModelReader(final String filename) throws FileNotFoundException,
+      FileFormatException {
+    this(new File(filename));
   }
 
   /**

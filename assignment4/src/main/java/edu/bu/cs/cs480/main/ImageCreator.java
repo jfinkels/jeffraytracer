@@ -4,6 +4,7 @@
 package edu.bu.cs.cs480.main;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileNotFoundException;
 
 import edu.bu.cs.cs480.camera.RayGenerator;
@@ -33,8 +34,8 @@ public class ImageCreator {
    * High-level method which reads a model from the specified file and renders
    * it with two threads, and grid supersampling by default.
    * 
-   * @param filename
-   *          The path to the file containing the model of the scene to render.
+   * @param file
+   *          The file containing the model of the scene to render.
    * @return The traced image representing the scene read from the specified
    *         file.
    * @throws FileNotFoundException
@@ -42,10 +43,11 @@ public class ImageCreator {
    * @throws FileFormatException
    *           If the specified model file is not in the correct file format.
    */
-  public static BufferedImage fromFile(final String filename)
+  public static BufferedImage fromFile(final File file)
       throws FileNotFoundException, FileFormatException {
+
     // read the environment
-    final ModelReader modelReader = new ModelReader(filename);
+    final ModelReader modelReader = new ModelReader(file);
     final RenderingEnvironment environment = modelReader.environment();
     final int width = environment.viewport().width();
     final int height = environment.viewport().height();
@@ -91,5 +93,23 @@ public class ImageCreator {
 
     // render the image and write it to the output file
     return renderer.render();
+  }
+
+  /**
+   * High-level method which reads a model from the specified file and renders
+   * it with two threads, and grid supersampling by default.
+   * 
+   * @param filename
+   *          The path to the file containing the model of the scene to render.
+   * @return The traced image representing the scene read from the specified
+   *         file.
+   * @throws FileNotFoundException
+   *           If no file exists at the specified location.
+   * @throws FileFormatException
+   *           If the specified model file is not in the correct file format.
+   */
+  public static BufferedImage fromFile(final String filename)
+      throws FileNotFoundException, FileFormatException {
+    return fromFile(new File(filename));
   }
 }

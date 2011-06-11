@@ -1,11 +1,8 @@
 /**
  * ViewingSystemSupport.java - base implementation of HasViewingSystem
  */
-package jeffraytracer;
+package jeffraytracer.camera;
 
-import jeffraytracer.camera.Camera;
-import jeffraytracer.camera.Resolution;
-import jeffraytracer.camera.Viewport;
 
 /**
  * An implementation of an object with a camera, resolution, and viewport.

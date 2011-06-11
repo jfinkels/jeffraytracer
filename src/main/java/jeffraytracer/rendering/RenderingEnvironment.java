@@ -5,7 +5,7 @@ package jeffraytracer.rendering;
 
 import java.util.List;
 
-import jeffraytracer.HasViewingSystem;
+import jeffraytracer.camera.HasViewingSystem;
 import jeffraytracer.lights.AmbientLight;
 import jeffraytracer.lights.Light;
 import jeffraytracer.surfaces.SurfaceObject;

@@ -5,7 +5,6 @@ package jeffraytracer.camera;
 
 import jeffraytracer.Ray;
 import jeffraytracer.Vector3D;
-import jeffraytracer.ViewingSystemSupport;
 
 /**
  * Generates rays at a specified position with respect to a given camera,

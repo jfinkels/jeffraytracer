@@ -26,7 +26,7 @@ import jeffraytracer.rendering.tracers.Tracer;
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
-public class ImageCreator {
+public final class ImageCreator {
   /**
    * The default size of the supersampling grid for each pixel (that is, the
    * number of virtual subpixels on one side of the grid).

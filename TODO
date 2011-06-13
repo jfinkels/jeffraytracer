@@ -3,7 +3,5 @@ TODO
 
 * improve test coverage
 * CSG objects are completely untested
-* interface HasViewingSystem with setCamera(), setViewport(), setResolution()
 * package-level documentation
-* in GUI, have a menu bar that allows user to load an image from a data file
 * allow GUI to listen to renderers which provide incremental updates as image is being rendered in real time

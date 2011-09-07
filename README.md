@@ -1,4 +1,3 @@
-=============
 jeffraytracer
 =============
 
@@ -9,13 +8,13 @@ ellipses), linear surfaces (planes and boxes) and combinations of the two
 This file was last updated on 7 September 2011.
 
 Copyright license
-=================
+-----------------
 
 This package is distributed under the terms of the GNU General Public License
 version 3. For more information, see the file `COPYING` in this directory.
 
 Getting started
-===============
+---------------
 
 This project uses [Maven](http://maven.apache.org/) for build management and
 requires Java 1.6 to compile.
@@ -42,7 +41,7 @@ You can then view the site by opening `target/site/index.html` in a web
 browser.
 
 Running the GUI
-===============
+---------------
 
 A *very* simple graphical user interface is provided, so you can easily view
 the results of tracing a model. In order to use the GUI, first compile the ray
@@ -59,13 +58,13 @@ results will be shown in the window when tracing has completed. Some example
 models are provided in the `src/test/resources/` directory.
 
 Writing models
-==============
+--------------
 
 The model file format is specified in model_file_format.txt. Example files are
 provided in the `src/test/resources/` directory.
 
 Development
-===========
+-----------
 
 To prepare this package for development in Eclipse, run
 
@@ -85,6 +84,6 @@ plugin, use the `checkstyle.xml` file in the top-level directory of this
 project.
 
 Contact
-=======
+-------
 
 Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>

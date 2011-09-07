@@ -41,6 +41,23 @@ To get project reports and development information, run
 You can then view the site by opening "target/site/index.html" in a web
 browser.
 
+Running the GUI
+===============
+
+A *very* simple graphical user interface is provided, so you can easily view
+the results of tracing a model. In order to use the GUI, first compile the ray
+tracer by running
+
+  mvn compile
+
+then run
+
+  ./jeffraytracer-gui.sh
+
+Use the "File > Load model..." command to load and trace a model file. The
+results will be shown in the window when tracing has completed. Some example
+models are provided in the `src/test/resources/` directory.
+
 Writing models
 ==============
 

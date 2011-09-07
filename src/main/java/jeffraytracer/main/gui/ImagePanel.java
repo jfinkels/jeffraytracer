@@ -41,6 +41,8 @@ public class ImagePanel extends JPanel {
   /**
    * Sets the image to draw in this panel.
    * 
+   * Pre-condition: the specified image is not {@code null}.
+   *
    * @param image
    *          The image to draw in this panel.
    */

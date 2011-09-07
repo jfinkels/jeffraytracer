@@ -1,8 +1,18 @@
+=============
+jeffraytracer
+=============
+
 This package contains a ray tracer which supports quadric surfaces (spheres and
 ellipses), linear surfaces (planes and boxes) and combinations of the two
 (cylinders).
 
-This file was last updated on 11 June 2011.
+This file was last updated on 7 September 2011.
+
+Copyright license
+=================
+
+This package is distributed under the terms of the GNU General Public License
+version 3. For more information, see the file `COPYING` in this directory.
 
 Getting started
 ===============

@@ -118,7 +118,7 @@ public class DefaultRenderer implements Renderer {
    * from the camera through the viewport specified by the RenderingEnvironment
    * provided in the constructor of this class.
    * 
-   * @return A two-dimensional array of primary arrays through the viewport.
+   * @return A two-dimensional array of primary rays through the viewport.
    */
   protected Ray[][] generatePrimaryRays() {
     final Camera camera = this.environment.camera();

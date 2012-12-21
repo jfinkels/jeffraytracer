@@ -35,7 +35,7 @@ import jeffraytracer.camera.Viewport;
 import jeffraytracer.rendering.DefaultRenderingEnvironment;
 import jeffraytracer.rendering.RenderingEnvironment;
 import jeffraytracer.rendering.tracers.BaseTracer;
-import jeffraytracer.rendering.tracers.LinearTracer;
+import jeffraytracer.rendering.tracers.SequentialTracer;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -69,7 +69,7 @@ public class DefaultRendererTest {
     e.setResolution(r);
     e.setCamera(c);
     this.r = new DefaultRenderer(e);
-    this.r.setTracer(new LinearTracer(e));
+    this.r.setTracer(new SequentialTracer(e));
   }
 
   /**

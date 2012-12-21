@@ -1,5 +1,5 @@
 /**
- * LinearTracer.java - a tracer which just traces each ray in linear order
+ * SequentialTracer.java - a tracer which just traces each ray in linear order
  * 
  * Copyright 2011 Jeffrey Finkelstein
  * 
@@ -30,7 +30,7 @@ import jeffraytracer.rendering.RenderingEnvironment;
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  * @since Spring 2011
  */
-public class LinearTracer extends BaseTracer {
+public class SequentialTracer extends BaseTracer {
 
   /**
    * Instantiates this object by calling the corresponding constructor of the
@@ -39,7 +39,7 @@ public class LinearTracer extends BaseTracer {
    * @param environment
    *          The scene to trace.
    */
-  public LinearTracer(final RenderingEnvironment environment) {
+  public SequentialTracer(final RenderingEnvironment environment) {
     super(environment);
   }
 

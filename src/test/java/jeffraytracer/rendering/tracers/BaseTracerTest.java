@@ -98,7 +98,7 @@ public class BaseTracerTest {
     e.setCamera(c);
     e.addSurfaceObject(s);
 
-    this.t = new LinearTracer(e);
+    this.t = new SequentialTracer(e);
   }
 
   /**

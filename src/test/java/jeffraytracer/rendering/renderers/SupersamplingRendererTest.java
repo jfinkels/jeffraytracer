@@ -34,7 +34,7 @@ import jeffraytracer.rendering.RenderingEnvironment;
 import jeffraytracer.rendering.supersampling.FlatGridAverager;
 import jeffraytracer.rendering.supersampling.GridAverager;
 import jeffraytracer.rendering.supersampling.GridSupersampler;
-import jeffraytracer.rendering.tracers.LinearTracer;
+import jeffraytracer.rendering.tracers.SequentialTracer;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -91,7 +91,7 @@ public class SupersamplingRendererTest {
     a.setGridSize(2);
 
     this.r = new SupersamplingRenderer(e);
-    this.r.setTracer(new LinearTracer(e));
+    this.r.setTracer(new SequentialTracer(e));
     this.r.setSupersampler(s);
     this.r.setAverager(a);
   }

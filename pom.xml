@@ -30,35 +30,35 @@
     <project.build.encoding>UTF-8</project.build.encoding>
     
     <!-- dependency versions -->
-    <version.dependency.junit>4.9</version.dependency.junit>
-    <version.dependency.log4j>1.2.14</version.dependency.log4j>
+    <version.dependency.junit>4.11</version.dependency.junit>
+    <version.dependency.log4j>1.2.17</version.dependency.log4j>
 
     <!-- plugin versions -->
-    <version.plugin.assembly>2.2.1</version.plugin.assembly>
+    <version.plugin.assembly>2.4</version.plugin.assembly>
     <version.plugin.changelog>2.2</version.plugin.changelog>
     <version.plugin.checkstyle>2.5</version.plugin.checkstyle>
-    <version.plugin.clean>2.4.1</version.plugin.clean>
+    <version.plugin.clean>2.5</version.plugin.clean>
     <version.plugin.clirr>2.2.2</version.plugin.clirr>
     <version.plugin.cobertura>2.4</version.plugin.cobertura>
-    <version.plugin.compiler>2.3.2</version.plugin.compiler>
-    <version.plugin.dependency>2.2</version.plugin.dependency>
-    <version.plugin.deploy>2.6</version.plugin.deploy>
-    <version.plugin.findbugs>2.3.1</version.plugin.findbugs>
-    <version.plugin.install>2.3.1</version.plugin.install>
-    <version.plugin.jar>2.3.1</version.plugin.jar>
-    <version.plugin.javadoc>2.8</version.plugin.javadoc>
+    <version.plugin.compiler>3.0</version.plugin.compiler>
+    <version.plugin.dependency>2.6</version.plugin.dependency>
+    <version.plugin.deploy>2.7</version.plugin.deploy>
+    <version.plugin.findbugs>2.5.2</version.plugin.findbugs>
+    <version.plugin.install>2.4</version.plugin.install>
+    <version.plugin.jar>2.4</version.plugin.jar>
+    <version.plugin.javadoc>2.9</version.plugin.javadoc>
     <version.plugin.javancss>2.0</version.plugin.javancss>
     <version.plugin.jdepend>2.0-beta-2</version.plugin.jdepend>
     <version.plugin.jxr>2.2</version.plugin.jxr>
     <version.plugin.pmd>2.5</version.plugin.pmd>
-    <version.plugin.plugin>2.7</version.plugin.plugin>
+    <version.plugin.plugin>3.2</version.plugin.plugin>
     <version.plugin.reports>2.3.1</version.plugin.reports>
-    <version.plugin.release>2.1</version.plugin.release>
-    <version.plugin.resources>2.5</version.plugin.resources>
-    <version.plugin.scm>1.5</version.plugin.scm>
-    <version.plugin.site>3.0-beta-3</version.plugin.site>
-    <version.plugin.source>2.1.2</version.plugin.source>
-    <version.plugin.surefire>2.8.1</version.plugin.surefire>
+    <version.plugin.release>2.4</version.plugin.release>
+    <version.plugin.resources>2.6</version.plugin.resources>
+    <version.plugin.scm>1.8.1</version.plugin.scm>
+    <version.plugin.site>3.2</version.plugin.site>
+    <version.plugin.source>2.2.1</version.plugin.source>
+    <version.plugin.surefire>2.12.4</version.plugin.surefire>
     <version.plugin.taglist>2.4</version.plugin.taglist>
     <version.plugin.versions>1.2</version.plugin.versions>
     
@@ -66,7 +66,7 @@
     <version.scm.hg>${version.plugin.scm}</version.scm.hg>
     
     <!-- wagon provider versions -->
-    <version.wagon.ssh>1.0</version.wagon.ssh>
+    <version.wagon.ssh>2.3</version.wagon.ssh>
     
     <!-- Java runtime/JDK versions -->
     <version.java.source>1.6</version.java.source>

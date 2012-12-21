@@ -47,7 +47,7 @@ public final class TestUtils {
    */
   public static void fail(final Throwable throwable) {
     LOG.error("Failed due to error.", throwable);
-    junit.framework.Assert.fail(throwable.getLocalizedMessage());
+    org.junit.Assert.fail(throwable.getLocalizedMessage());
   }
 
   /**

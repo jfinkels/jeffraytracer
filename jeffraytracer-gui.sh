@@ -19,8 +19,11 @@
 # You should have received a copy of the GNU General Public License along with
 # jeffraytracer. If not, see <http://www.gnu.org/licenses/>.
 
+# the location of the Maven repository, where JAR files for dependencies live
+M2_REPO=$HOME/.m2/repository
+
 # change this to the path where your log4j JAR lives
-LOG4JPATH=$HOME/.m2/repository/log4j/log4j/1.2.14/log4j-1.2.14.jar
+LOG4JPATH=$M2_REPO/log4j/log4j/1.2.17/log4j-1.2.17.jar
 
 # the main class for the ray tracer GUI
 GUI_MAIN=jeffraytracer.main.gui.Main

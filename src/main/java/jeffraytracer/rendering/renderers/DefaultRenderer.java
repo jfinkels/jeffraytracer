@@ -25,7 +25,10 @@ import java.awt.image.BufferedImage;
 import jeffraytracer.DoubleColor;
 import jeffraytracer.Ray;
 import jeffraytracer.Vector3D;
+import jeffraytracer.camera.Camera;
 import jeffraytracer.camera.RayGenerator;
+import jeffraytracer.camera.Resolution;
+import jeffraytracer.camera.Viewport;
 import jeffraytracer.rendering.RenderingEnvironment;
 import jeffraytracer.rendering.tracers.Tracer;
 import jeffraytracer.surfaces.SurfaceObject;
@@ -118,13 +121,15 @@ public class DefaultRenderer implements Renderer {
    * @return A two-dimensional array of primary arrays through the viewport.
    */
   protected Ray[][] generatePrimaryRays() {
-    final int height = this.environment.viewport().height();
-    final int width = this.environment.viewport().width();
-    final Ray[][] result = new Ray[height][width];
-    final RayGenerator rayGenerator = new RayGenerator(
-        this.environment.camera(), this.environment.resolution(),
-        this.environment.viewport());
+    final Camera camera = this.environment.camera();
+    final Resolution resolution = this.environment.resolution();
+    final Viewport viewport = this.environment.viewport();
+    final RayGenerator rayGenerator = new RayGenerator(camera, resolution,
+        viewport);
 
+    final int height = viewport.height();
+    final int width = viewport.width();
+    final Ray[][] result = new Ray[height][width];
     for (int y = 0; y < height; ++y) {
       for (int x = 0; x < width; ++x) {
         result[y][x] = rayGenerator.generateRay(y, x);

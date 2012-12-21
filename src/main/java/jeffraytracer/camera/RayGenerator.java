@@ -90,7 +90,7 @@ public class RayGenerator extends ViewingSystemSupport {
     final Vector3D temp1 = n.scaledBy(this.camera().focalLength());
     final Vector3D temp2 = u.scaledBy(du);
     final Vector3D temp3 = v.scaledBy(dv);
-    final Vector3D origin = c.sumWith(temp1).sumWith(temp2).sumWith(temp3);
+    final Vector3D origin = Vector3D.sum(c, temp1, temp2, temp3);
 
     // compute the direction of the ray with respect to the camera and position
     final Vector3D direction = this.camera().rayDirection(origin);

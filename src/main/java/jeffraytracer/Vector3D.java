@@ -49,6 +49,24 @@ package jeffraytracer;
 public class Vector3D {
   /** The origin, (0, 0, 0). */
   public static final Vector3D ORIGIN = new Vector3D(0, 0, 0);
+
+  /**
+   * Returns the {@code Vector3D} object which equals the sum of each of the
+   * specified vectors.
+   * 
+   * @param vectors
+   *          A sequence of {@code Vector3D} instances.
+   * @return A new {@code Vector3D} instance which equals the sum of the
+   *         specified vectors.
+   */
+  public static Vector3D sum(final Vector3D... vectors) {
+    Vector3D result = Vector3D.ORIGIN;
+    for (final Vector3D addend : vectors) {
+      result = result.sumWith(addend);
+    }
+    return result;
+  }
+
   /** The x component of this point. */
   private final double x;
   /** The y component of this point. */
@@ -239,5 +257,4 @@ public class Vector3D {
   public double z() {
     return this.z;
   }
-
 }

@@ -123,6 +123,20 @@ public class Vector3DTest {
   }
 
   /**
+   * Test method for {@link jeffraytracer.Vector3D#sum(Vector3D...)}.
+   */
+  @Test
+  public void testSum() {
+    final Vector3D v1 = new Vector3D(1.0, 0.0, 1.0);
+    final Vector3D v2 = new Vector3D(0.0, 1.0, 0.0);
+    final Vector3D v3 = new Vector3D(-1.0, -2.0, -3.0);
+    final Vector3D sum = Vector3D.sum(v1, v2, v3);
+    assertEquals(0.0, sum.x(), 0.0);
+    assertEquals(-1.0, sum.y(), 0.0);
+    assertEquals(-2.0, sum.z(), 0.0);
+  }
+
+  /**
    * Test method for
    * {@link jeffraytracer.Vector3D#sumWith(jeffraytracer.Vector3D)}.
    */

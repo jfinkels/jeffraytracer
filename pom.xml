@@ -356,7 +356,7 @@
 
   <name>Jeffrey's Ray Tracer</name>
   <description>A simple ray tracer which supports some quadric surfaces.</description>
-  <url>https://bitbucket.org/jfinkels/cs680</url>
+  <url>https://bitbucket.org/jfinkels/jeffraytracer</url>
   <inceptionYear>2011</inceptionYear>
   <developers>
     <developer>
@@ -372,12 +372,12 @@
   
   <issueManagement>
     <system>Bitbucket issue tracker</system>
-    <url>https://bitbucket.org/jfinkels/cs680/issues</url>
+    <url>https://bitbucket.org/jfinkels/jeffraytracer/issues</url>
   </issueManagement>
   <scm>
-    <connection>scm:hg:https://bitbucket.org/jfinkels/cs680</connection>
-    <developerConnection>scm:hg:ssh://hg@bitbucket.org/jfinkels/cs680</developerConnection>
-    <url>https://bitbucket.org/jfinkels/cs680</url>
+    <connection>scm:hg:https://bitbucket.org/jfinkels/jeffraytracer</connection>
+    <developerConnection>scm:hg:ssh://hg@bitbucket.org/jfinkels/jeffraytracer</developerConnection>
+    <url>https://bitbucket.org/jfinkels/jeffraytracer</url>
   </scm>
 
 </project>

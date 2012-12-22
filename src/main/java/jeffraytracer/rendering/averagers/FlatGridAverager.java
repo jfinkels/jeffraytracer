@@ -18,7 +18,7 @@
  * You should have received a copy of the GNU General Public License along with
  * jeffraytracer. If not, see <http://www.gnu.org/licenses/>.
  */
-package jeffraytracer.rendering.supersampling;
+package jeffraytracer.rendering.averagers;
 
 /**
  * Averages pixel values from a grid using unweighted averaging.

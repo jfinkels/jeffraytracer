@@ -23,6 +23,7 @@ package jeffraytracer.rendering.supersampling;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import jeffraytracer.Vector3D;
+import jeffraytracer.rendering.averagers.WeightedGridAverager;
 
 import org.junit.Test;
 
@@ -36,7 +37,7 @@ public class WeightedGridAveragerTest {
 
   /**
    * Test method for
-   * {@link jeffraytracer.rendering.supersampling.WeightedGridAverager#average(jeffraytracer.Vector3D[])}
+   * {@link jeffraytracer.rendering.averagers.WeightedGridAverager#average(jeffraytracer.Vector3D[])}
    * .
    */
   @Test

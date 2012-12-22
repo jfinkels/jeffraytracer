@@ -31,8 +31,8 @@ import jeffraytracer.camera.Resolution;
 import jeffraytracer.camera.Viewport;
 import jeffraytracer.rendering.DefaultRenderingEnvironment;
 import jeffraytracer.rendering.RenderingEnvironment;
-import jeffraytracer.rendering.supersampling.FlatGridAverager;
-import jeffraytracer.rendering.supersampling.GridAverager;
+import jeffraytracer.rendering.averagers.FlatGridAverager;
+import jeffraytracer.rendering.averagers.GridAverager;
 import jeffraytracer.rendering.supersampling.GridSupersampler;
 import jeffraytracer.rendering.tracers.SequentialTracer;
 

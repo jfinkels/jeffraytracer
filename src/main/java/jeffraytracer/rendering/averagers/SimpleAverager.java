@@ -18,7 +18,7 @@
  * You should have received a copy of the GNU General Public License along with
  * jeffraytracer. If not, see <http://www.gnu.org/licenses/>.
  */
-package jeffraytracer.rendering.supersampling;
+package jeffraytracer.rendering.averagers;
 
 import java.util.Arrays;
 
@@ -59,7 +59,7 @@ public class SimpleAverager implements Averager {
    * @param pixels
    *          {@inheritDoc}
    * @return {@inheritDoc}
-   * @see jeffraytracer.rendering.supersampling.Averager#average(jeffraytracer.Vector3D[])
+   * @see jeffraytracer.rendering.averagers.Averager#average(jeffraytracer.Vector3D[])
    */
   @Override
   public Vector3D[] average(final Vector3D[] pixels) {

@@ -18,7 +18,7 @@
  * You should have received a copy of the GNU General Public License along with
  * jeffraytracer. If not, see <http://www.gnu.org/licenses/>.
  */
-package jeffraytracer.rendering.supersampling;
+package jeffraytracer.rendering.averagers;
 
 import jeffraytracer.Vector3D;
 
@@ -82,7 +82,7 @@ public class WeightedGridAverager extends GridAverager {
    *          The color values of the subpixels as described in the
    *          documentation for this method.
    * @return The weighted average of each grid of subpixels.
-   * @see jeffraytracer.rendering.supersampling.Averager#average(Vector3D[])
+   * @see jeffraytracer.rendering.averagers.Averager#average(Vector3D[])
    */
   @Override
   public Vector3D[] average(final Vector3D[] pixels) {

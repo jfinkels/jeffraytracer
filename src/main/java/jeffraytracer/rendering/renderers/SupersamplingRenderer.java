@@ -24,7 +24,7 @@ import jeffraytracer.DoubleColor;
 import jeffraytracer.Ray;
 import jeffraytracer.Vector3D;
 import jeffraytracer.rendering.RenderingEnvironment;
-import jeffraytracer.rendering.supersampling.Averager;
+import jeffraytracer.rendering.averagers.Averager;
 import jeffraytracer.rendering.supersampling.Supersampler;
 
 /**

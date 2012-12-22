@@ -30,7 +30,7 @@ import jeffraytracer.camera.RayGenerator;
 import jeffraytracer.camera.Resolution;
 import jeffraytracer.camera.Viewport;
 import jeffraytracer.rendering.RenderingEnvironment;
-import jeffraytracer.rendering.supersampling.SimpleAverager;
+import jeffraytracer.rendering.averagers.SimpleAverager;
 import jeffraytracer.rendering.tracers.Tracer;
 import jeffraytracer.surfaces.SurfaceObject;
 

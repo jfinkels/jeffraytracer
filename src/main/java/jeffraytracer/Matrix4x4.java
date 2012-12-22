@@ -49,6 +49,62 @@ public class Matrix4x4 {
   private final double[][] m = new double[4][4];
 
   /**
+   * Tolerance for comparing floating point values for equality.
+   */
+  public static final double TOLERANCE = 1e-10;
+
+  /**
+   * Returns {@code true} if and only if {@code d == e}, within some tolerance
+   * due to floating point arithmetic errors.
+   * 
+   * @param d
+   *          A number.
+   * @param e
+   *          Another number.
+   * @return {@code true} if and only if {@code Math.abs(d - e) < TOLERANCE}.
+   * @see #TOLERANCE
+   */
+  private static boolean equals(double d, double e) {
+    return Math.abs(d - e) < TOLERANCE;
+  }
+
+  /**
+   * Return {@code true} if and only if the entries of this matrix match the
+   * entries of the specified two dimensional array.
+   * 
+   * @param matrix
+   *          The array containing the entries to check against the entries of
+   *          this matrix.
+   * @return {@code true} if and only if the entries of this matrix match the
+   *         entries of the specified two dimensional array.
+   */
+  public boolean equals(final double[][] matrix) {
+    for (int i = 0; i < 4; ++i) {
+      for (int j = 0; j < 4; ++j) {
+        if (!equals(this.m[i][j], matrix[i][j])) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  /**
+   * {@inheritDoc}
+   * 
+   * @param that
+   *          {@inheritDoc}
+   * @return {@inheritDoc}
+   */
+  @Override
+  public boolean equals(final Object that) {
+    if (!(that instanceof Matrix4x4)) {
+      return false;
+    }
+    return this.equals(((Matrix4x4) that).m);
+  }
+
+  /**
    * Gets the value of the entry at the specified row and column in this
    * matrix.
    * 
@@ -141,42 +197,6 @@ public class Matrix4x4 {
     result += "[" + Arrays.toString(this.m[2]) + "]\n";
     result += "[" + Arrays.toString(this.m[3]) + "]";
     return result;
-  }
-
-  /**
-   * {@inheritDoc}
-   * 
-   * @param that
-   *          {@inheritDoc}
-   * @return {@inheritDoc}
-   */
-  @Override
-  public boolean equals(final Object that) {
-    if (!(that instanceof Matrix4x4)) {
-      return false;
-    }
-    return this.equals(((Matrix4x4) that).m);
-  }
-
-  /**
-   * Return {@code true} if and only if the entries of this matrix match the
-   * entries of the specified two dimensional array.
-   * 
-   * @param matrix
-   *          The array containing the entries to check against the entries of
-   *          this matrix.
-   * @return {@code true} if and only if the entries of this matrix match the
-   *         entries of the specified two dimensional array.
-   */
-  public boolean equals(final double[][] matrix) {
-    for (int i = 0; i < 4; ++i) {
-      for (int j = 0; j < 4; ++j) {
-        if (this.m[i][j] != matrix[i][j]) {
-          return false;
-        }
-      }
-    }
-    return true;
   }
 
   /**

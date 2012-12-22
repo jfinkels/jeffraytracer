@@ -33,6 +33,7 @@ import jeffraytracer.DoubleColor;
 import jeffraytracer.Material;
 import jeffraytracer.Vector3D;
 import jeffraytracer.camera.Camera;
+import jeffraytracer.camera.LensCamera;
 import jeffraytracer.camera.OrthographicCamera;
 import jeffraytracer.camera.PerspectiveCamera;
 import jeffraytracer.camera.Resolution;
@@ -81,6 +82,10 @@ public class ModelReader {
    * model file format.
    */
   public static final String INTERSECTION = "intersect";
+  /**
+   * The identifier in the model file format for a lens perspective camera.
+   */
+  public static final String LENS = "lens";
   /** The identifier for a light definition in the model file format. */
   public static final String LIGHT = "light";
   /** The logger for this class. */
@@ -317,6 +322,8 @@ public class ModelReader {
     } else if (projectionType.equals(PERSPECTIVE)) {
       camera = new PerspectiveCamera();
       ((PerspectiveCamera) camera).setFocalLength(focalLength);
+    } else if (projectionType.equals(LENS)) {
+      camera = new LensCamera();
     } else {
       throw new FileFormatException(
           "Do not understand camera projection type \"" + projectionType
@@ -333,6 +340,12 @@ public class ModelReader {
     camera.setNear(near);
     camera.setFar(far);
 
+    int lensWidth = this.scanner.nextInt();
+    int lensHeight = this.scanner.nextInt();
+    if (camera instanceof LensCamera) {
+      ((LensCamera) camera).setLensWidth(lensWidth);
+      ((LensCamera) camera).setLensHeight(lensHeight);
+    }
     return camera;
   }
 

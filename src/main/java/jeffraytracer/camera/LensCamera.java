@@ -20,7 +20,6 @@
  */
 package jeffraytracer.camera;
 
-import jeffraytracer.Helpers;
 import jeffraytracer.Vector3D;
 
 /**
@@ -33,21 +32,41 @@ import jeffraytracer.Vector3D;
  * @author Jeffrey Finkelstein <jeffrey.finkelstein@gmail.com>
  */
 public class LensCamera extends PerspectiveCamera {
+  /**
+   * Flattens a two-dimensional array into a one-dimensional array in row-major
+   * order.
+   * 
+   * Pre-condition: the input array has size greater than zero.
+   * 
+   * Pre-condition: the input array is rectangular (that is, each row has the
+   * same number of elements).
+   * 
+   * @param array
+   *          The two-dimensional array to flatten.
+   * @return A new one-dimensional array with the same elements of the
+   *         two-dimensional array in row-major order.
+   */
+  public static final Vector3D[] flattened(final Vector3D[][] array) {
+    // here we assume the input array is rectangular and has size > 0
+    final Vector3D[] result = new Vector3D[array.length * array[0].length];
+    int j = 0;
+    for (int i = 0; i < array.length; ++i) {
+      final int length = array[i].length;
+      System.arraycopy(array[i], 0, result, j, length);
+      j += length;
+    }
+    return result;
+  }
 
   // TODO add camera resolution
   /**
    * The width of the rectangular lens.
    */
-  private final int lensWidth;
+  private int lensWidth = 1;
   /**
    * The height of the rectangular lens.
    */
-  private final int lensHeight;
-
-  public LensCamera(final int lensWidth, final int lensHeight) {
-    this.lensWidth = lensWidth;
-    this.lensHeight = lensHeight;
-  }
+  private int lensHeight = 1;
 
   /**
    * {@inheritDoc}
@@ -93,7 +112,7 @@ public class LensCamera extends PerspectiveCamera {
         result[i][j] = subcamera.rayDirections(position)[0];
       }
     }
-    return Helpers.flattened(result);
+    return flattened(result);
   }
 
   /**
@@ -105,5 +124,25 @@ public class LensCamera extends PerspectiveCamera {
   @Override
   public int raysPerPixel() {
     return this.lensHeight * this.lensWidth;
+  }
+
+  /**
+   * Sets the height of the lens.
+   * 
+   * @param height
+   *          The new height of the lens.
+   */
+  public void setLensHeight(final int height) {
+    this.lensHeight = height;
+  }
+
+  /**
+   * Sets the width of the lens.
+   * 
+   * @param width
+   *          The new width of the lens.
+   */
+  public void setLensWidth(final int width) {
+    this.lensWidth = width;
   }
 }

@@ -114,17 +114,19 @@ Where:
 * <x_res> is the width of a pixel in world units
 * <y_res> is the height of a pixel in world units
 
-  camera {perspective,orthographic} <cop_x> <cop_y> <cop_z> <look_x> <look_y> <look_z> <up_x> <up_y> <up_z> <focal_length> <near_clip_plane_dist> <far_clip_plane_dist>
+  camera {perspective,orthographic,lens} <cop_x> <cop_y> <cop_z> <look_x> <look_y> <look_z> <up_x> <up_y> <up_z> <focal_length> <near_clip_plane_dist> <far_clip_plane_dist> <lens_width> <lens_height>
 
 Where:
 
-* {perspective,orthographic} is the camera type
+* {perspective,orthographic,lens} is the camera type
 * <cop_x> <cop_y> <cop_z> is the camera center
 * <look_x> <look_y> <look_z> is the "look at" point
 * <up_x> <up_y> <up_z> is the up vector
 * <focal_length> is the focal length (ignored for "orthographic")
 * <near_clip_plane_dist> <far_clip_plane_dist> are the near and far clip plane
   distances
+* <lens_width> and <lens_height> are the width and height of the camera lens
+  (ignored for non "lens" camera types)
 
 --------------
 Render control

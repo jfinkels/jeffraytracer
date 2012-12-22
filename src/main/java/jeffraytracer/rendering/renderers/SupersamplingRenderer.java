@@ -54,7 +54,7 @@ public class SupersamplingRenderer extends DefaultRenderer {
    *         virtual subpixel viewport.
    */
   @Override
-  protected Ray[][] generatePrimaryRays() {
+  protected Ray[][][] generatePrimaryRays() {
     return this.supersampler.generateRays();
   }
 

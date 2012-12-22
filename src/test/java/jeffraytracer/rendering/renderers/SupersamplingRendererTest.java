@@ -103,38 +103,40 @@ public class SupersamplingRendererTest {
    */
   @Test
   public void testGeneratePrimaryRays() {
-    final Ray[][] rays = this.r.generatePrimaryRays();
+    final Ray[][][] rays = this.r.generatePrimaryRays();
     assertEquals(4, rays.length);
     assertEquals(4, rays[0].length);
-    for (final Ray[] block : rays) {
-      for (final Ray ray : block) {
-        assertTrue(ray.direction().equalTo(new Vector3D(0, 0, 1)));
+    assertEquals(1, rays[0][0].length);
+    for (final Ray[][] block : rays) {
+      for (final Ray[] rays2 : block) {
+        assertEquals(1, rays2.length);
+        assertTrue(rays2[0].direction().equalTo(new Vector3D(0, 0, 1)));
       }
     }
 
     // first row
-    assertTrue(rays[0][0].position().equalTo(new Vector3D(-.5, .5, 0)));
-    assertTrue(rays[0][1].position().equalTo(new Vector3D(0, .5, 0)));
-    assertTrue(rays[1][0].position().equalTo(new Vector3D(0.5, .5, 0)));
-    assertTrue(rays[1][1].position().equalTo(new Vector3D(1, .5, 0)));
+    assertTrue(rays[0][0][0].position().equalTo(new Vector3D(-.5, .5, 0)));
+    assertTrue(rays[0][1][0].position().equalTo(new Vector3D(0, .5, 0)));
+    assertTrue(rays[1][0][0].position().equalTo(new Vector3D(0.5, .5, 0)));
+    assertTrue(rays[1][1][0].position().equalTo(new Vector3D(1, .5, 0)));
 
     // second row
-    assertTrue(rays[0][2].position().equalTo(new Vector3D(-.5, 0, 0)));
-    assertTrue(rays[0][3].position().equalTo(new Vector3D(0, 0, 0)));
-    assertTrue(rays[1][2].position().equalTo(new Vector3D(0.5, 0, 0)));
-    assertTrue(rays[1][3].position().equalTo(new Vector3D(1, 0, 0)));
+    assertTrue(rays[0][2][0].position().equalTo(new Vector3D(-.5, 0, 0)));
+    assertTrue(rays[0][3][0].position().equalTo(new Vector3D(0, 0, 0)));
+    assertTrue(rays[1][2][0].position().equalTo(new Vector3D(0.5, 0, 0)));
+    assertTrue(rays[1][3][0].position().equalTo(new Vector3D(1, 0, 0)));
 
     // third row
-    assertTrue(rays[2][0].position().equalTo(new Vector3D(-.5, -.5, 0)));
-    assertTrue(rays[2][1].position().equalTo(new Vector3D(0, -.5, 0)));
-    assertTrue(rays[3][0].position().equalTo(new Vector3D(0.5, -.5, 0)));
-    assertTrue(rays[3][1].position().equalTo(new Vector3D(1, -.5, 0)));
+    assertTrue(rays[2][0][0].position().equalTo(new Vector3D(-.5, -.5, 0)));
+    assertTrue(rays[2][1][0].position().equalTo(new Vector3D(0, -.5, 0)));
+    assertTrue(rays[3][0][0].position().equalTo(new Vector3D(0.5, -.5, 0)));
+    assertTrue(rays[3][1][0].position().equalTo(new Vector3D(1, -.5, 0)));
 
     // fourth row
-    assertTrue(rays[2][2].position().equalTo(new Vector3D(-.5, -1, 0)));
-    assertTrue(rays[2][3].position().equalTo(new Vector3D(0, -1, 0)));
-    assertTrue(rays[3][2].position().equalTo(new Vector3D(0.5, -1, 0)));
-    assertTrue(rays[3][3].position().equalTo(new Vector3D(1, -1, 0)));
+    assertTrue(rays[2][2][0].position().equalTo(new Vector3D(-.5, -1, 0)));
+    assertTrue(rays[2][3][0].position().equalTo(new Vector3D(0, -1, 0)));
+    assertTrue(rays[3][2][0].position().equalTo(new Vector3D(0.5, -1, 0)));
+    assertTrue(rays[3][3][0].position().equalTo(new Vector3D(1, -1, 0)));
   }
 
   /**

@@ -57,9 +57,11 @@ public class RayGenerator extends ViewingSystemSupport {
   }
 
   /**
-   * Generates the ray which would start at pixel location (row, column) in the
-   * viewport based on the resolution, the viewport size, and the camera's
+   * Generates the rays which would start at pixel location (row, column) in
+   * the viewport based on the resolution, the viewport size, and the camera's
    * measurements.
+   * 
+   * There may be multiple rays because the camera may be a lens camera.
    * 
    * Algorithm adapted from source code of Zheng Wu.
    * 
@@ -72,7 +74,7 @@ public class RayGenerator extends ViewingSystemSupport {
    * @return The ray which would start at pixel location (row, column) in the
    *         viewport.
    */
-  public Ray generateRay(final int row, final int column) {
+  public Ray[] generateRays(final int row, final int column) {
     // compute location of pixel on view plane
     final double du = (column - (this.viewport().width() / 2.0) + 1)
         * this.resolution().xResolution();
@@ -93,13 +95,15 @@ public class RayGenerator extends ViewingSystemSupport {
     final Vector3D origin = Vector3D.sum(c, temp1, temp2, temp3);
 
     // compute the direction of the ray with respect to the camera and position
-    final Vector3D direction = this.camera().rayDirection(origin);
+    final Vector3D[] directions = this.camera().rayDirections(origin);
 
-    final Ray result = new Ray();
-    result.setPosition(origin);
-    result.setDirection(direction);
-
+    // create one ray for each of the directions specified by the camera
+    final Ray[] result = new Ray[directions.length];
+    for (int i = 0; i < directions.length; ++i) {
+      result[i] = new Ray();
+      result[i].setPosition(origin);
+      result[i].setDirection(directions[i]);
+    }
     return result;
   }
-
 }

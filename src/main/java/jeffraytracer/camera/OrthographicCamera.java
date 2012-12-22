@@ -34,8 +34,7 @@ public class OrthographicCamera extends Camera {
    * {@inheritDoc}
    * 
    * Since this is an orthographic projection camera, the focal length has no
-   * effect on the projection, so we just return 1. Because what is life
-   * without whimsy?
+   * effect on the projection, so we just return 1.
    * 
    * @return {@inheritDoc}
    * @see jeffraytracer.camera.Camera#focalLength()
@@ -46,16 +45,28 @@ public class OrthographicCamera extends Camera {
   }
 
   /**
-   * {@inheritDoc}
+   * Returns an array of length one containing the direction of the sole ray
+   * that passes through the specified position.
    * 
    * @param position
    *          {@inheritDoc}
-   * @return {@inheritDoc}
+   * @return An array of length one containing the direction of the sole ray
+   *         that passes through the specified position.
    * @see jeffraytracer.camera.Camera#rayDirection(jeffraytracer.Vector3D)
    */
   @Override
-  public Vector3D rayDirection(final Vector3D position) {
-    return this.direction();
+  public Vector3D[] rayDirections(final Vector3D position) {
+    return new Vector3D[] { this.direction() };
   }
 
+  /**
+   * Always returns 1.
+   * 
+   * @return Always returns 1.
+   * @see jeffraytracer.camera.Camera#raysPerPixel()
+   */
+  @Override
+  public int raysPerPixel() {
+    return 1;
+  }
 }

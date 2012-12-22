@@ -20,6 +20,7 @@
  */
 package jeffraytracer.camera;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import jeffraytracer.Vector3D;
 
@@ -45,7 +46,9 @@ public class OrthographicCameraTest {
     c.setPosition(new Vector3D(0, 0, -1));
     c.setDirection(d);
     c.setUp(new Vector3D(1, 0, 0));
-    assertTrue(c.rayDirection(new Vector3D(1, 2, 3)).equalTo(d));
+    final Vector3D[] result = c.rayDirections(new Vector3D(1, 2, 3));
+    assertEquals(1, result.length);
+    assertTrue(result[0].equalTo(d)); 
   }
 
 }

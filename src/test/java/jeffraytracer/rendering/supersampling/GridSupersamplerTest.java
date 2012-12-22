@@ -75,10 +75,10 @@ public class GridSupersamplerTest {
     s.setRayGenerator(g);
 
     // generate rays
-    final Ray[][] rays = s.generateRays();
+    final Ray[][][] rays = s.generateRays();
 
     assertEquals(originalWidth * originalHeight, rays.length);
-    for (final Ray[] block : rays) {
+    for (final Ray[][] block : rays) {
       assertEquals(gridSize * gridSize, block.length);
     }
 
@@ -88,7 +88,9 @@ public class GridSupersamplerTest {
           for (int blockCol = 0; blockCol < gridSize; ++blockCol) {
             final int blockNum = row * originalWidth + col;
             final int subpixel = blockRow * gridSize + blockCol;
-            final Ray ray = rays[blockNum][subpixel];
+            final Ray[] rays2 = rays[blockNum][subpixel];
+            assertEquals(1, rays2.length);
+            final Ray ray = rays2[0];
             assertTrue(ray.direction().equalTo(c.direction()));
             assertEquals(((1 - gridSize) * originalWidth) + (gridSize * col)
                 + blockCol + 1, ray.position().x(), 0);

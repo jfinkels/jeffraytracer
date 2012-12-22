@@ -75,11 +75,11 @@ public class GridSupersampler implements Supersampler {
    * @see jeffraytracer.rendering.supersampling.Supersampler#generateRays()
    */
   @Override
-  public Ray[][] generateRays() {
+  public Ray[][][] generateRays() {
     // initialize the array of blocks of rays
-    final Ray[][] rays = new Ray[this.width * this.height][];
+    final Ray[][][] rays = new Ray[this.width * this.height][][];
     for (int i = 0; i < rays.length; ++i) {
-      rays[i] = new Ray[this.gridSize * this.gridSize];
+      rays[i] = new Ray[this.gridSize * this.gridSize][];
     }
     // Generate the rays in each block. Each block has gridSize * gridSize
     // superpixels. For example, if gridSize == 3, then the blocks looks like:
@@ -104,6 +104,10 @@ public class GridSupersampler implements Supersampler {
     // The outer two loops compute the block number of the original pixel in
     // the array, and the inner two loops compute the column and row offset due
     // to the virtual superpixel blocks.
+    //
+    // Note that the `generateRays()` method itself generates an array of rays,
+    // because a lens camera may generate many rays through a single point on
+    // the viewport.
     for (int y = 0; y < this.height; ++y) {
       final int rowOffset = y * this.width;
       final int row = y * this.gridSize;
@@ -114,7 +118,7 @@ public class GridSupersampler implements Supersampler {
           final int gridRowOffset = yy * this.gridSize;
           for (int xx = 0; xx < this.gridSize; ++xx) {
             final int gridPixel = gridRowOffset + xx;
-            rays[blockNum][gridPixel] = this.rayGenerator.generateRay(
+            rays[blockNum][gridPixel] = this.rayGenerator.generateRays(
                 row + yy, column + xx);
           }
         }

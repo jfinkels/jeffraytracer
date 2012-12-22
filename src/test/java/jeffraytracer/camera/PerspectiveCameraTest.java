@@ -20,6 +20,7 @@
  */
 package jeffraytracer.camera;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import jeffraytracer.Vector3D;
 
@@ -62,7 +63,8 @@ public class PerspectiveCameraTest {
    */
   @Test
   public void testRayDirection() {
-    assertTrue(this.c.rayDirection(new Vector3D(1, 2, 3)).equalTo(
-        new Vector3D(1, 2, 4).normalized()));
+    final Vector3D[] result = this.c.rayDirections(new Vector3D(1, 2, 3));
+    assertEquals(1, result.length);
+    assertTrue(result[0].equalTo(new Vector3D(1, 2, 4).normalized()));
   }
 }

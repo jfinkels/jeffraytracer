@@ -94,14 +94,15 @@ public class DefaultRendererTest {
    */
   @Test
   public void testGeneratePrimaryRays() {
-    final Ray[][] rays = this.r.generatePrimaryRays();
+    final Ray[][][] rays = this.r.generatePrimaryRays();
     for (int i = 0; i < 4; ++i) {
-      assertTrue(rays[i / 2][i % 2].direction().equalTo(new Vector3D(0, 0, 1)));
+      assertEquals(1, rays[i / 2][i % 2].length);
+      assertTrue(rays[i / 2][i % 2][0].direction().equalTo(new Vector3D(0, 0, 1)));
     }
-    assertTrue(rays[0][0].position().equalTo(new Vector3D(0, 0, 0)));
-    assertTrue(rays[0][1].position().equalTo(new Vector3D(1, 0, 0)));
-    assertTrue(rays[1][0].position().equalTo(new Vector3D(0, -1, 0)));
-    assertTrue(rays[1][1].position().equalTo(new Vector3D(1, -1, 0)));
+    assertTrue(rays[0][0][0].position().equalTo(new Vector3D(0, 0, 0)));
+    assertTrue(rays[0][1][0].position().equalTo(new Vector3D(1, 0, 0)));
+    assertTrue(rays[1][0][0].position().equalTo(new Vector3D(0, -1, 0)));
+    assertTrue(rays[1][1][0].position().equalTo(new Vector3D(1, -1, 0)));
   }
 
   /**

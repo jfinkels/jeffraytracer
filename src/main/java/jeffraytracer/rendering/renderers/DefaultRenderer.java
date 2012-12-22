@@ -30,6 +30,7 @@ import jeffraytracer.camera.RayGenerator;
 import jeffraytracer.camera.Resolution;
 import jeffraytracer.camera.Viewport;
 import jeffraytracer.rendering.RenderingEnvironment;
+import jeffraytracer.rendering.supersampling.SimpleAverager;
 import jeffraytracer.rendering.tracers.Tracer;
 import jeffraytracer.surfaces.SurfaceObject;
 
@@ -46,33 +47,6 @@ public class DefaultRenderer implements Renderer {
   /** The logger for this class. */
   private static final transient Logger LOG = Logger
       .getLogger(DefaultRenderer.class);
-
-  /**
-   * Flattens a two-dimensional array into a one-dimensional array in row-major
-   * order.
-   * 
-   * Pre-condition: the input array has size greater than zero.
-   * 
-   * Pre-condition: the input array is rectangular (that is, each row has the
-   * same number of elements).
-   * 
-   * @param array
-   *          The two-dimensional array to flatten.
-   * @return A new one-dimensional array with the same elements of the
-   *         two-dimensional array in row-major order.
-   */
-  private static Ray[] flatten(final Ray[][] array) {
-    // here we assume the input array is rectangular and has size > 0
-    final Ray[] result = new Ray[array.length * array[0].length];
-    int j = 0;
-    for (int i = 0; i < array.length; ++i) {
-      final int length = array[i].length;
-      System.arraycopy(array[i], 0, result, j, length);
-      j += length;
-    }
-    return result;
-  }
-
   /** The scene to render. */
   private final RenderingEnvironment environment;
   /** The object which traces and shades the scene. */
@@ -114,13 +88,26 @@ public class DefaultRenderer implements Renderer {
   }
 
   /**
-   * Generates a two-dimensional array representing the primary rays extending
-   * from the camera through the viewport specified by the RenderingEnvironment
-   * provided in the constructor of this class.
+   * Generates a three-dimensional array representing the primary rays
+   * extending from the camera through the viewport specified by the
+   * RenderingEnvironment provided in the constructor of this class.
    * 
-   * @return A two-dimensional array of primary rays through the viewport.
+   * The first two dimensions of the returned array represent the row and
+   * column position on the viewport. The third dimension represents the index
+   * into the array of all rays emanating from that point.
+   * 
+   * Each element in the second dimension is an array of primary rays, each of
+   * size at least one. A pinhole camera will produce an array of size for each
+   * of the innermost arrays. A lens camera will produce an array of size at
+   * least one; the lens can be thought of a collection of pinhole cameras.
+   * 
+   * Post-condition: each array in {@code result[i][j]} will have size at least
+   * one, for all {@code i} and {@code j}.
+   * 
+   * @return A three-dimensional array in which each element of the array is a
+   *         primary ray through the viewport, grouped by column and row.
    */
-  protected Ray[][] generatePrimaryRays() {
+  protected Ray[][][] generatePrimaryRays() {
     final Camera camera = this.environment.camera();
     final Resolution resolution = this.environment.resolution();
     final Viewport viewport = this.environment.viewport();
@@ -129,10 +116,10 @@ public class DefaultRenderer implements Renderer {
 
     final int height = viewport.height();
     final int width = viewport.width();
-    final Ray[][] result = new Ray[height][width];
+    final Ray[][][] result = new Ray[height][width][];
     for (int y = 0; y < height; ++y) {
       for (int x = 0; x < width; ++x) {
-        result[y][x] = rayGenerator.generateRay(y, x);
+        result[y][x] = rayGenerator.generateRays(y, x);
       }
     }
 
@@ -155,9 +142,17 @@ public class DefaultRenderer implements Renderer {
    *         of the colors specified by the input array.
    */
   protected int[] postProcessing(final Vector3D[] colors) {
+    // Compute the average of the color values for each group of colors
+    // corresponding to a group of rays emanating from the same point on the
+    // viewport. This assumes that the input array is arranged in blocks whose
+    // size depends on the size of the camera.
+    final Camera camera = this.environment.camera();
+    final SimpleAverager averager = new SimpleAverager();
+    averager.setBlockSize(camera.raysPerPixel());
+    final Vector3D[] averagedColors = averager.average(colors);
     final int[] result = new int[colors.length];
     for (int i = 0; i < colors.length; ++i) {
-      result[i] = DoubleColor.toRGB(colors[i]);
+      result[i] = DoubleColor.toRGB(averagedColors[i]);
     }
     return result;
   }
@@ -170,18 +165,44 @@ public class DefaultRenderer implements Renderer {
   @Override
   public BufferedImage render() {
     LOG.debug("Generating primary rays...");
-    final Ray[][] rays = this.generatePrimaryRays();
+    final Ray[][][] rays = this.generatePrimaryRays();
     LOG.debug("Compiling quadric form matrices...");
     for (final SurfaceObject surfaceObject : this.environment.surfaceObjects()) {
       surfaceObject.compile();
     }
     LOG.debug("Tracing rays...");
-    final Ray[] rays1D = flatten(rays);
+    final Ray[] rays1D = flattened(rays);
     final Vector3D[] pixels = this.tracer.traceAll(rays1D);
     LOG.debug("Post processing pixels...");
     final int[] colors = this.postProcessing(pixels);
     LOG.debug("Generating image...");
-    return this.generateImage(colors);
+    final BufferedImage result = this.generateImage(colors);
+    LOG.debug("Done.");
+    return result;
+  }
+
+  /**
+   * Returns a new one-dimensional array resulting from flattening the
+   * specified three-dimensional array in row-major order.
+   * 
+   * @param rays
+   *          The three-dimensional array.
+   * @return A new one-dimensional array with the same contents as the input
+   *         array in row-major order.
+   */
+  private static Ray[] flattened(final Ray[][][] rays) {
+    int height = rays.length;
+    int width = rays[0].length;
+    int depth = rays[0][0].length;
+    final Ray[] result = new Ray[width * height * depth];
+    int i = 0;
+    for (final Ray[][] columns : rays) {
+      for (final Ray[] raysPerPixel : columns) {
+        System.arraycopy(raysPerPixel, 0, result, i, raysPerPixel.length);
+        i += raysPerPixel.length;
+      }
+    }
+    return result;
   }
 
   /**

@@ -64,17 +64,33 @@ public abstract class Camera extends PositionedDirected {
   }
 
   /**
-   * Computes the direction of a ray which originates at the specified
-   * position.
+   * Computes the direction of all rays which originate at the specified
+   * position on the viewport.
    * 
-   * The returned vector is of unit length.
+   * A pinhole perspective camera should return an array of size one. A lens
+   * perspective camera should return an array of size at least one (depending
+   * on the size of the lens).
+   * 
+   * The order of the returned array is arbitrary.
+   * 
+   * Post-condition: the length of the returned array is at least one.
    * 
    * @param position
-   *          The starting position of the ray whose direction will be
-   *          computed.
-   * @return The direction of the ray starting at the specified position.
+   *          The starting position on the viewport of the rays whose direction
+   *          will be computed.
+   * @return An array containing the directions of all the rays starting at the
+   *         specified position in arbitrary order.
    */
-  public abstract Vector3D rayDirection(final Vector3D position);
+  public abstract Vector3D[] rayDirections(final Vector3D position);
+
+  /**
+   * Returns a positive integer representing the length of the array returned
+   * by {@link #rayDirections(Vector3D)}.
+   * 
+   * @return A positive integer representing the length of the array returned
+   *         by {@link #rayDirections(Vector3D)}.
+   */
+  public abstract int raysPerPixel();
 
   /**
    * Sets the distance to the far clip plane.

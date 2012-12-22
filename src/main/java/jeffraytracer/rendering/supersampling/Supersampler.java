@@ -34,5 +34,5 @@ public interface Supersampler {
    * 
    * @return The array of blocks of rays.
    */
-  Ray[][] generateRays();
+  Ray[][][] generateRays();
 }

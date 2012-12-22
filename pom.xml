@@ -69,8 +69,8 @@
     <version.wagon.ssh>2.3</version.wagon.ssh>
     
     <!-- Java runtime/JDK versions -->
-    <version.java.source>1.6</version.java.source>
-    <version.java.target>1.6</version.java.target>
+    <version.java.source>1.7</version.java.source>
+    <version.java.target>1.7</version.java.target>
   </properties>
   
   <build>

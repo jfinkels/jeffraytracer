@@ -173,7 +173,7 @@ public class ModelReader {
   public ModelReader(final File file) throws FileFormatException,
       FileNotFoundException {
     // create the scanner which reads tokens from the file
-    this.scanner = new Scanner(file);
+    this.scanner = new Scanner(file, "utf-8");
 
     List<Integer> toRender = null;
 
